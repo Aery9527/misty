@@ -2,12 +2,19 @@ package org.misty.util.reflect;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 public class ObjectAncestorDigger {
+
+    public static List<Class<?>> findSuperClasses(Class<?> targetClass) {
+        List<Class<?>> list = new ArrayList<>();
+        findSuperClasses(targetClass, list);
+        return list;
+    }
 
     @SuppressWarnings("unchecked")
     public static <T> List<Class<?>> findSuperClassGenericTypes(Class<? extends T> targetClass, Class<T> superClass) {
@@ -40,7 +47,7 @@ public class ObjectAncestorDigger {
         }
     }
 
-    private static <T> Optional<Class<?>> findSuperClassGenericType(Class<? extends T> targetClass, Class<T> superClass, int index) {
+    public static <T> Optional<Class<?>> findSuperClassGenericType(Class<? extends T> targetClass, Class<T> superClass, int index) {
         List<Class<?>> types = findSuperClassGenericTypes(targetClass, superClass);
         if (index >= types.size()) {
             return Optional.empty();
@@ -95,7 +102,11 @@ public class ObjectAncestorDigger {
 
         List<Class<?>> result = new ArrayList<>();
         for (Type generic : generics) {
-            result.add((Class<?>) generic);
+            if (generic instanceof TypeVariable) {
+                throw new UnsupportedOperationException();
+            } else {
+                result.add((Class<?>) generic);
+            }
         }
         return result;
     }
@@ -115,13 +126,7 @@ public class ObjectAncestorDigger {
         return Optional.of((Class<?>) generics[index]);
     }
 
-    public static List<Class<?>> findSuperClassAncestor(Class<?> targetClass) {
-        List<Class<?>> list = new ArrayList<>();
-        findSuperClassAncestor(targetClass, list);
-        return list;
-    }
-
-    private static void findSuperClassAncestor(Class<?> targetClass, List<Class<?>> list) {
+    private static void findSuperClasses(Class<?> targetClass, List<Class<?>> list) {
         Class<?> superClass = targetClass.getSuperclass();
 
         if (superClass == null || superClass.equals(Object.class)) {
@@ -129,7 +134,7 @@ public class ObjectAncestorDigger {
         }
 
         list.add(superClass);
-        findSuperClassAncestor(superClass, list);
+        findSuperClasses(superClass, list);
     }
 
 }
