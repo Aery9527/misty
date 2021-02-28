@@ -38,7 +38,15 @@ class ObjectAncestorDiggerTest {
     }
 
     @Test
-    public void test() {
+    public void test_findSuperClassGenericTypes() {
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(SuperA.class, Object.class)).isEmpty();
+
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(SuperB.class, SuperA.class)).isEmpty();
+
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(SuperC1.class, SuperB.class))
+                .containsExactly(String.class);
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(SuperC2.class, SuperB.class))
+                .containsExactly(String.class);
 
     }
 
