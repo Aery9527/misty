@@ -3,8 +3,6 @@ package org.misty.util.tool;
 import org.misty.util.ex.ReentrantLockEx;
 import org.misty.util.fi.FiRunnable;
 
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
@@ -35,11 +33,11 @@ public class SingleExecutor {
             return false;
         }
 
-       boolean ignore = this.lock.use(() -> {
+        boolean ignore = this.lock.use(() -> {
             if (ignoreActionCheck.getAsBoolean()) {
                 return true;
             } else {
-                this.executingThreadName = ThreadTool.getCurrentName();
+                this.executingThreadName = Thread.currentThread().getName();
                 return false;
             }
         });

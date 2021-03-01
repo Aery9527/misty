@@ -31,7 +31,7 @@ class SingleExecutorTest {
 
         new Thread(() -> {
             boolean returned = this.singleExecutor.execute(() -> {
-                ThreadTool.sleepWithSecond(1);
+                ThreadSleep.withSecond(1);
                 forkExecuted.set(true);
                 latch.countDown();
             }, (executingThreadName) -> {
@@ -41,7 +41,7 @@ class SingleExecutorTest {
             forkReturned.set(returned);
         }, threadName).start();
 
-        ThreadTool.sleepWithSecond(0.5f);
+        ThreadSleep.withSecond(0.5f);
 
         boolean returned = this.singleExecutor.execute(() -> {
             mainExecuted.set(true);
