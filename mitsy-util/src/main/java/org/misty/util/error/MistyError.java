@@ -22,5 +22,4 @@ public enum MistyError implements MistyErrorDefinition {
         return this.code;
     }
 
-
 }

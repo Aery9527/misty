@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public abstract class MistyModule {
 
-    public static final String FULL_NAME_FORMAT = "MistyModule(%s)(%s)";
+    public static final String FULL_NAME_FORMAT = MistyModule.class.getSimpleName() + "(%s)(%s)";
 
     public static final String FULL_NAME_WITH_CLASS_FORMAT = FULL_NAME_FORMAT + "(%s)";
 
