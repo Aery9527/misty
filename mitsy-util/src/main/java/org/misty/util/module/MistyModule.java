@@ -48,7 +48,7 @@ public abstract class MistyModule {
 
     @Override
     public String toString() {
-        return this.fullNameWithClass;
+        return this.fullName;
     }
 
     public String getName() {
