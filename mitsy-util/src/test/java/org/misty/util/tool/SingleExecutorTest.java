@@ -1,7 +1,6 @@
 package org.misty.util.tool;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
@@ -21,10 +20,10 @@ class SingleExecutorTest {
     public void test_single_entry_feature() throws InterruptedException {
         AtomicBoolean forkExecuted = new AtomicBoolean(false);
         AtomicReference<String> forkIgnored = new AtomicReference<>();
-        AtomicReference<Boolean> forkReturned = new AtomicReference<Boolean>();
+        AtomicReference<Boolean> forkReturned = new AtomicReference<>();
         AtomicBoolean mainExecuted = new AtomicBoolean(false);
         AtomicReference<String> mainIgnored = new AtomicReference<>();
-        AtomicReference<Boolean> mainReturned = new AtomicReference<Boolean>();
+        AtomicReference<Boolean> mainReturned = new AtomicReference<>();
 
         CountDownLatch latch = new CountDownLatch(2);
 

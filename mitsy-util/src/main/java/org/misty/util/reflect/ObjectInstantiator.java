@@ -1,16 +1,20 @@
 package org.misty.util.reflect;
 
-import org.misty.util.fi.FiRunnable;
 import org.misty.util.fi.FiSupplier;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 
-public class ObjectGenerator<TargetType> {
+public class ObjectInstantiator<TargetType> {
 
     private final Class<TargetType> openTableClass;
 
-    public ObjectGenerator(Class<TargetType> openTableClass) {
+    public ObjectInstantiator(Class<TargetType> openTableClass) {
+        if (openTableClass.isInterface() ||
+                openTableClass.isEnum() ||
+                openTableClass.isAnnotation() ||
+                openTableClass.isArray()) {
+            throw new UnsupportedOperationException(openTableClass + " can't be instance.");
+        }
         this.openTableClass = openTableClass;
     }
 
