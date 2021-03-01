@@ -7,177 +7,177 @@ class ObjectAncestorDiggerTest {
 
     @Test
     public void test_findSuperClasses() {
-        Class<?> classSuperA = SuperA.class;
-        Class<?> classSuperB = SuperB.class;
-        Class<?> classSuperC1 = SuperC1.class;
-        Class<?> classSuperC2 = SuperC2.class;
-        Class<?> classSuperD1 = SuperD1.class;
-        Class<?> classSuperD2 = SuperD2.class;
-        Class<?> classSuperE1 = SuperE1.class;
-        Class<?> classSuperE2 = SuperE2.class;
+        Class<?> superA = SuperA.class;
+        Class<?> superB = SuperB.class;
+        Class<?> superC1 = SuperC1.class;
+        Class<?> superC2 = SuperC2.class;
+        Class<?> superD1 = SuperD1.class;
+        Class<?> superD2 = SuperD2.class;
+        Class<?> superE1 = SuperE1.class;
+        Class<?> superE2 = SuperE2.class;
 
-        Assertions.assertThat(ObjectAncestorDigger.findSuperClasses(classSuperA)).isEmpty();
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClasses(superA)).isEmpty();
 
-        Assertions.assertThat(ObjectAncestorDigger.findSuperClasses(classSuperB)).containsExactly(classSuperA);
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClasses(superB)).containsExactly(superA);
 
-        Assertions.assertThat(ObjectAncestorDigger.findSuperClasses(classSuperC1)).containsExactly(classSuperB, classSuperA);
-        Assertions.assertThat(ObjectAncestorDigger.findSuperClasses(classSuperC2)).containsExactly(classSuperB, classSuperA);
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClasses(superC1)).containsExactly(superB, superA);
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClasses(superC2)).containsExactly(superB, superA);
 
-        Assertions.assertThat(ObjectAncestorDigger.findSuperClasses(classSuperD1)).containsExactly(classSuperC1, classSuperB, classSuperA);
-        Assertions.assertThat(ObjectAncestorDigger.findSuperClasses(classSuperD2)).containsExactly(classSuperC2, classSuperB, classSuperA);
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClasses(superD1)).containsExactly(superC1, superB, superA);
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClasses(superD2)).containsExactly(superC2, superB, superA);
 
-        Assertions.assertThat(ObjectAncestorDigger.findSuperClasses(classSuperE1)).containsExactly(classSuperD1, classSuperC1, classSuperB, classSuperA);
-        Assertions.assertThat(ObjectAncestorDigger.findSuperClasses(classSuperE2)).containsExactly(classSuperD2, classSuperC2, classSuperB, classSuperA);
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClasses(superE1)).containsExactly(superD1, superC1, superB, superA);
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClasses(superE2)).containsExactly(superD2, superC2, superB, superA);
     }
 
     @Test
     public void test_findSuperClassGenericTypes() {
-        Class<SuperA> classSuperA = SuperA.class;
-        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(classSuperA, Object.class)).isEmpty();
+        Class<SuperA> superA = SuperA.class;
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(superA, Object.class)).isEmpty();
 
-        Class<SuperB> classSuperB = SuperB.class;
-        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(classSuperB, SuperA.class)).isEmpty();
+        Class<SuperB> superB = SuperB.class;
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(superB, SuperA.class)).isEmpty();
 
-        Class<SuperC1> classSuperC1 = SuperC1.class;
-        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(classSuperC1, SuperB.class)).containsExactly(String.class);
-        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(classSuperC1, SuperA.class)).isEmpty();
+        Class<SuperC1> superC1 = SuperC1.class;
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(superC1, SuperB.class)).containsExactly(String.class);
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(superC1, SuperA.class)).isEmpty();
 
-        Class<SuperC2> classSuperC2 = SuperC2.class;
-        Assertions.assertThatThrownBy(() -> ObjectAncestorDigger.findSuperClassGenericTypes(classSuperC2, SuperB.class))
+        Class<SuperC2> superC2 = SuperC2.class;
+        Assertions.assertThatThrownBy(() -> ObjectAncestorDigger.findSuperClassGenericTypes(superC2, SuperB.class))
                 .isInstanceOf(UnsupportedOperationException.class);
-        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(classSuperC2, SuperA.class)).isEmpty();
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(superC2, SuperA.class)).isEmpty();
 
-        Class<SuperD1> classSuperD1 = SuperD1.class;
-        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(classSuperD1, SuperC1.class)).isEmpty();
-        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(classSuperD1, SuperB.class))
+        Class<SuperD1> superD1 = SuperD1.class;
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(superD1, SuperC1.class)).isEmpty();
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(superD1, SuperB.class))
                 .containsExactly(String.class);
-        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(classSuperD1, SuperA.class)).isEmpty();
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(superD1, SuperA.class)).isEmpty();
 
-        Class<SuperD2> classSuperD2 = SuperD2.class;
-        Assertions.assertThatThrownBy(() -> ObjectAncestorDigger.findSuperClassGenericTypes(classSuperD2, SuperC2.class))
+        Class<SuperD2> superD2 = SuperD2.class;
+        Assertions.assertThatThrownBy(() -> ObjectAncestorDigger.findSuperClassGenericTypes(superD2, SuperC2.class))
                 .isInstanceOf(UnsupportedOperationException.class);
-        Assertions.assertThatThrownBy(() -> ObjectAncestorDigger.findSuperClassGenericTypes(classSuperD2, SuperB.class))
+        Assertions.assertThatThrownBy(() -> ObjectAncestorDigger.findSuperClassGenericTypes(superD2, SuperB.class))
                 .isInstanceOf(UnsupportedOperationException.class);
-        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(classSuperD2, SuperA.class)).isEmpty();
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(superD2, SuperA.class)).isEmpty();
 
-        Class<SuperE1> classSuperE1 = SuperE1.class;
-        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(classSuperE1, SuperD1.class)).containsExactly(Integer.class);
-        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(classSuperE1, SuperC1.class)).isEmpty();
-        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(classSuperE1, SuperB.class)).containsExactly(String.class);
-        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(classSuperE1, SuperA.class)).isEmpty();
+        Class<SuperE1> superE1 = SuperE1.class;
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(superE1, SuperD1.class)).containsExactly(Integer.class);
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(superE1, SuperC1.class)).isEmpty();
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(superE1, SuperB.class)).containsExactly(String.class);
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(superE1, SuperA.class)).isEmpty();
 
-        Class<SuperE2> classSuperE2 = SuperE2.class;
-        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(classSuperE2, SuperD2.class)).containsExactly(Double.class, Float.class);
-        Assertions.assertThatThrownBy(() -> ObjectAncestorDigger.findSuperClassGenericTypes(classSuperE2, SuperC2.class))
+        Class<SuperE2> superE2 = SuperE2.class;
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(superE2, SuperD2.class)).containsExactly(Double.class, Float.class);
+        Assertions.assertThatThrownBy(() -> ObjectAncestorDigger.findSuperClassGenericTypes(superE2, SuperC2.class))
                 .isInstanceOf(UnsupportedOperationException.class);
-        Assertions.assertThatThrownBy(() -> ObjectAncestorDigger.findSuperClassGenericTypes(classSuperE2, SuperB.class))
+        Assertions.assertThatThrownBy(() -> ObjectAncestorDigger.findSuperClassGenericTypes(superE2, SuperB.class))
                 .isInstanceOf(UnsupportedOperationException.class);
-        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(classSuperE2, SuperA.class)).isEmpty();
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(superE2, SuperA.class)).isEmpty();
     }
 
     @Test
     public void test_findSuperClassGenericType() {
-        Class<SuperA> classSuperA = SuperA.class;
-        Assertions.assertThatThrownBy(() -> ObjectAncestorDigger.findSuperClassGenericType(classSuperA, Object.class, -1))
+        Class<SuperA> superA = SuperA.class;
+        Assertions.assertThatThrownBy(() -> ObjectAncestorDigger.findSuperClassGenericType(superA, Object.class, -1))
                 .isInstanceOf(IndexOutOfBoundsException.class);
-        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericType(classSuperA, Object.class, 0)).isEmpty();
-        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericType(classSuperA, Object.class, 1)).isEmpty();
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericType(superA, Object.class, 0)).isEmpty();
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericType(superA, Object.class, 1)).isEmpty();
 
-        Class<SuperB> classSuperB = SuperB.class;
-        Assertions.assertThatThrownBy(() -> ObjectAncestorDigger.findSuperClassGenericType(classSuperB, SuperA.class, -1))
+        Class<SuperB> superB = SuperB.class;
+        Assertions.assertThatThrownBy(() -> ObjectAncestorDigger.findSuperClassGenericType(superB, SuperA.class, -1))
                 .isInstanceOf(IndexOutOfBoundsException.class);
-        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericType(classSuperB, SuperA.class, 0)).isEmpty();
-        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericType(classSuperB, SuperA.class, 1)).isEmpty();
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericType(superB, SuperA.class, 0)).isEmpty();
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericType(superB, SuperA.class, 1)).isEmpty();
 
-        Class<SuperC1> classSuperC1 = SuperC1.class;
-        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericType(classSuperC1, SuperB.class, 0))
+        Class<SuperC1> superC1 = SuperC1.class;
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericType(superC1, SuperB.class, 0))
                 .get().isEqualTo(String.class);
 
-        Class<SuperC2> classSuperC2 = SuperC2.class;
+        Class<SuperC2> superC2 = SuperC2.class;
         Assertions.assertThatThrownBy(() -> { // 當子類未在宣告時定義父類泛型型別則無法取得
-            ObjectAncestorDigger.findSuperClassGenericType(classSuperC2, SuperB.class, 0);
+            ObjectAncestorDigger.findSuperClassGenericType(superC2, SuperB.class, 0);
         }).isInstanceOf(UnsupportedOperationException.class);
 
-        Class<SuperD1> classSuperD1 = SuperD1.class;
-        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericType(classSuperD1, SuperB.class, 0))
+        Class<SuperD1> superD1 = SuperD1.class;
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericType(superD1, SuperB.class, 0))
                 .get().isEqualTo(String.class);
 
-        Class<SuperD2> classSuperD2 = SuperD2.class;
+        Class<SuperD2> superD2 = SuperD2.class;
         Assertions.assertThatThrownBy(() -> { // 當子類未在宣告時定義父類泛型型別則無法取得
-            ObjectAncestorDigger.findSuperClassGenericType(classSuperD2, SuperB.class, 0);
+            ObjectAncestorDigger.findSuperClassGenericType(superD2, SuperB.class, 0);
         }).isInstanceOf(UnsupportedOperationException.class);
 
-        Class<SuperE1> classSuperE1 = SuperE1.class;
-        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericType(classSuperE1, SuperD1.class, 0))
+        Class<SuperE1> superE1 = SuperE1.class;
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericType(superE1, SuperD1.class, 0))
                 .get().isEqualTo(Integer.class);
-        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericType(classSuperE1, SuperB.class, 0))
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericType(superE1, SuperB.class, 0))
                 .get().isEqualTo(String.class);
 
-        Class<SuperE2> classSuperE2 = SuperE2.class;
-        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericType(classSuperE2, SuperD2.class, 0))
+        Class<SuperE2> superE2 = SuperE2.class;
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericType(superE2, SuperD2.class, 0))
                 .get().isEqualTo(Double.class);
-        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericType(classSuperE2, SuperD2.class, 1))
+        Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericType(superE2, SuperD2.class, 1))
                 .get().isEqualTo(Float.class);
         Assertions.assertThatThrownBy(() -> { // 當子類未在宣告時定義父類泛型型別則無法取得
-            ObjectAncestorDigger.findSuperClassGenericType(classSuperE2, SuperB.class, 0);
+            ObjectAncestorDigger.findSuperClassGenericType(superE2, SuperB.class, 0);
         }).isInstanceOf(UnsupportedOperationException.class);
         Assertions.assertThatThrownBy(() -> { // 當子類未在宣告時定義父類泛型型別則無法取得
-            ObjectAncestorDigger.findSuperClassGenericType(classSuperE2, SuperB.class, 1);
+            ObjectAncestorDigger.findSuperClassGenericType(superE2, SuperB.class, 1);
         }).isInstanceOf(UnsupportedOperationException.class);
     }
 
     @Test
     public void test_findInterfaceGenericTypes() {
-        Class<Implement1> classImplement1 = Implement1.class;
-        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericTypes(classImplement1, _A.class)).isEmpty();
-        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericTypes(classImplement1, _B.class)).containsExactly(String.class);
-        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericTypes(classImplement1, $A.class)).isEmpty();
-        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericTypes(classImplement1, $B.class)).containsExactly(Integer.class);
+        Class<Implement1> implement1 = Implement1.class;
+        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericTypes(implement1, _A.class)).isEmpty();
+        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericTypes(implement1, _B.class)).containsExactly(String.class);
+        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericTypes(implement1, $A.class)).isEmpty();
+        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericTypes(implement1, $B.class)).containsExactly(Integer.class);
 
-        Class<Implement2> classImplement2 = Implement2.class;
-        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericTypes(classImplement2, _C1.class)).isEmpty();
-        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericTypes(classImplement2, _B.class)).containsExactly(String.class);
-        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericTypes(classImplement2, $C2.class)).containsExactly(Integer.class);
-        Assertions.assertThatThrownBy(() -> ObjectAncestorDigger.findInterfaceGenericTypes(classImplement2, $B.class))
+        Class<Implement2> implement2 = Implement2.class;
+        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericTypes(implement2, _C1.class)).isEmpty();
+        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericTypes(implement2, _B.class)).containsExactly(String.class);
+        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericTypes(implement2, $C2.class)).containsExactly(Integer.class);
+        Assertions.assertThatThrownBy(() -> ObjectAncestorDigger.findInterfaceGenericTypes(implement2, $B.class))
                 .isInstanceOf(UnsupportedOperationException.class);
 
-        Class<Implement3> classImplement3 = Implement3.class;
-        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericTypes(classImplement3, _D1.class)).containsExactly(Double.class);
-        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericTypes(classImplement3, _C1.class)).isEmpty();
-        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericTypes(classImplement3, _B.class)).containsExactly(String.class);
-        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericTypes(classImplement3, $D2.class)).containsExactly(String.class, Integer.class);
-        Assertions.assertThatThrownBy(() -> ObjectAncestorDigger.findInterfaceGenericTypes(classImplement3, $C2.class))
+        Class<Implement3> implement3 = Implement3.class;
+        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericTypes(implement3, _D1.class)).containsExactly(Double.class);
+        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericTypes(implement3, _C1.class)).isEmpty();
+        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericTypes(implement3, _B.class)).containsExactly(String.class);
+        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericTypes(implement3, $D2.class)).containsExactly(String.class, Integer.class);
+        Assertions.assertThatThrownBy(() -> ObjectAncestorDigger.findInterfaceGenericTypes(implement3, $C2.class))
                 .isInstanceOf(UnsupportedOperationException.class);
-        Assertions.assertThatThrownBy(() -> ObjectAncestorDigger.findInterfaceGenericTypes(classImplement3, $B.class))
+        Assertions.assertThatThrownBy(() -> ObjectAncestorDigger.findInterfaceGenericTypes(implement3, $B.class))
                 .isInstanceOf(UnsupportedOperationException.class);
     }
 
     @Test
     public void test_findInterfaceGenericType() {
-        Class<Implement1> classImplement1 = Implement1.class;
-        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericType(classImplement1, _A.class, 0)).isEmpty();
-        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericType(classImplement1, _A.class, 1)).isEmpty();
-        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericType(classImplement1, _B.class, 0)).get().isEqualTo(String.class);
-        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericType(classImplement1, _B.class, 1)).isEmpty();
-        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericType(classImplement1, $A.class, 0)).isEmpty();
-        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericType(classImplement1, $B.class, 0)).get().isEqualTo(Integer.class);
+        Class<Implement1> implement1 = Implement1.class;
+        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericType(implement1, _A.class, 0)).isEmpty();
+        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericType(implement1, _A.class, 1)).isEmpty();
+        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericType(implement1, _B.class, 0)).get().isEqualTo(String.class);
+        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericType(implement1, _B.class, 1)).isEmpty();
+        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericType(implement1, $A.class, 0)).isEmpty();
+        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericType(implement1, $B.class, 0)).get().isEqualTo(Integer.class);
 
-        Class<Implement2> classImplement2 = Implement2.class;
-        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericType(classImplement2, _C1.class, 0)).isEmpty();
-        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericType(classImplement2, _B.class, 0)).get().isEqualTo(String.class);
-        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericType(classImplement2, $C2.class, 0)).get().isEqualTo(Integer.class);
-        Assertions.assertThatThrownBy(() -> ObjectAncestorDigger.findInterfaceGenericType(classImplement2, $B.class, 0))
+        Class<Implement2> implement2 = Implement2.class;
+        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericType(implement2, _C1.class, 0)).isEmpty();
+        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericType(implement2, _B.class, 0)).get().isEqualTo(String.class);
+        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericType(implement2, $C2.class, 0)).get().isEqualTo(Integer.class);
+        Assertions.assertThatThrownBy(() -> ObjectAncestorDigger.findInterfaceGenericType(implement2, $B.class, 0))
                 .isInstanceOf(UnsupportedOperationException.class);
 
-        Class<Implement3> classImplement3 = Implement3.class;
-        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericType(classImplement3, _D1.class, 0)).get().isEqualTo(Double.class);
-        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericType(classImplement3, _C1.class, 0)).isEmpty();
-        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericType(classImplement3, _B.class, 0)).get().isEqualTo(String.class);
-        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericType(classImplement3, $D2.class, 0)).get().isEqualTo(String.class);
-        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericType(classImplement3, $D2.class, 1)).get().isEqualTo(Integer.class);
-        Assertions.assertThatThrownBy(() -> ObjectAncestorDigger.findInterfaceGenericType(classImplement3, $C2.class, 0))
+        Class<Implement3> implement3 = Implement3.class;
+        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericType(implement3, _D1.class, 0)).get().isEqualTo(Double.class);
+        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericType(implement3, _C1.class, 0)).isEmpty();
+        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericType(implement3, _B.class, 0)).get().isEqualTo(String.class);
+        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericType(implement3, $D2.class, 0)).get().isEqualTo(String.class);
+        Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericType(implement3, $D2.class, 1)).get().isEqualTo(Integer.class);
+        Assertions.assertThatThrownBy(() -> ObjectAncestorDigger.findInterfaceGenericType(implement3, $C2.class, 0))
                 .isInstanceOf(UnsupportedOperationException.class);
-        Assertions.assertThatThrownBy(() -> ObjectAncestorDigger.findInterfaceGenericType(classImplement3, $B.class, 0))
+        Assertions.assertThatThrownBy(() -> ObjectAncestorDigger.findInterfaceGenericType(implement3, $B.class, 0))
                 .isInstanceOf(UnsupportedOperationException.class);
     }
 

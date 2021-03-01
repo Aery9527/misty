@@ -131,27 +131,6 @@ public class ObjectAncestorDigger {
         return result;
     }
 
-    private static Optional<Class<?>> findGeneric(Type type, int index) throws ErrorGenericType {
-        if (!(type instanceof ParameterizedType)) {
-            return Optional.empty();
-        }
-
-        ParameterizedType parameterizedType = (ParameterizedType) type;
-        Type[] generics = parameterizedType.getActualTypeArguments();
-
-        if (index >= generics.length) {
-            return Optional.empty();
-        }
-
-        Type generic = generics[index];
-
-        if (generic instanceof Class) {
-            return Optional.of((Class<?>) generic);
-        } else {
-            throw new ErrorGenericType(parameterizedType, generic);
-        }
-    }
-
     private static void findSuperClasses(Class<?> targetClass, List<Class<?>> list) {
         Class<?> superClass = targetClass.getSuperclass();
 
