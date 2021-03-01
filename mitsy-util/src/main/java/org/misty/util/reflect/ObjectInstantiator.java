@@ -6,25 +6,25 @@ import java.lang.reflect.Constructor;
 
 public class ObjectInstantiator<TargetType> {
 
-    private final Class<TargetType> openTableClass;
+    private final Class<TargetType> target;
 
-    public ObjectInstantiator(Class<TargetType> openTableClass) {
-        if (openTableClass.isInterface() ||
-                openTableClass.isEnum() ||
-                openTableClass.isAnnotation() ||
-                openTableClass.isArray()) {
-            throw new UnsupportedOperationException(openTableClass + " can't be instance.");
+    public ObjectInstantiator(Class<TargetType> target) {
+        if (target.isInterface() ||
+                target.isEnum() ||
+                target.isAnnotation() ||
+                target.isArray()) {
+            throw new UnsupportedOperationException(target + " can't be instance.");
         }
-        this.openTableClass = openTableClass;
+        this.target = target;
     }
 
     public Broker<TargetType> construct(Class<?>... parameterTypes) throws NoSuchMethodException {
-        Constructor<TargetType> constructor = this.openTableClass.getConstructor(parameterTypes);
-        return new Broker<TargetType>(constructor);
+        Constructor<TargetType> constructor = this.target.getConstructor(parameterTypes);
+        return new Broker<>(constructor);
     }
 
-    public Class<TargetType> getOpenTableClass() {
-        return openTableClass;
+    public Class<TargetType> getTarget() {
+        return target;
     }
 
     public static class Broker<TargetType> {
@@ -35,9 +35,7 @@ public class ObjectInstantiator<TargetType> {
         }
 
         public TargetType instance(Object... initargs) {
-            FiSupplier<TargetType> action = () -> {
-                return this.constructor.newInstance(initargs);
-            };
+            FiSupplier<TargetType> action = () -> this.constructor.newInstance(initargs);
             return action.getOrHandle();
         }
     }
