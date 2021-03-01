@@ -16,8 +16,42 @@ public class ObjectAncestorDigger {
         return list;
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T> List<Class<?>> findSuperClassGenericTypes(Class<? extends T> targetClass, Class<T> superClass) {
+    public static <T> List<Class<?>> findSuperClassGenericTypes(Class<? extends T> targetClass, Class<T> superClass) throws UnsupportedOperationException {
+        try {
+            return searchSuperClassGenericTypes(targetClass, superClass);
+        } catch (ErrorGenericType errorGenericType) {
+            throw new UnsupportedOperationException(targetClass.getName() + " super class " + superClass.getName() + " generic type error.", errorGenericType);
+        }
+    }
+
+    public static <T> Optional<Class<?>> findSuperClassGenericType(Class<? extends T> targetClass, Class<T> superClass, int index) throws UnsupportedOperationException {
+        List<Class<?>> types = findSuperClassGenericTypes(targetClass, superClass);
+        if (index >= types.size()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(types.get(index));
+        }
+    }
+
+    public static <T> List<Class<?>> findInterfaceGenericTypes(Class<? extends T> targetClass, Class<T> interfaceClass) throws UnsupportedOperationException {
+        try {
+            Optional<List<Class<?>>> result = searchInterfaceGenericTypes(targetClass, interfaceClass);
+            return result.orElse(Collections.emptyList());
+        } catch (ErrorGenericType errorGenericType) {
+            throw new UnsupportedOperationException(targetClass.getName() + " interface " + interfaceClass.getName() + " generic type error.", errorGenericType);
+        }
+    }
+
+    public static <T> Optional<Class<?>> findInterfaceGenericType(Class<? extends T> targetClass, Class<T> interfaceClass, int index) throws UnsupportedOperationException {
+        List<Class<?>> types = findInterfaceGenericTypes(targetClass, interfaceClass);
+        if (index >= types.size()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(types.get(index));
+        }
+    }
+
+    private static <T> List<Class<?>> searchSuperClassGenericTypes(Class<? extends T> targetClass, Class<T> superClass) throws ErrorGenericType {
         if (targetClass.equals(Object.class)) {
             return Collections.emptyList();
         }
@@ -41,58 +75,44 @@ public class ObjectAncestorDigger {
         if (isParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) genericSuperclass;
             Type rawType = parameterizedType.getRawType();
-            return findSuperClassGenericTypes((Class<? extends T>) rawType, superClass);
+            return searchSuperClassGenericTypes((Class<? extends T>) rawType, superClass);
         } else {
-            return findSuperClassGenericTypes((Class<? extends T>) genericSuperclass, superClass);
+            return searchSuperClassGenericTypes((Class<? extends T>) genericSuperclass, superClass);
         }
     }
 
-    public static <T> Optional<Class<?>> findSuperClassGenericType(Class<? extends T> targetClass, Class<T> superClass, int index) {
-        List<Class<?>> types = findSuperClassGenericTypes(targetClass, superClass);
-        if (index >= types.size()) {
-            return Optional.empty();
-        } else {
-            return Optional.of(types.get(index));
-        }
-    }
-
-    public static List<Class<?>> findInterfaceGenericTypes(Class<?> targetClass, Class<?> interfaceClass) {
+    private static Optional<List<Class<?>>> searchInterfaceGenericTypes(Class<?> targetClass, Class<?> interfaceClass) throws ErrorGenericType {
         Type[] genericInterfaces = targetClass.getGenericInterfaces();
 
+        Optional<List<Class<?>>> result = Optional.empty();
         for (Type genericInterface : genericInterfaces) {
-            if (!(genericInterface instanceof ParameterizedType)) {
-                continue;
+            if (genericInterface instanceof Class) {
+                result = searchInterfaceGenericTypes((Class<?>) genericInterface, interfaceClass);
+                if (result.isPresent()) {
+                    return result;
+                } else {
+                    continue;
+                }
             }
 
             ParameterizedType parameterizedType = (ParameterizedType) genericInterface;
             Type rawType = parameterizedType.getRawType();
             if (rawType.equals(interfaceClass)) {
-                return findGenerics(genericInterface);
+                List<Class<?>> list = findGenerics(genericInterface);
+                return Optional.of(list);
+            }
+
+            result = searchInterfaceGenericTypes((Class<?>) rawType, interfaceClass);
+
+            if (result.isPresent()) {
+                return result;
             }
         }
 
-        return Collections.emptyList();
+        return result;
     }
 
-    public static Optional<Class<?>> findInterfaceGenericType(Class<?> targetClass, Class<?> interfaceClass, int index) {
-        Type[] genericInterfaces = targetClass.getGenericInterfaces();
-
-        for (Type genericInterface : genericInterfaces) {
-            if (!(genericInterface instanceof ParameterizedType)) {
-                continue;
-            }
-
-            ParameterizedType parameterizedType = (ParameterizedType) genericInterface;
-            Type rawType = parameterizedType.getRawType();
-            if (rawType.equals(interfaceClass)) {
-                return findGeneric(genericInterface, index);
-            }
-        }
-
-        return Optional.empty();
-    }
-
-    private static List<Class<?>> findGenerics(Type type) {
+    private static List<Class<?>> findGenerics(Type type) throws ErrorGenericType {
         if (!(type instanceof ParameterizedType)) {
             return Collections.emptyList();
         }
@@ -102,16 +122,16 @@ public class ObjectAncestorDigger {
 
         List<Class<?>> result = new ArrayList<>();
         for (Type generic : generics) {
-            if (generic instanceof TypeVariable) {
-                throw new UnsupportedOperationException();
-            } else {
+            if (generic instanceof Class) {
                 result.add((Class<?>) generic);
+            } else {
+                throw new ErrorGenericType(parameterizedType, generic);
             }
         }
         return result;
     }
 
-    private static Optional<Class<?>> findGeneric(Type type, int index) {
+    private static Optional<Class<?>> findGeneric(Type type, int index) throws ErrorGenericType {
         if (!(type instanceof ParameterizedType)) {
             return Optional.empty();
         }
@@ -123,7 +143,13 @@ public class ObjectAncestorDigger {
             return Optional.empty();
         }
 
-        return Optional.of((Class<?>) generics[index]);
+        Type generic = generics[index];
+
+        if (generic instanceof Class) {
+            return Optional.of((Class<?>) generic);
+        } else {
+            throw new ErrorGenericType(parameterizedType, generic);
+        }
     }
 
     private static void findSuperClasses(Class<?> targetClass, List<Class<?>> list) {
@@ -135,6 +161,31 @@ public class ObjectAncestorDigger {
 
         list.add(superClass);
         findSuperClasses(superClass, list);
+    }
+
+    private static class ErrorGenericType extends Exception {
+
+        private static String mixMsg(ParameterizedType classType, Type genericType) {
+            return "the generic type <" + genericType.toString() + "> of " + classType.getRawType() + " is not clearly class from classloader.";
+        }
+
+        private final ParameterizedType classType;
+
+        private final Type genericType;
+
+        public ErrorGenericType(ParameterizedType classType, Type genericType) {
+            super(mixMsg(classType, genericType));
+            this.classType = classType;
+            this.genericType = genericType;
+        }
+
+        public ParameterizedType getClassType() {
+            return classType;
+        }
+
+        public Type getGenericType() {
+            return genericType;
+        }
     }
 
 }
