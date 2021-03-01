@@ -18,6 +18,10 @@ public interface MistyErrorDefinition {
         return String.format(TYPE_CODE_FORMAT, getType(), getCode());
     }
 
+    default boolean isSame(Throwable t) {
+        return t instanceof MistyException && isSame((MistyException) t);
+    }
+
     default boolean isSame(MistyException me) {
         MistyErrorDefinition med = me.getErrorDefinition();
         return isSame(med);
@@ -26,6 +30,10 @@ public interface MistyErrorDefinition {
     default boolean isSame(MistyErrorDefinition med) {
         return getClass().equals(med.getClass()) &&
                 getDescription().equals(med.getDescription());
+    }
+
+    default boolean isSameType(Throwable t) {
+        return t instanceof MistyException && isSameType((MistyException) t);
     }
 
     default boolean isSameType(MistyException me) {

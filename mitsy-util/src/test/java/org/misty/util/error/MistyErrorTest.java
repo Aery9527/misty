@@ -25,6 +25,13 @@ class MistyErrorTest {
             Assertions.assertThat(TestError.UNHANDLED.isSameType(me)).isEqualTo(false);
             Assertions.assertThat(TestError.UNHANDLED.isSameType(me.getErrorDefinition())).isEqualTo(false);
         }
+
+        try {
+            MistyError.ARGUMENT_ERROR.thrown();
+        } catch (Throwable t) {
+            Assertions.assertThat(MistyError.ARGUMENT_ERROR.isSame(t)).isEqualTo(true);
+            Assertions.assertThat(MistyError.ARGUMENT_ERROR.isSameType(t)).isEqualTo(true);
+        }
     }
 
     public enum TestError implements MistyErrorDefinition {
