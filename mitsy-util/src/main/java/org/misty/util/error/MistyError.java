@@ -6,11 +6,7 @@ public enum MistyError implements MistyErrorDefinition {
 
     private final String type = getClass().getSimpleName();
 
-    private final String code;
-
-    MistyError() {
-        this.code = String.format("%02d", ordinal());
-    }
+    private final String code = String.format("%02d", ordinal());
 
     @Override
     public String getType() {

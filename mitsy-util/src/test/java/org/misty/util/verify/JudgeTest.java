@@ -95,6 +95,11 @@ class JudgeTest {
         Assertions.assertThat(Judge.isNullOrEmpty(new double[]{1})).isEqualTo(false);
         Assertions.assertThat(Judge.notNullAndEmpty(new double[]{1})).isEqualTo(true);
 
+        Assertions.assertThat(Judge.isNullOrEmpty(new boolean[]{})).isEqualTo(true);
+        Assertions.assertThat(Judge.notNullAndEmpty(new boolean[]{})).isEqualTo(false);
+        Assertions.assertThat(Judge.isNullOrEmpty(new boolean[]{true})).isEqualTo(false);
+        Assertions.assertThat(Judge.notNullAndEmpty(new boolean[]{true})).isEqualTo(true);
+
         Assertions.assertThat(Judge.isNullOrEmpty(new char[]{})).isEqualTo(true);
         Assertions.assertThat(Judge.notNullAndEmpty(new char[]{})).isEqualTo(false);
         Assertions.assertThat(Judge.isNullOrEmpty(new char[]{1})).isEqualTo(false);
