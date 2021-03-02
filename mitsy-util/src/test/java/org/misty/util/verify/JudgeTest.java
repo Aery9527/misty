@@ -63,17 +63,47 @@ class JudgeTest {
 
     @Test
     public void test_Array() {
-        Assertions.assertThat(Judge.isNullOrEmpty((Object[]) null)).isEqualTo(true);
-        Assertions.assertThat(Judge.notNullAndEmpty((Object[]) null)).isEqualTo(false);
-        Assertions.assertThat(Judge.isNullOrEmpty(new Object[]{})).isEqualTo(true);
-        Assertions.assertThat(Judge.notNullAndEmpty(new Object[]{})).isEqualTo(false);
-        Assertions.assertThat(Judge.isNullOrEmpty(new Object[]{1})).isEqualTo(false);
-        Assertions.assertThat(Judge.notNullAndEmpty(new Object[]{1})).isEqualTo(true);
+        Assertions.assertThat(Judge.isNullOrEmpty((String[]) null)).isEqualTo(true);
+        Assertions.assertThat(Judge.notNullAndEmpty((String[]) null)).isEqualTo(false);
+        Assertions.assertThat(Judge.isNullOrEmpty(new String[]{})).isEqualTo(true);
+        Assertions.assertThat(Judge.notNullAndEmpty(new String[]{})).isEqualTo(false);
+        Assertions.assertThat(Judge.isNullOrEmpty(new String[]{""})).isEqualTo(false);
+        Assertions.assertThat(Judge.notNullAndEmpty(new String[]{""})).isEqualTo(true);
 
-        Assertions.assertThat(Judge.isNullOrEmpty((Object) new Object[]{})).isEqualTo(true);
-        Assertions.assertThat(Judge.notNullAndEmpty((Object) new Object[]{})).isEqualTo(false);
-        Assertions.assertThat(Judge.isNullOrEmpty((Object) new Object[]{1})).isEqualTo(false);
-        Assertions.assertThat(Judge.notNullAndEmpty((Object) new Object[]{1})).isEqualTo(true);
+        Assertions.assertThat(Judge.isNullOrEmpty(new short[]{})).isEqualTo(true);
+        Assertions.assertThat(Judge.notNullAndEmpty(new short[]{})).isEqualTo(false);
+        Assertions.assertThat(Judge.isNullOrEmpty(new short[]{1})).isEqualTo(false);
+        Assertions.assertThat(Judge.notNullAndEmpty(new short[]{1})).isEqualTo(true);
+
+        Assertions.assertThat(Judge.isNullOrEmpty(new int[]{})).isEqualTo(true);
+        Assertions.assertThat(Judge.notNullAndEmpty(new int[]{})).isEqualTo(false);
+        Assertions.assertThat(Judge.isNullOrEmpty(new int[]{1})).isEqualTo(false);
+        Assertions.assertThat(Judge.notNullAndEmpty(new int[]{1})).isEqualTo(true);
+
+        Assertions.assertThat(Judge.isNullOrEmpty(new long[]{})).isEqualTo(true);
+        Assertions.assertThat(Judge.notNullAndEmpty(new long[]{})).isEqualTo(false);
+        Assertions.assertThat(Judge.isNullOrEmpty(new long[]{1})).isEqualTo(false);
+        Assertions.assertThat(Judge.notNullAndEmpty(new long[]{1})).isEqualTo(true);
+
+        Assertions.assertThat(Judge.isNullOrEmpty(new float[]{})).isEqualTo(true);
+        Assertions.assertThat(Judge.notNullAndEmpty(new float[]{})).isEqualTo(false);
+        Assertions.assertThat(Judge.isNullOrEmpty(new float[]{1})).isEqualTo(false);
+        Assertions.assertThat(Judge.notNullAndEmpty(new float[]{1})).isEqualTo(true);
+
+        Assertions.assertThat(Judge.isNullOrEmpty(new double[]{})).isEqualTo(true);
+        Assertions.assertThat(Judge.notNullAndEmpty(new double[]{})).isEqualTo(false);
+        Assertions.assertThat(Judge.isNullOrEmpty(new double[]{1})).isEqualTo(false);
+        Assertions.assertThat(Judge.notNullAndEmpty(new double[]{1})).isEqualTo(true);
+
+        Assertions.assertThat(Judge.isNullOrEmpty(new char[]{})).isEqualTo(true);
+        Assertions.assertThat(Judge.notNullAndEmpty(new char[]{})).isEqualTo(false);
+        Assertions.assertThat(Judge.isNullOrEmpty(new char[]{1})).isEqualTo(false);
+        Assertions.assertThat(Judge.notNullAndEmpty(new char[]{1})).isEqualTo(true);
+
+        Assertions.assertThat(Judge.isNullOrEmpty(new byte[]{})).isEqualTo(true);
+        Assertions.assertThat(Judge.notNullAndEmpty(new byte[]{})).isEqualTo(false);
+        Assertions.assertThat(Judge.isNullOrEmpty(new byte[]{1})).isEqualTo(false);
+        Assertions.assertThat(Judge.notNullAndEmpty(new byte[]{1})).isEqualTo(true);
     }
 
     @Test
