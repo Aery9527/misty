@@ -84,5 +84,4 @@ public class Judge {
         return !isNullOrEmpty(o);
     }
 
-
 }
