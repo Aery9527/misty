@@ -71,7 +71,69 @@ class ExaminerTest {
 
     @Test
     public void test_refuseNullAndEmpty() {
+        String term = "kerker";
+        Condition<Throwable> condition = new Condition<>(MistyError.ARGUMENT_ERROR::isSame,
+                "MistyErrorDefinition must be MistyError." + MistyError.ARGUMENT_ERROR);
 
+        Assertions.assertThatThrownBy(() -> Examiner.refuseNullAndEmpty(term, (Object) null))
+                .isInstanceOf(MistyException.class).is(condition)
+                .hasMessage(ExaminerMessage.REFUSE_NULL_OR_EMPTY_FORMAT.apply(term));
+        Assertions.assertThat(Examiner.refuseNullAndEmpty(term, new Object()));
+
+        Assertions.assertThatThrownBy(() -> Examiner.refuseNullAndEmpty(term, (String) null))
+                .isInstanceOf(MistyException.class).is(condition)
+                .hasMessage(ExaminerMessage.REFUSE_NULL_OR_EMPTY_FORMAT.apply(term));
+        Assertions.assertThatThrownBy(() -> Examiner.refuseNullAndEmpty(term, ""))
+                .isInstanceOf(MistyException.class).is(condition)
+                .hasMessage(ExaminerMessage.REFUSE_NULL_OR_EMPTY_FORMAT.apply(term));
+        Assertions.assertThat(Examiner.refuseNullAndEmpty(term, "9527")).isNotEmpty();
+
+        Assertions.assertThatThrownBy(() -> Examiner.refuseNullAndEmpty(term, (Collection) null))
+                .isInstanceOf(MistyException.class).is(condition)
+                .hasMessage(ExaminerMessage.REFUSE_NULL_OR_EMPTY_FORMAT.apply(term));
+        Assertions.assertThatThrownBy(() -> Examiner.refuseNullAndEmpty(term, Collections.emptyList()))
+                .isInstanceOf(MistyException.class).is(condition)
+                .hasMessage(ExaminerMessage.REFUSE_NULL_OR_EMPTY_FORMAT.apply(term));
+        Assertions.assertThat(Examiner.refuseNullAndEmpty(term, Collections.singletonList(""))).isNotEmpty();
+
+        Assertions.assertThatThrownBy(() -> Examiner.refuseNullAndEmpty(term, (Map) null))
+                .isInstanceOf(MistyException.class).is(condition)
+                .hasMessage(ExaminerMessage.REFUSE_NULL_OR_EMPTY_FORMAT.apply(term));
+        Assertions.assertThatThrownBy(() -> Examiner.refuseNullAndEmpty(term, Collections.emptyMap()))
+                .isInstanceOf(MistyException.class).is(condition)
+                .hasMessage(ExaminerMessage.REFUSE_NULL_OR_EMPTY_FORMAT.apply(term));
+        Assertions.assertThat(Examiner.refuseNullAndEmpty(term, Collections.singletonMap("", ""))).isNotEmpty();
+
+        Assertions.assertThatThrownBy(() -> Examiner.refuseNullAndEmpty(term, (String[]) null))
+                .isInstanceOf(MistyException.class).is(condition)
+                .hasMessage(ExaminerMessage.REFUSE_NULL_OR_EMPTY_FORMAT.apply(term));
+        Assertions.assertThatThrownBy(() -> Examiner.refuseNullAndEmpty(term, new String[]{}))
+                .isInstanceOf(MistyException.class).is(condition)
+                .hasMessage(ExaminerMessage.REFUSE_NULL_OR_EMPTY_FORMAT.apply(term));
+        Assertions.assertThat(Examiner.refuseNullAndEmpty(term, new String[]{""})).isNotEmpty();
+
+        Assertions.assertThatThrownBy(() -> Examiner.refuseNullAndEmpty(term, (Optional) null))
+                .isInstanceOf(MistyException.class).is(condition);
+//                .hasMessage(ExaminerMessage.REFUSE_NULL_OR_EMPTY_FORMAT.apply(term)); // XXX 不知道為什麼這邊操作會錯@@?
+        Assertions.assertThatThrownBy(() -> Examiner.refuseNullAndEmpty(term, Optional.empty()))
+                .isInstanceOf(MistyException.class).is(condition)
+                .hasMessage(ExaminerMessage.REFUSE_NULL_OR_EMPTY_FORMAT.apply(term));
+        Assertions.assertThatThrownBy(() -> Examiner.refuseNullAndEmpty(term, Optional.of("")))
+                .isInstanceOf(MistyException.class).is(condition)
+                .hasMessage(ExaminerMessage.REFUSE_NULL_OR_EMPTY_FORMAT.apply(term));
+        Assertions.assertThatThrownBy(() -> Examiner.refuseNullAndEmpty(term, Optional.of(Collections.emptyList())))
+                .isInstanceOf(MistyException.class).is(condition)
+                .hasMessage(ExaminerMessage.REFUSE_NULL_OR_EMPTY_FORMAT.apply(term));
+        Assertions.assertThatThrownBy(() -> Examiner.refuseNullAndEmpty(term, Optional.of(Collections.emptyMap())))
+                .isInstanceOf(MistyException.class).is(condition)
+                .hasMessage(ExaminerMessage.REFUSE_NULL_OR_EMPTY_FORMAT.apply(term));
+        Assertions.assertThatThrownBy(() -> Examiner.refuseNullAndEmpty(term, Optional.of(new Object[0])))
+                .isInstanceOf(MistyException.class).is(condition)
+                .hasMessage(ExaminerMessage.REFUSE_NULL_OR_EMPTY_FORMAT.apply(term));
+        Assertions.assertThat(Examiner.refuseNullAndEmpty(term, Optional.of("123"))).isNotEmpty();
+        Assertions.assertThat(Examiner.refuseNullAndEmpty(term, Optional.of(Collections.singleton("")))).isNotEmpty();
+        Assertions.assertThat(Examiner.refuseNullAndEmpty(term, Optional.of(Collections.singletonMap("", "")))).isNotEmpty();
+        Assertions.assertThat(Examiner.refuseNullAndEmpty(term, Optional.of(new Object[]{1, ""}))).isNotEmpty();
     }
 
 }
