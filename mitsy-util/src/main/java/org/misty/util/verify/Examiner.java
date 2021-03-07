@@ -125,131 +125,21 @@ public class Examiner {
         }
     }
 
-    static Short requireInRange(String term, Short arg, Short floor, Short ceiling) throws MistyException {
-        refuseNullAndEmpty("arg", arg);
-        refuseNullAndEmpty("floor", floor);
-        refuseNullAndEmpty("ceiling", ceiling);
-
-        if (arg < floor || arg > ceiling) {
-            String description = ExaminerMessage.requireInRange(term, arg, floor, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
-        } else {
-            return arg;
-        }
-    }
-
-    static Integer requireInRange(String term, Integer arg, Integer floor, Integer ceiling) throws MistyException {
-        refuseNullAndEmpty("arg", arg);
-        refuseNullAndEmpty("floor", floor);
-        refuseNullAndEmpty("ceiling", ceiling);
-
-        if (arg < floor || arg > ceiling) {
-            String description = ExaminerMessage.requireInRange(term, arg, floor, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
-        } else {
-            return arg;
-        }
-    }
-
-    static Long requireInRange(String term, Long arg, Long floor, Long ceiling) throws MistyException {
-        refuseNullAndEmpty("arg", arg);
-        refuseNullAndEmpty("floor", floor);
-        refuseNullAndEmpty("ceiling", ceiling);
-
-        if (arg < floor || arg > ceiling) {
-            String description = ExaminerMessage.requireInRange(term, arg, floor, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
-        } else {
-            return arg;
-        }
-    }
-
-    static Float requireInRange(String term, Float arg, Float floor, Float ceiling) throws MistyException {
-        refuseNullAndEmpty("arg", arg);
-        refuseNullAndEmpty("floor", floor);
-        refuseNullAndEmpty("ceiling", ceiling);
-
-        if (arg < floor || arg > ceiling) {
-            String description = ExaminerMessage.requireInRange(term, arg, floor, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
-        } else {
-            return arg;
-        }
-    }
-
-    static Double requireInRange(String term, Double arg, Double floor, Double ceiling) throws MistyException {
-        refuseNullAndEmpty("arg", arg);
-        refuseNullAndEmpty("floor", floor);
-        refuseNullAndEmpty("ceiling", ceiling);
-
-        if (arg < floor || arg > ceiling) {
-            String description = ExaminerMessage.requireInRange(term, arg, floor, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
-        } else {
-            return arg;
-        }
-    }
-
-    static Byte requireInRange(String term, Byte arg, Byte floor, Byte ceiling) throws MistyException {
-        refuseNullAndEmpty("arg", arg);
-        refuseNullAndEmpty("floor", floor);
-        refuseNullAndEmpty("ceiling", ceiling);
-
-        if (arg < floor || arg > ceiling) {
-            String description = ExaminerMessage.requireInRange(term, arg, floor, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
-        } else {
-            return arg;
-        }
-    }
-
-    static BigDecimal requireInRange(String term, BigDecimal arg, Number floor, Number ceiling) throws MistyException {
-        refuseNullAndEmpty("arg", arg);
-        refuseNullAndEmpty("floor", floor);
-        refuseNullAndEmpty("ceiling", ceiling);
-
-        // TODO
-        return arg;
-    }
-
-
     static <ArgType extends Number> ArgType requireInRange(String term, ArgType arg, ArgType floor, ArgType ceiling) throws MistyException {
         refuseNullAndEmpty("arg", arg);
         refuseNullAndEmpty("floor", floor);
         refuseNullAndEmpty("ceiling", ceiling);
 
-        Runnable error = () -> {
+        double d_arg = arg.doubleValue();
+        double d_floor = floor.doubleValue();
+        double d_ceiling = ceiling.doubleValue();
+
+        if (d_arg < d_floor || d_arg > d_ceiling) {
             String description = ExaminerMessage.requireInRange(term, arg, floor, ceiling);
             throw MistyError.ARGUMENT_ERROR.thrown(description);
-        };
-
-        if (arg instanceof Short && ((Short) arg < (Short) floor || (Short) arg > (Short) ceiling)) {
-            error.run();
-        } else if (arg instanceof Integer && ((Integer) arg < (Integer) floor || (Integer) arg > (Integer) ceiling)) {
-            error.run();
-        } else if (arg instanceof Long && ((Long) arg < (Long) floor || (Long) arg > (Long) ceiling)) {
-            error.run();
-        } else if (arg instanceof Float && ((Float) arg < (Float) floor || (Float) arg > (Float) ceiling)) {
-            error.run();
-        } else if (arg instanceof Double && ((Double) arg < (Double) floor || (Double) arg > (Double) ceiling)) {
-            error.run();
-        } else if (arg instanceof Byte && ((Byte) arg < (Byte) floor || (Byte) arg > (Byte) ceiling)) {
-            error.run();
-        } else if (arg instanceof BigDecimal) {
-            // XXX
-            error.run();
-        } else if (arg instanceof AtomicInteger) {
-            // XXX
-            error.run();
-        } else if (arg instanceof AtomicLong) {
-            // XXX
-            error.run();
-        } else if (arg instanceof BigInteger) {
-            // XXX
-            error.run();
+        } else {
+            return arg;
         }
-
-        return arg;
     }
 
 

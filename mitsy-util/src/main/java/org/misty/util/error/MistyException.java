@@ -10,12 +10,12 @@ public class MistyException extends RuntimeException {
     }
 
     public MistyException(MistyErrorDefinition errorDefinition, String message) {
-        super(message);
+        super(errorDefinition.getDescription() + ": " + message);
         this.errorDefinition = errorDefinition;
     }
 
     public MistyException(MistyErrorDefinition errorDefinition, String message, Throwable cause) {
-        super(message, cause);
+        super(errorDefinition.getDescription() + ": " + message, cause);
         this.errorDefinition = errorDefinition;
     }
 
