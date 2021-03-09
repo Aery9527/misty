@@ -28,8 +28,10 @@ public class ExaminerMessage {
 
     // requireInRange
 
-    public static String requireInRange(String term, short arg, short floor, short ceiling, RangeIntervals intervals) {
-        return String.format(REQUIRE_RANGE, term, arg, intervals.getFloorSymbol(), floor, ceiling, intervals.getCeilingSymbol());
+    public static String requireInRange(String term, short arg,
+                                        ExamineIntervals.Floor floorIntervals, short floor,
+                                        ExamineIntervals.Ceiling CeilingIntervals, short ceiling) {
+        return String.format(REQUIRE_RANGE, term, arg, floorIntervals.getSymbol(), floor, ceiling, CeilingIntervals.getSymbol());
     }
 
     public static String requireInRange(String term, int arg, int floor, int ceiling, RangeIntervals intervals) {

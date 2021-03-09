@@ -2,51 +2,131 @@ package org.misty.util.verify;
 
 import org.misty.util.error.MistyError;
 import org.misty.util.error.MistyException;
+import org.misty.util.fi.FiBiConsumerThrow1;
+import org.misty.util.fi.FiRunnableThrow1;
+import org.misty.util.tool.StringTool;
 
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 
 public class Examiner {
 
+    // requireNullOrEmpty of Object
+
     static void requireNullOrEmpty(String term, Object arg) throws MistyException {
-        if (Judge.notNullAndEmpty(arg)) {
-            String argString = arg instanceof Object[] ? Arrays.toString((Object[]) arg) : arg.toString();
-            String description = ExaminerMessage.requireNullOrEmpty(term, argString);
+        requireNullOrEmpty(arg, () -> {
+            String description = ExaminerMessage.requireNullOrEmpty(term, StringTool.toString(arg));
             throw MistyError.ARGUMENT_ERROR.thrown(description);
+        });
+    }
+
+    public static <ThrowableType extends Throwable> void requireNullOrEmpty(
+            Object arg, FiRunnableThrow1<ThrowableType> thrownAction
+    ) throws ThrowableType {
+        if (Judge.notNullAndEmpty(arg)) {
+            thrownAction.runOrHandle();
+        }
+    }
+
+    public static <ThrowableType extends Throwable> void requireNullOrEmpty(
+            String term, Object optional, FiBiConsumerThrow1<String, Object, ThrowableType> thrownAction
+    ) throws ThrowableType {
+        if (Judge.notNullAndEmpty(optional)) {
+            thrownAction.acceptOrHandle(term, optional);
+        }
+    }
+
+    // requireNullOrEmpty of Optional
+
+    @SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "OptionalGetWithoutIsPresent"})
+    static void requireNullOrEmpty(String term, Optional<Object> arg) throws MistyException {
+        requireNullOrEmpty(arg, () -> {
+            String description = ExaminerMessage.requireNullOrEmpty(term, StringTool.toString(arg.get()));
+            throw MistyError.ARGUMENT_ERROR.thrown(description);
+        });
+    }
+
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    public static <ThrowableType extends Throwable> void requireNullOrEmpty(
+            Optional<Object> arg, FiRunnableThrow1<ThrowableType> thrownAction
+    ) throws ThrowableType {
+        if (Judge.notNullAndEmpty(arg)) {
+            thrownAction.runOrHandle();
         }
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    static void requireNullOrEmpty(String term, Optional<Object> optional) throws MistyException {
-        if (Judge.notNullAndEmpty(optional)) {
-            @SuppressWarnings("OptionalGetWithoutIsPresent") Object arg = optional.get();
-            String argString = arg instanceof Object[] ? Arrays.toString((Object[]) arg) : arg.toString();
-            String description = ExaminerMessage.requireNullOrEmpty(term, argString);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+    public static <ThrowableType extends Throwable> void requireNullOrEmpty(
+            String term, Optional<Object> arg, FiBiConsumerThrow1<String, Optional<Object>, ThrowableType> thrownAction
+    ) throws ThrowableType {
+        if (Judge.notNullAndEmpty(arg)) {
+            thrownAction.acceptOrHandle(term, arg);
         }
     }
 
+    // refuseNullAndEmpty of Object
+
     static <ArgType> ArgType refuseNullAndEmpty(String term, ArgType arg) throws MistyException {
-        if (Judge.isNullOrEmpty(arg)) {
+        return refuseNullAndEmpty(arg, () -> {
             String description = ExaminerMessage.refuseNullAndEmpty(term);
             throw MistyError.ARGUMENT_ERROR.thrown(description);
-        } else {
-            return arg;
+        });
+    }
+
+    static <ArgType, ThrowableType extends Throwable> ArgType refuseNullAndEmpty(
+            ArgType arg, FiRunnableThrow1<ThrowableType> thrownAction
+    ) throws ThrowableType {
+        if (Judge.isNullOrEmpty(arg)) {
+            thrownAction.runOrHandle();
         }
+        return arg;
+    }
+
+    static <ArgType, ThrowableType extends Throwable> ArgType refuseNullAndEmpty(
+            String term, ArgType arg, FiBiConsumerThrow1<String, ArgType, ThrowableType> thrownAction
+    ) throws ThrowableType {
+        if (Judge.isNullOrEmpty(arg)) {
+            thrownAction.acceptOrHandle(term, arg);
+        }
+        return arg;
+    }
+
+    // refuseNullAndEmpty of Optional
+
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    static <ArgType> ArgType refuseNullAndEmpty(String term, Optional<ArgType> arg) throws MistyException {
+        return refuseNullAndEmpty(arg, () -> {
+            String description = ExaminerMessage.refuseNullAndEmpty(term);
+            throw MistyError.ARGUMENT_ERROR.thrown(description);
+        });
     }
 
     @SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "OptionalGetWithoutIsPresent"})
-    static <ArgType> ArgType refuseNullAndEmpty(String term, Optional<ArgType> arg) throws MistyException {
+    static <ArgType, ThrowableType extends Throwable> ArgType refuseNullAndEmpty(
+            Optional<ArgType> arg, FiRunnableThrow1<ThrowableType> thrownAction
+    ) throws ThrowableType {
         if (Judge.isNullOrEmpty(arg)) {
-            String description = ExaminerMessage.refuseNullAndEmpty(term);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
-        } else {
-            return arg.get();
+            thrownAction.runOrHandle();
         }
+        return arg.get();
+    }
+
+    @SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "OptionalGetWithoutIsPresent"})
+    static <ArgType, ThrowableType extends Throwable> ArgType refuseNullAndEmpty(
+            String term, Optional<ArgType> arg, FiBiConsumerThrow1<String, Optional<ArgType>, ThrowableType> thrownAction
+    ) throws ThrowableType {
+        if (Judge.isNullOrEmpty(arg)) {
+            thrownAction.acceptOrHandle(term, arg);
+        }
+        return arg.get();
     }
 
     // requireInRange
+
+    static ExaminerOfShortRange ofRange(short floor, short ceiling) throws MistyException {
+        return new ExaminerOfShortRange(floor, ceiling);
+    }
+
 
     /**
      * @see #requireInRange(String, Number, Number, Number, RangeIntervals)
