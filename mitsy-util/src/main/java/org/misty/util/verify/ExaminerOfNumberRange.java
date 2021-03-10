@@ -2,21 +2,26 @@ package org.misty.util.verify;
 
 import org.misty.util.error.MistyError;
 
-public class ExaminerOfShortRange {
+public class ExaminerOfNumberRange {
 
-    private final short floor;
+    private final double floor;
 
-    private final short ceiling;
+    private final double ceiling;
 
-    public ExaminerOfShortRange(short floor, short ceiling) {
-        this.floor = floor;
-        this.ceiling = ceiling;
+    public ExaminerOfNumberRange(Number floor, Number ceiling) {
+        Examiner.refuseNullAndEmpty("floor", floor);
+        Examiner.refuseNullAndEmpty("ceiling", ceiling);
+
+        this.floor = floor.doubleValue();
+        this.ceiling = ceiling.doubleValue();
     }
 
-    public short requireIncludeInclude(String term, short arg) {
+    public Number requireIncludeInclude(String term, Number arg) {
         Examiner.refuseNullAndEmpty("term", term);
+        Examiner.refuseNullAndEmpty("arg", arg);
 
-        if (arg >= this.floor && arg <= this.ceiling) {
+        double d_arg = arg.doubleValue();
+        if (d_arg >= this.floor && d_arg <= this.ceiling) {
             return arg;
         } else {
             String description = ExaminerMessage.requireInRange(term, arg,
@@ -26,10 +31,12 @@ public class ExaminerOfShortRange {
         }
     }
 
-    public short requireIncludeExclude(String term, short arg) {
+    public Number requireIncludeExclude(String term, Number arg) {
         Examiner.refuseNullAndEmpty("term", term);
+        Examiner.refuseNullAndEmpty("arg", arg);
 
-        if (arg >= this.floor && arg < this.ceiling) {
+        double d_arg = arg.doubleValue();
+        if (d_arg >= this.floor && d_arg < this.ceiling) {
             return arg;
         } else {
             String description = ExaminerMessage.requireInRange(term, arg,
@@ -39,10 +46,12 @@ public class ExaminerOfShortRange {
         }
     }
 
-    public short requireExcludeInclude(String term, short arg) {
+    public Number requireExcludeInclude(String term, Number arg) {
         Examiner.refuseNullAndEmpty("term", term);
+        Examiner.refuseNullAndEmpty("arg", arg);
 
-        if (arg > this.floor && arg <= this.ceiling) {
+        double d_arg = arg.doubleValue();
+        if (d_arg > this.floor && d_arg <= this.ceiling) {
             return arg;
         } else {
             String description = ExaminerMessage.requireInRange(term, arg,
@@ -52,10 +61,12 @@ public class ExaminerOfShortRange {
         }
     }
 
-    public short requireExcludeExclude(String term, short arg) {
+    public Number requireExcludeExclude(String term, Number arg) {
         Examiner.refuseNullAndEmpty("term", term);
+        Examiner.refuseNullAndEmpty("arg", arg);
 
-        if (arg > this.floor && arg < this.ceiling) {
+        double d_arg = arg.doubleValue();
+        if (d_arg > this.floor && d_arg < this.ceiling) {
             return arg;
         } else {
             String description = ExaminerMessage.requireInRange(term, arg,
@@ -65,10 +76,12 @@ public class ExaminerOfShortRange {
         }
     }
 
-    public short refuseIncludeInclude(String term, short arg) {
+    public Number refuseIncludeInclude(String term, Number arg) {
         Examiner.refuseNullAndEmpty("term", term);
+        Examiner.refuseNullAndEmpty("arg", arg);
 
-        if (arg >= this.floor && arg <= this.ceiling) {
+        double d_arg = arg.doubleValue();
+        if (d_arg >= this.floor && d_arg <= this.ceiling) {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
@@ -78,10 +91,12 @@ public class ExaminerOfShortRange {
         }
     }
 
-    public short refuseIncludeExclude(String term, short arg) {
+    public Number refuseIncludeExclude(String term, Number arg) {
         Examiner.refuseNullAndEmpty("term", term);
+        Examiner.refuseNullAndEmpty("arg", arg);
 
-        if (arg >= this.floor && arg < this.ceiling) {
+        double d_arg = arg.doubleValue();
+        if (d_arg >= this.floor && d_arg < this.ceiling) {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
@@ -91,10 +106,12 @@ public class ExaminerOfShortRange {
         }
     }
 
-    public short refuseExcludeInclude(String term, short arg) {
+    public Number refuseExcludeInclude(String term, Number arg) {
         Examiner.refuseNullAndEmpty("term", term);
+        Examiner.refuseNullAndEmpty("arg", arg);
 
-        if (arg > this.floor && arg <= this.ceiling) {
+        double d_arg = arg.doubleValue();
+        if (d_arg > this.floor && d_arg <= this.ceiling) {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
@@ -104,10 +121,12 @@ public class ExaminerOfShortRange {
         }
     }
 
-    public short refuseExcludeExclude(String term, short arg) {
+    public Number refuseExcludeExclude(String term, Number arg) {
         Examiner.refuseNullAndEmpty("term", term);
+        Examiner.refuseNullAndEmpty("arg", arg);
 
-        if (arg > this.floor && arg < this.ceiling) {
+        double d_arg = arg.doubleValue();
+        if (d_arg > this.floor && d_arg < this.ceiling) {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);

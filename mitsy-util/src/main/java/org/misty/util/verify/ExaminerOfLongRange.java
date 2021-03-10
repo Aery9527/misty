@@ -2,18 +2,18 @@ package org.misty.util.verify;
 
 import org.misty.util.error.MistyError;
 
-public class ExaminerOfShortRange {
+public class ExaminerOfLongRange {
 
-    private final short floor;
+    private final long floor;
 
-    private final short ceiling;
+    private final long ceiling;
 
-    public ExaminerOfShortRange(short floor, short ceiling) {
+    public ExaminerOfLongRange(long floor, long ceiling) {
         this.floor = floor;
         this.ceiling = ceiling;
     }
 
-    public short requireIncludeInclude(String term, short arg) {
+    public long requireIncludeInclude(String term, long arg) {
         Examiner.refuseNullAndEmpty("term", term);
 
         if (arg >= this.floor && arg <= this.ceiling) {
@@ -26,7 +26,7 @@ public class ExaminerOfShortRange {
         }
     }
 
-    public short requireIncludeExclude(String term, short arg) {
+    public long requireIncludeExclude(String term, long arg) {
         Examiner.refuseNullAndEmpty("term", term);
 
         if (arg >= this.floor && arg < this.ceiling) {
@@ -39,7 +39,7 @@ public class ExaminerOfShortRange {
         }
     }
 
-    public short requireExcludeInclude(String term, short arg) {
+    public long requireExcludeInclude(String term, long arg) {
         Examiner.refuseNullAndEmpty("term", term);
 
         if (arg > this.floor && arg <= this.ceiling) {
@@ -52,7 +52,7 @@ public class ExaminerOfShortRange {
         }
     }
 
-    public short requireExcludeExclude(String term, short arg) {
+    public long requireExcludeExclude(String term, long arg) {
         Examiner.refuseNullAndEmpty("term", term);
 
         if (arg > this.floor && arg < this.ceiling) {
@@ -65,7 +65,7 @@ public class ExaminerOfShortRange {
         }
     }
 
-    public short refuseIncludeInclude(String term, short arg) {
+    public long refuseIncludeInclude(String term, long arg) {
         Examiner.refuseNullAndEmpty("term", term);
 
         if (arg >= this.floor && arg <= this.ceiling) {
@@ -78,7 +78,7 @@ public class ExaminerOfShortRange {
         }
     }
 
-    public short refuseIncludeExclude(String term, short arg) {
+    public long refuseIncludeExclude(String term, long arg) {
         Examiner.refuseNullAndEmpty("term", term);
 
         if (arg >= this.floor && arg < this.ceiling) {
@@ -91,7 +91,7 @@ public class ExaminerOfShortRange {
         }
     }
 
-    public short refuseExcludeInclude(String term, short arg) {
+    public long refuseExcludeInclude(String term, long arg) {
         Examiner.refuseNullAndEmpty("term", term);
 
         if (arg > this.floor && arg <= this.ceiling) {
@@ -104,7 +104,7 @@ public class ExaminerOfShortRange {
         }
     }
 
-    public short refuseExcludeExclude(String term, short arg) {
+    public long refuseExcludeExclude(String term, long arg) {
         Examiner.refuseNullAndEmpty("term", term);
 
         if (arg > this.floor && arg < this.ceiling) {

@@ -127,137 +127,32 @@ public class Examiner {
         return new ExaminerOfShortRange(floor, ceiling);
     }
 
-
-    /**
-     * @see #requireInRange(String, Number, Number, Number, RangeIntervals)
-     */
-    static short requireInRange(String term, short arg, short floor, short ceiling, RangeIntervals intervals) throws MistyException {
-        BooleanSupplier floorChecker = intervals.isFloorInclude() ? () -> arg >= floor : () -> arg > floor;
-        BooleanSupplier ceilingChecker = intervals.isCeilingInclude() ? () -> arg <= ceiling : () -> arg < ceiling;
-
-        if (floorChecker.getAsBoolean() && ceilingChecker.getAsBoolean()) {
-            return arg;
-        } else {
-            String description = ExaminerMessage.requireInRange(term, arg, floor, ceiling, intervals);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
-        }
+    static ExaminerOfIntRange ofRange(int floor, int ceiling) throws MistyException {
+        return new ExaminerOfIntRange(floor, ceiling);
     }
 
-    /**
-     * @see #requireInRange(String, Number, Number, Number, RangeIntervals)
-     */
-    static int requireInRange(String term, int arg, int floor, int ceiling, RangeIntervals intervals) throws MistyException {
-        if (arg < floor || arg > ceiling) {
-            String description = ExaminerMessage.requireInRange(term, arg, floor, ceiling, intervals);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
-        } else {
-            return arg;
-        }
+    static ExaminerOfLongRange ofRange(long floor, long ceiling) throws MistyException {
+        return new ExaminerOfLongRange(floor, ceiling);
     }
 
-    /**
-     * @see #requireInRange(String, Number, Number, Number, RangeIntervals)
-     */
-    static long requireInRange(String term, long arg, long floor, long ceiling, RangeIntervals intervals) throws MistyException {
-        if (arg < floor || arg > ceiling) {
-            String description = ExaminerMessage.requireInRange(term, arg, floor, ceiling, intervals);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
-        } else {
-            return arg;
-        }
+    static ExaminerOfFloatRange ofRange(float floor, float ceiling) throws MistyException {
+        return new ExaminerOfFloatRange(floor, ceiling);
     }
 
-    /**
-     * @see #requireInRange(String, Number, Number, Number, RangeIntervals)
-     */
-    static float requireInRange(String term, float arg, float floor, float ceiling, RangeIntervals intervals) throws MistyException {
-        if (arg < floor || arg > ceiling) {
-            String description = ExaminerMessage.requireInRange(term, arg, floor, ceiling, intervals);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
-        } else {
-            return arg;
-        }
+    static ExaminerOfDoubleRange ofRange(double floor, double ceiling) throws MistyException {
+        return new ExaminerOfDoubleRange(floor, ceiling);
     }
 
-    /**
-     * @see #requireInRange(String, Number, Number, Number, RangeIntervals)
-     */
-    static double requireInRange(String term, double arg, double floor, double ceiling, RangeIntervals intervals) throws MistyException {
-        if (arg < floor || arg > ceiling) {
-            String description = ExaminerMessage.requireInRange(term, arg, floor, ceiling, intervals);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
-        } else {
-            return arg;
-        }
+    static ExaminerOfCharRange ofRange(char floor, char ceiling) throws MistyException {
+        return new ExaminerOfCharRange(floor, ceiling);
     }
 
-    /**
-     * @see #requireInRange(String, Number, Number, Number, RangeIntervals)
-     */
-    static char requireInRange(String term, char arg, char floor, char ceiling, RangeIntervals intervals) throws MistyException {
-        if (arg < floor || arg > ceiling) {
-            String description = ExaminerMessage.requireInRange(term, arg, floor, ceiling, intervals);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
-        } else {
-            return arg;
-        }
+    static ExaminerOfByteRange ofRange(byte floor, byte ceiling) throws MistyException {
+        return new ExaminerOfByteRange(floor, ceiling);
     }
 
-    /**
-     * @see #requireInRange(String, Number, Number, Number, RangeIntervals)
-     */
-    static byte requireInRange(String term, byte arg, byte floor, byte ceiling, RangeIntervals intervals) throws MistyException {
-        if (arg < floor || arg > ceiling) {
-            String description = ExaminerMessage.requireInRange(term, arg, floor, ceiling, intervals);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
-        } else {
-            return arg;
-        }
-    }
-
-    /**
-     * @see #requireInRange(String, Number, Number, Number, RangeIntervals)
-     */
-    static Character requireInRange(String term, Character arg, Character floor, Character ceiling, RangeIntervals intervals) throws MistyException {
-        refuseNullAndEmpty("arg", arg);
-        refuseNullAndEmpty("floor", floor);
-        refuseNullAndEmpty("ceiling", ceiling);
-
-        if (arg < floor || arg > ceiling) {
-            String description = ExaminerMessage.requireInRange(term, arg, floor, ceiling, intervals);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
-        } else {
-            return arg;
-        }
-    }
-
-    /**
-     * check number in range [floor, ceiling], if not throw exception.
-     * ex: [10, 20] mean include 10 and 20.
-     *
-     * @param term      if throw exception, the term is the keyword to identify situation
-     * @param arg       tested number
-     * @param floor     lowest number
-     * @param ceiling   highest number
-     * @param <ArgType> is number type
-     * @return the number of input
-     * @throws MistyException when number not in range [floor, ceiling]
-     */
-    static <ArgType extends Number> ArgType requireInRange(String term, ArgType arg, ArgType floor, ArgType ceiling, RangeIntervals intervals) throws MistyException {
-        refuseNullAndEmpty("arg", arg);
-        refuseNullAndEmpty("floor", floor);
-        refuseNullAndEmpty("ceiling", ceiling);
-
-        double d_arg = arg.doubleValue();
-        double d_floor = floor.doubleValue();
-        double d_ceiling = ceiling.doubleValue();
-
-        if (d_arg < d_floor || d_arg > d_ceiling) {
-            String description = ExaminerMessage.requireInRange(term, arg, floor, ceiling, intervals);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
-        } else {
-            return arg;
-        }
+    static ExaminerOfNumberRange ofRange(Number floor, Number ceiling) throws MistyException {
+        return new ExaminerOfNumberRange(floor, ceiling);
     }
 
     // refuseInRange
