@@ -9,56 +9,73 @@ import org.misty.util.error.MistyException;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiFunction;
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 class ExaminerTest {
 
     @SuppressWarnings("UnnecessaryBoxing")
-    public static final Map<String, Number> TARGETS = Collections.unmodifiableMap(new LinkedHashMap<String, Number>() {{
-        put("Short1", new Short((short) 1));
-        put("Integer1", new Integer(1));
-        put("Long1", new Long(1L));
-        put("Float1", new Float(1f));
-        put("Double1", new Double(1d));
-        put("Byte1", new Byte((byte) 1));
-        put("BigDecimal1", new BigDecimal(1));
-    }});
-
-    @SuppressWarnings("UnnecessaryBoxing")
-    public static final Map<String, Number> NUMBER_OF_0 = Collections.unmodifiableMap(new LinkedHashMap<String, Number>() {{
+    public static final Map<String, Number> NUMBER_OF_FLOOR = Collections.unmodifiableMap(new LinkedHashMap<String, Number>() {{
         put("Short0", new Short((short) 0));
         put("Integer0", new Integer(0));
         put("Long0", new Long(0L));
-        put("Float0", new Float(0f));
-        put("Double0", new Double(0d));
+        put("Float0", new Float(0.0f));
+        put("Double0", new Double(0.0d));
         put("Byte0", new Byte((byte) 0));
         put("BigDecimal0", new BigDecimal(0));
     }});
 
     @SuppressWarnings("UnnecessaryBoxing")
-    public static final Map<String, Number> NUMBER_OF_1 = Collections.unmodifiableMap(new LinkedHashMap<String, Number>() {{
+    public static final Map<String, Number> NUMBER_OF_UNIT = Collections.unmodifiableMap(new LinkedHashMap<String, Number>() {{
         put("Short1", new Short((short) 1));
         put("Integer1", new Integer(1));
         put("Long1", new Long(1L));
-        put("Float1", new Float(1f));
-        put("Double1", new Double(1d));
+        put("Float1", new Float(0.5f));
+        put("Double1", new Double(0.5d));
         put("Byte1", new Byte((byte) 1));
-        put("BigDecimal1", new BigDecimal(1));
+        put("BigDecimal1", new BigDecimal(0.5));
     }});
 
     @SuppressWarnings("UnnecessaryBoxing")
-    public static final Map<String, Number> NUMBER_OF_2 = Collections.unmodifiableMap(new LinkedHashMap<String, Number>() {{
-        put("Short2", new Short((short) 2));
-        put("Integer2", new Integer(2));
-        put("Long2", new Long(2L));
-        put("Float2", new Float(2f));
-        put("Double2", new Double(2d));
-        put("Byte2", new Byte((byte) 2));
-        put("BigDecimal2", new BigDecimal(2));
+    public static final Map<String, Number> NUMBER_OF_CEILING = Collections.unmodifiableMap(new LinkedHashMap<String, Number>() {{
+        put("Short2", new Short((short) 4));
+        put("Integer2", new Integer(4));
+        put("Long2", new Long(4L));
+        put("Float2", new Float(2.0f));
+        put("Double2", new Double(2.0d));
+        put("Byte2", new Byte((byte) 4));
+        put("BigDecimal2", new BigDecimal(4));
     }});
 
     public static final Condition<Throwable> CONDITION = new Condition<>(MistyError.ARGUMENT_ERROR::isSame,
             "MistyErrorDefinition must be MistyError." + MistyError.ARGUMENT_ERROR);
+
+    public static class RangeTester<ArgType> {
+        private final String term;
+        private final ArgType floor;
+        private final ArgType ceiling;
+
+        public RangeTester(String term, ArgType floor, ArgType ceiling) {
+            this.term = term;
+            this.floor = floor;
+            this.ceiling = ceiling;
+        }
+
+        public void test(ArgType arg, BiFunction<String, ArgType, ArgType> action,
+                         ExamineIntervals.Floor floorIntervals, ExamineIntervals.Ceiling ceilingIntervals, boolean expectedError) {
+            if (expectedError) {
+                Assertions.assertThatThrownBy(() -> action.apply(this.term, arg))
+                        .isInstanceOf(MistyException.class)
+                        .hasMessageContaining(ExaminerMessage.requireInRange(term, arg,
+                                floorIntervals, this.floor,
+                                ceilingIntervals, this.ceiling));
+            } else {
+                Assertions.assertThat(action.apply(this.term, arg)).isEqualTo(arg);
+            }
+        }
+    }
 
     @Test
     public void test_requireNullOrEmpty() {
@@ -186,481 +203,238 @@ class ExaminerTest {
     // requireInRange
 
     @Test
-    public void test_requireInRange_short() {
-        String term = "kerker";
-        short[] args = new short[]{0, 1, 2};
+    public void test_ofRange_short() {
         short floor = 0;
-        short ceiling = 2;
+        short unit = 1;
+        short ceiling = 4;
+        RangeTester<Short> tester = new RangeTester<>("kerker", floor, ceiling);
 
-        for (short arg : args) {
-                if (arg == floor && arg == ceiling) {
-                    Assertions.assertThat(Examiner.requireInRange(term, arg, floor, ceiling, RangeIntervals.INCLUDE_INCLUDE)).isEqualTo(arg);
+        ExamineIntervals.Floor floorInclude = ExamineIntervals.Floor.INCLUDE;
+        ExamineIntervals.Floor floorExclude = ExamineIntervals.Floor.EXCLUDE;
+        ExamineIntervals.Ceiling ceilingInclude = ExamineIntervals.Ceiling.INCLUDE;
+        ExamineIntervals.Ceiling ceilingExclude = ExamineIntervals.Ceiling.EXCLUDE;
 
-                    Assertions.assertThatThrownBy(() -> Examiner.requireInRange(term, arg, floor, ceiling, RangeIntervals.INCLUDE_INCLUDE))
+        for (short i = floor; i <= ceiling; i += unit) {
+            boolean isFloor = i == floor;
+            boolean isCeiling = i == ceiling;
+            boolean isBoth = isFloor || isCeiling;
 
-                    ;
+            tester.test(i, Examiner.ofRange(floor, ceiling)::requireIncludeInclude, floorInclude, ceilingInclude, false);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::requireIncludeExclude, floorInclude, ceilingExclude, isCeiling);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::requireExcludeInclude, floorExclude, ceilingInclude, isFloor);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::requireExcludeExclude, floorExclude, ceilingExclude, isBoth);
 
-                } else if (arg == floor && arg != ceiling) {
-
-                } else if (arg != floor && arg == ceiling) {
-
-                } else if (arg != floor && arg != ceiling) {
-
-                }
+            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseIncludeInclude, floorInclude, ceilingInclude, true);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseIncludeExclude, floorInclude, ceilingExclude, !isCeiling);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseExcludeInclude, floorExclude, ceilingInclude, !isFloor);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseExcludeExclude, floorExclude, ceilingExclude, !isBoth);
         }
-
-        // test out range
-//        Assertions.assertThatThrownBy(() -> Examiner.requireInRange(term, arg, _2, _2))
-//                .isInstanceOf(MistyException.class).is(CONDITION)
-//                .hasMessageContaining(ExaminerMessage.requireInRange(term, arg, _2, _2));
-//        Assertions.assertThatThrownBy(() -> Examiner.requireInRange(term, arg, _1, _0))
-//                .isInstanceOf(MistyException.class).is(CONDITION)
-//                .hasMessageContaining(ExaminerMessage.requireInRange(term, arg, _1, _0));
     }
 
     @Test
-    public void test_requireInRange_int() {
-        String term = "kerker";
-        int arg = 1;
+    public void test_ofRange_int() {
+        int floor = 0;
+        int unit = 1;
+        int ceiling = 4;
+        RangeTester<Integer> tester = new RangeTester<>("kerker", floor, ceiling);
 
-        // test in range
-//        Assertions.assertThat(Examiner.requireInRange(term, arg, 0, 2)).isEqualTo(arg);
-//        Assertions.assertThat(Examiner.requireInRange(term, arg, 1, 2)).isEqualTo(arg);
-//        Assertions.assertThat(Examiner.requireInRange(term, arg, 1, 1)).isEqualTo(arg);
-//
-//        // test out range
-//        Assertions.assertThatThrownBy(() -> Examiner.requireInRange(term, arg, 2, 2))
-//                .isInstanceOf(MistyException.class).is(CONDITION)
-//                .hasMessageContaining(ExaminerMessage.requireInRange(term, arg, 2, 2));
-//        Assertions.assertThatThrownBy(() -> Examiner.requireInRange(term, arg, 1, 0))
-//                .isInstanceOf(MistyException.class).is(CONDITION)
-//                .hasMessageContaining(ExaminerMessage.requireInRange(term, arg, 1, 0));
+        ExamineIntervals.Floor floorInclude = ExamineIntervals.Floor.INCLUDE;
+        ExamineIntervals.Floor floorExclude = ExamineIntervals.Floor.EXCLUDE;
+        ExamineIntervals.Ceiling ceilingInclude = ExamineIntervals.Ceiling.INCLUDE;
+        ExamineIntervals.Ceiling ceilingExclude = ExamineIntervals.Ceiling.EXCLUDE;
+
+        for (int i = floor; i <= ceiling; i += unit) {
+            boolean isFloor = i == floor;
+            boolean isCeiling = i == ceiling;
+            boolean isBoth = isFloor || isCeiling;
+
+            tester.test(i, Examiner.ofRange(floor, ceiling)::requireIncludeInclude, floorInclude, ceilingInclude, false);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::requireIncludeExclude, floorInclude, ceilingExclude, isCeiling);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::requireExcludeInclude, floorExclude, ceilingInclude, isFloor);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::requireExcludeExclude, floorExclude, ceilingExclude, isBoth);
+
+            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseIncludeInclude, floorInclude, ceilingInclude, true);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseIncludeExclude, floorInclude, ceilingExclude, !isCeiling);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseExcludeInclude, floorExclude, ceilingInclude, !isFloor);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseExcludeExclude, floorExclude, ceilingExclude, !isBoth);
+        }
     }
 
     @Test
-    public void test_requireInRange_long() {
-        String term = "kerker";
-        long arg = 1;
+    public void test_ofRange_long() {
+        long floor = 0;
+        long unit = 1;
+        long ceiling = 4;
+        RangeTester<Long> tester = new RangeTester<>("kerker", floor, ceiling);
 
-        // test in range
-//        Assertions.assertThat(Examiner.requireInRange(term, arg, 0, 2)).isEqualTo(arg);
-//        Assertions.assertThat(Examiner.requireInRange(term, arg, 1, 2)).isEqualTo(arg);
-//        Assertions.assertThat(Examiner.requireInRange(term, arg, 1, 1)).isEqualTo(arg);
-//
-//        // test out range
-//        Assertions.assertThatThrownBy(() -> Examiner.requireInRange(term, arg, 2, 2))
-//                .isInstanceOf(MistyException.class).is(CONDITION)
-//                .hasMessageContaining(ExaminerMessage.requireInRange(term, arg, 2, 2));
-//        Assertions.assertThatThrownBy(() -> Examiner.requireInRange(term, arg, 1, 0))
-//                .isInstanceOf(MistyException.class).is(CONDITION)
-//                .hasMessageContaining(ExaminerMessage.requireInRange(term, arg, 1, 0));
+        ExamineIntervals.Floor floorInclude = ExamineIntervals.Floor.INCLUDE;
+        ExamineIntervals.Floor floorExclude = ExamineIntervals.Floor.EXCLUDE;
+        ExamineIntervals.Ceiling ceilingInclude = ExamineIntervals.Ceiling.INCLUDE;
+        ExamineIntervals.Ceiling ceilingExclude = ExamineIntervals.Ceiling.EXCLUDE;
+
+        for (long i = floor; i <= ceiling; i += unit) {
+            boolean isFloor = i == floor;
+            boolean isCeiling = i == ceiling;
+            boolean isBoth = isFloor || isCeiling;
+
+            tester.test(i, Examiner.ofRange(floor, ceiling)::requireIncludeInclude, floorInclude, ceilingInclude, false);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::requireIncludeExclude, floorInclude, ceilingExclude, isCeiling);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::requireExcludeInclude, floorExclude, ceilingInclude, isFloor);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::requireExcludeExclude, floorExclude, ceilingExclude, isBoth);
+
+            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseIncludeInclude, floorInclude, ceilingInclude, true);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseIncludeExclude, floorInclude, ceilingExclude, !isCeiling);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseExcludeInclude, floorExclude, ceilingInclude, !isFloor);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseExcludeExclude, floorExclude, ceilingExclude, !isBoth);
+        }
     }
 
     @Test
-    public void test_requireInRange_float() {
-        String term = "kerker";
-        float arg = 1.3f;
+    public void test_ofRange_float() {
+        float floor = 0.0f;
+        float unit = 0.5f;
+        float ceiling = 2.0f;
+        RangeTester<Float> tester = new RangeTester<>("kerker", floor, ceiling);
 
-        // test in range
-//        Assertions.assertThat(Examiner.requireInRange(term, arg, 1.2f, 1.4f)).isEqualTo(arg);
-//        Assertions.assertThat(Examiner.requireInRange(term, arg, 1.3f, 1.4f)).isEqualTo(arg);
-//        Assertions.assertThat(Examiner.requireInRange(term, arg, 1.3f, 1.3f)).isEqualTo(arg);
-//
-//        // test out range
-//        Assertions.assertThatThrownBy(() -> Examiner.requireInRange(term, arg, 1.4f, 1.4f))
-//                .isInstanceOf(MistyException.class).is(CONDITION)
-//                .hasMessageContaining(ExaminerMessage.requireInRange(term, arg, 1.4f, 1.4f));
-//        Assertions.assertThatThrownBy(() -> Examiner.requireInRange(term, arg, 1.3f, 1.2f))
-//                .isInstanceOf(MistyException.class).is(CONDITION)
-//                .hasMessageContaining(ExaminerMessage.requireInRange(term, arg, 1.3f, 1.2f));
+        ExamineIntervals.Floor floorInclude = ExamineIntervals.Floor.INCLUDE;
+        ExamineIntervals.Floor floorExclude = ExamineIntervals.Floor.EXCLUDE;
+        ExamineIntervals.Ceiling ceilingInclude = ExamineIntervals.Ceiling.INCLUDE;
+        ExamineIntervals.Ceiling ceilingExclude = ExamineIntervals.Ceiling.EXCLUDE;
+
+        for (float i = floor; i <= ceiling; i += unit) {
+            boolean isFloor = i == floor;
+            boolean isCeiling = i == ceiling;
+            boolean isBoth = isFloor || isCeiling;
+
+            tester.test(i, Examiner.ofRange(floor, ceiling)::requireIncludeInclude, floorInclude, ceilingInclude, false);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::requireIncludeExclude, floorInclude, ceilingExclude, isCeiling);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::requireExcludeInclude, floorExclude, ceilingInclude, isFloor);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::requireExcludeExclude, floorExclude, ceilingExclude, isBoth);
+
+            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseIncludeInclude, floorInclude, ceilingInclude, true);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseIncludeExclude, floorInclude, ceilingExclude, !isCeiling);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseExcludeInclude, floorExclude, ceilingInclude, !isFloor);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseExcludeExclude, floorExclude, ceilingExclude, !isBoth);
+        }
     }
 
     @Test
-    public void test_requireInRange_double() {
-        String term = "kerker";
-        double arg = 1.3d;
+    public void test_ofRange_double() {
+        double floor = 0.0d;
+        double unit = 0.5d;
+        double ceiling = 2.0d;
+        RangeTester<Double> tester = new RangeTester<>("kerker", floor, ceiling);
 
-        // test in range
-//        Assertions.assertThat(Examiner.requireInRange(term, arg, 1.2d, 1.4d)).isEqualTo(arg);
-//        Assertions.assertThat(Examiner.requireInRange(term, arg, 1.3d, 1.4d)).isEqualTo(arg);
-//        Assertions.assertThat(Examiner.requireInRange(term, arg, 1.3d, 1.3d)).isEqualTo(arg);
-//
-//        // test out range
-//        Assertions.assertThatThrownBy(() -> Examiner.requireInRange(term, arg, 1.4d, 1.4d))
-//                .isInstanceOf(MistyException.class).is(CONDITION)
-//                .hasMessageContaining(ExaminerMessage.requireInRange(term, arg, 1.4d, 1.4d));
-//        Assertions.assertThatThrownBy(() -> Examiner.requireInRange(term, arg, 1.3d, 1.2d))
-//                .isInstanceOf(MistyException.class).is(CONDITION)
-//                .hasMessageContaining(ExaminerMessage.requireInRange(term, arg, 1.3d, 1.2d));
+        ExamineIntervals.Floor floorInclude = ExamineIntervals.Floor.INCLUDE;
+        ExamineIntervals.Floor floorExclude = ExamineIntervals.Floor.EXCLUDE;
+        ExamineIntervals.Ceiling ceilingInclude = ExamineIntervals.Ceiling.INCLUDE;
+        ExamineIntervals.Ceiling ceilingExclude = ExamineIntervals.Ceiling.EXCLUDE;
+
+        for (double i = floor; i <= ceiling; i += unit) {
+            boolean isFloor = i == floor;
+            boolean isCeiling = i == ceiling;
+            boolean isBoth = isFloor || isCeiling;
+
+            tester.test(i, Examiner.ofRange(floor, ceiling)::requireIncludeInclude, floorInclude, ceilingInclude, false);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::requireIncludeExclude, floorInclude, ceilingExclude, isCeiling);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::requireExcludeInclude, floorExclude, ceilingInclude, isFloor);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::requireExcludeExclude, floorExclude, ceilingExclude, isBoth);
+
+            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseIncludeInclude, floorInclude, ceilingInclude, true);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseIncludeExclude, floorInclude, ceilingExclude, !isCeiling);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseExcludeInclude, floorExclude, ceilingInclude, !isFloor);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseExcludeExclude, floorExclude, ceilingExclude, !isBoth);
+        }
     }
 
     @Test
-    public void test_requireInRange_char() {
-        String term = "kerker";
-        char arg = 'b';
+    public void test_ofRange_char() {
+        char floor = 'a';
+        char unit = 'a';
+        char ceiling = 'd';
+        RangeTester<Character> tester = new RangeTester<>("kerker", floor, ceiling);
 
-        // test in range
-//        Assertions.assertThat(Examiner.requireInRange(term, arg, 'a', 'c')).isEqualTo(arg);
-//        Assertions.assertThat(Examiner.requireInRange(term, arg, 'b', 'c')).isEqualTo(arg);
-//        Assertions.assertThat(Examiner.requireInRange(term, arg, 'b', 'b')).isEqualTo(arg);
-//
-//        // test out range
-//        Assertions.assertThatThrownBy(() -> Examiner.requireInRange(term, arg, 'c', 'c'))
-//                .isInstanceOf(MistyException.class).is(CONDITION)
-//                .hasMessageContaining(ExaminerMessage.requireInRange(term, arg, 'c', 'c'));
-//        Assertions.assertThatThrownBy(() -> Examiner.requireInRange(term, arg, 'b', 'a'))
-//                .isInstanceOf(MistyException.class).is(CONDITION)
-//                .hasMessageContaining(ExaminerMessage.requireInRange(term, arg, 'b', 'a'));
+        ExamineIntervals.Floor floorInclude = ExamineIntervals.Floor.INCLUDE;
+        ExamineIntervals.Floor floorExclude = ExamineIntervals.Floor.EXCLUDE;
+        ExamineIntervals.Ceiling ceilingInclude = ExamineIntervals.Ceiling.INCLUDE;
+        ExamineIntervals.Ceiling ceilingExclude = ExamineIntervals.Ceiling.EXCLUDE;
+
+        for (char i = floor; i <= ceiling; i += unit) {
+            boolean isFloor = i == floor;
+            boolean isCeiling = i == ceiling;
+            boolean isBoth = isFloor || isCeiling;
+
+            tester.test(i, Examiner.ofRange(floor, ceiling)::requireIncludeInclude, floorInclude, ceilingInclude, false);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::requireIncludeExclude, floorInclude, ceilingExclude, isCeiling);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::requireExcludeInclude, floorExclude, ceilingInclude, isFloor);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::requireExcludeExclude, floorExclude, ceilingExclude, isBoth);
+
+            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseIncludeInclude, floorInclude, ceilingInclude, true);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseIncludeExclude, floorInclude, ceilingExclude, !isCeiling);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseExcludeInclude, floorExclude, ceilingInclude, !isFloor);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseExcludeExclude, floorExclude, ceilingExclude, !isBoth);
+        }
     }
 
     @Test
-    public void test_requireInRange_byte() {
-        String term = "kerker";
-        byte arg = 1;
-        byte _0 = 0;
-        byte _1 = 1;
-        byte _2 = 2;
+    public void test_ofRange_byte() {
+        byte floor = 0;
+        byte unit = 1;
+        byte ceiling = 4;
+        RangeTester<Byte> tester = new RangeTester<>("kerker", floor, ceiling);
 
-        // test in range
-//        Assertions.assertThat(Examiner.requireInRange(term, arg, _0, _2)).isEqualTo(arg);
-//        Assertions.assertThat(Examiner.requireInRange(term, arg, _1, _2)).isEqualTo(arg);
-//        Assertions.assertThat(Examiner.requireInRange(term, arg, _1, _1)).isEqualTo(arg);
-//
-//        // test out range
-//        Assertions.assertThatThrownBy(() -> Examiner.requireInRange(term, arg, _2, _2))
-//                .isInstanceOf(MistyException.class).is(CONDITION)
-//                .hasMessageContaining(ExaminerMessage.requireInRange(term, arg, _2, _2));
-//        Assertions.assertThatThrownBy(() -> Examiner.requireInRange(term, arg, _1, _0))
-//                .isInstanceOf(MistyException.class).is(CONDITION)
-//                .hasMessageContaining(ExaminerMessage.requireInRange(term, arg, _1, _0));
+        ExamineIntervals.Floor floorInclude = ExamineIntervals.Floor.INCLUDE;
+        ExamineIntervals.Floor floorExclude = ExamineIntervals.Floor.EXCLUDE;
+        ExamineIntervals.Ceiling ceilingInclude = ExamineIntervals.Ceiling.INCLUDE;
+        ExamineIntervals.Ceiling ceilingExclude = ExamineIntervals.Ceiling.EXCLUDE;
+
+        for (byte i = floor; i <= ceiling; i += unit) {
+            boolean isFloor = i == floor;
+            boolean isCeiling = i == ceiling;
+            boolean isBoth = isFloor || isCeiling;
+
+            tester.test(i, Examiner.ofRange(floor, ceiling)::requireIncludeInclude, floorInclude, ceilingInclude, false);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::requireIncludeExclude, floorInclude, ceilingExclude, isCeiling);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::requireExcludeInclude, floorExclude, ceilingInclude, isFloor);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::requireExcludeExclude, floorExclude, ceilingExclude, isBoth);
+
+            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseIncludeInclude, floorInclude, ceilingInclude, true);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseIncludeExclude, floorInclude, ceilingExclude, !isCeiling);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseExcludeInclude, floorExclude, ceilingInclude, !isFloor);
+            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseExcludeExclude, floorExclude, ceilingExclude, !isBoth);
+        }
     }
 
     @Test
-    public void test_requireInRange_Character() {
-        String term = "kerker";
-        Character arg = 'b';
+    public void test_ofRange_Number() {
+        ExamineIntervals.Floor floorInclude = ExamineIntervals.Floor.INCLUDE;
+        ExamineIntervals.Floor floorExclude = ExamineIntervals.Floor.EXCLUDE;
+        ExamineIntervals.Ceiling ceilingInclude = ExamineIntervals.Ceiling.INCLUDE;
+        ExamineIntervals.Ceiling ceilingExclude = ExamineIntervals.Ceiling.EXCLUDE;
 
-        // test in range
-//        Assertions.assertThat(Examiner.requireInRange(term, arg, new Character('a'), new Character('c'))).isEqualTo(arg);
-//        Assertions.assertThat(Examiner.requireInRange(term, arg, new Character('b'), new Character('c'))).isEqualTo(arg);
-//        Assertions.assertThat(Examiner.requireInRange(term, arg, new Character('b'), new Character('b'))).isEqualTo(arg);
-//
-//        // test out range
-//        Assertions.assertThatThrownBy(() -> Examiner.requireInRange(term, arg, new Character('c'), new Character('c')))
-//                .isInstanceOf(MistyException.class).is(CONDITION)
-//                .hasMessageContaining(ExaminerMessage.requireInRange(term, arg, new Character('c'), new Character('c')));
-//        Assertions.assertThatThrownBy(() -> Examiner.requireInRange(term, arg, new Character('b'), new Character('a')))
-//                .isInstanceOf(MistyException.class).is(CONDITION)
-//                .hasMessageContaining(ExaminerMessage.requireInRange(term, arg, new Character('b'), new Character('a')));
-    }
+        NUMBER_OF_FLOOR.forEach((floorTerm, floor) -> {
+            NUMBER_OF_CEILING.forEach((ceilingTerm, ceiling) -> {
 
-    @Test
-    public void test_requireInRange_Number() {
-        Map<String, Number> inRangeFloors = new LinkedHashMap<>();
-        inRangeFloors.putAll(NUMBER_OF_0);
-        inRangeFloors.putAll(NUMBER_OF_1);
+                RangeTester<Number> tester = new RangeTester<>("kerker", floor, ceiling);
 
-        Map<String, Number> inRangeCeilings = new LinkedHashMap<>();
-        inRangeCeilings.putAll(NUMBER_OF_2);
-        inRangeCeilings.putAll(NUMBER_OF_1);
-
-        String term = "kerker";
-
-        // test in range
-        TARGETS.forEach((targetTerm, targetNumber) -> {
-            inRangeFloors.forEach((floorTerm, floorNumber) -> {
-                inRangeCeilings.forEach((ceilingTerm, ceilingNumber) -> {
+                NUMBER_OF_UNIT.forEach((unitTerm, i) -> {
                     try {
-//                        Assertions.assertThat(Examiner.requireInRange(term, targetNumber, floorNumber, ceilingNumber))
-//                                .isEqualTo(targetNumber);
+                        boolean isFloor = i.doubleValue() == floor.doubleValue();
+                        boolean isCeiling = i.doubleValue() == ceiling.doubleValue();
+                        boolean isBoth = isFloor || isCeiling;
+
+                        tester.test(i, Examiner.ofRange(floor, ceiling)::requireIncludeInclude, floorInclude, ceilingInclude, false);
+                        tester.test(i, Examiner.ofRange(floor, ceiling)::requireIncludeExclude, floorInclude, ceilingExclude, isCeiling);
+                        tester.test(i, Examiner.ofRange(floor, ceiling)::requireExcludeInclude, floorExclude, ceilingInclude, isFloor);
+                        tester.test(i, Examiner.ofRange(floor, ceiling)::requireExcludeExclude, floorExclude, ceilingExclude, isBoth);
+
+                        tester.test(i, Examiner.ofRange(floor, ceiling)::refuseIncludeInclude, floorInclude, ceilingInclude, true);
+                        tester.test(i, Examiner.ofRange(floor, ceiling)::refuseIncludeExclude, floorInclude, ceilingExclude, !isCeiling);
+                        tester.test(i, Examiner.ofRange(floor, ceiling)::refuseExcludeInclude, floorExclude, ceilingInclude, !isFloor);
+                        tester.test(i, Examiner.ofRange(floor, ceiling)::refuseExcludeExclude, floorExclude, ceilingExclude, !isBoth);
+
                     } catch (Throwable t) {
-                        String msg = "target(" + targetTerm + "), floor(" + floorTerm + "), ceiling(" + ceilingTerm + ")";
-                        throw MistyError.UNKNOWN.thrown(msg, t);
-                    }
-                });
-            });
-        });
-
-        // test out range
-        TARGETS.forEach((targetTerm, targetNumber) -> {
-            NUMBER_OF_1.forEach((floorTerm, floorNumber) -> {
-                NUMBER_OF_0.forEach((ceilingTerm, ceilingNumber) -> {
-                    try {
-//                        Assertions.assertThatThrownBy(() -> Examiner.requireInRange(term, targetNumber, floorNumber, ceilingNumber))
-//                                .isInstanceOf(MistyException.class).is(CONDITION)
-//                                .hasMessageContaining(ExaminerMessage.requireInRange(term, targetNumber, floorNumber, ceilingNumber));
-                    } catch (Throwable t) {
-                        String msg = "target(" + targetTerm + "), floor(" + floorTerm + "), ceiling(" + ceilingTerm + ")";
-                        throw MistyError.UNKNOWN.thrown(msg, t);
-                    }
-                });
-            });
-
-            NUMBER_OF_2.forEach((floorTerm, floorNumber) -> {
-                NUMBER_OF_1.forEach((ceilingTerm, ceilingNumber) -> {
-                    try {
-//                        Assertions.assertThatThrownBy(() -> Examiner.requireInRange(term, targetNumber, floorNumber, ceilingNumber))
-//                                .isInstanceOf(MistyException.class).is(CONDITION)
-//                                .hasMessageContaining(ExaminerMessage.requireInRange(term, targetNumber, floorNumber, ceilingNumber));
-                    } catch (Throwable t) {
-                        String msg = "target(" + targetTerm + "), floor(" + floorTerm + "), ceiling(" + ceilingTerm + ")";
-                        throw MistyError.UNKNOWN.thrown(msg, t);
-                    }
-                });
-            });
-
-            NUMBER_OF_2.forEach((floorTerm, floorNumber) -> {
-                NUMBER_OF_0.forEach((ceilingTerm, ceilingNumber) -> {
-                    try {
-//                        Assertions.assertThatThrownBy(() -> Examiner.requireInRange(term, targetNumber, floorNumber, ceilingNumber))
-//                                .isInstanceOf(MistyException.class).is(CONDITION)
-//                                .hasMessageContaining(ExaminerMessage.requireInRange(term, targetNumber, floorNumber, ceilingNumber));
-                    } catch (Throwable t) {
-                        String msg = "target(" + targetTerm + "), floor(" + floorTerm + "), ceiling(" + ceilingTerm + ")";
-                        throw MistyError.UNKNOWN.thrown(msg, t);
-                    }
-                });
-            });
-        });
-    }
-
-    // refuseInRange
-
-    @Test
-    public void test_refuseInRange_short() {
-        String term = "kerker";
-        short arg = 1;
-        short _0 = 0;
-        short _1 = 1;
-        short _2 = 2;
-
-        // test in range
-        Assertions.assertThatThrownBy(() -> Examiner.refuseInRange(term, arg, _0, _2))
-                .isInstanceOf(MistyException.class).is(CONDITION)
-                .hasMessageContaining(ExaminerMessage.refuseInRange(term, arg, _0, _2));
-        Assertions.assertThatThrownBy(() -> Examiner.refuseInRange(term, arg, _1, _2))
-                .isInstanceOf(MistyException.class).is(CONDITION)
-                .hasMessageContaining(ExaminerMessage.refuseInRange(term, arg, _1, _2));
-        Assertions.assertThatThrownBy(() -> Examiner.refuseInRange(term, arg, _1, _1))
-                .isInstanceOf(MistyException.class).is(CONDITION)
-                .hasMessageContaining(ExaminerMessage.refuseInRange(term, arg, _1, _1));
-
-        // test out range
-        Assertions.assertThat(Examiner.refuseInRange(term, arg, _2, _2)).isEqualTo(arg);
-        Assertions.assertThat(Examiner.refuseInRange(term, arg, _1, _0)).isEqualTo(arg);
-    }
-
-    @Test
-    public void test_refuseInRange_int() {
-        String term = "kerker";
-        int arg = 1;
-
-        // test in range
-        Assertions.assertThatThrownBy(() -> Examiner.refuseInRange(term, arg, 0, 2))
-                .isInstanceOf(MistyException.class).is(CONDITION)
-                .hasMessageContaining(ExaminerMessage.refuseInRange(term, arg, 0, 2));
-        Assertions.assertThatThrownBy(() -> Examiner.refuseInRange(term, arg, 1, 2))
-                .isInstanceOf(MistyException.class).is(CONDITION)
-                .hasMessageContaining(ExaminerMessage.refuseInRange(term, arg, 1, 2));
-        Assertions.assertThatThrownBy(() -> Examiner.refuseInRange(term, arg, 1, 1))
-                .isInstanceOf(MistyException.class).is(CONDITION)
-                .hasMessageContaining(ExaminerMessage.refuseInRange(term, arg, 1, 1));
-
-        // test out range
-        Assertions.assertThat(Examiner.refuseInRange(term, arg, 2, 2)).isEqualTo(arg);
-        Assertions.assertThat(Examiner.refuseInRange(term, arg, 1, 0)).isEqualTo(arg);
-    }
-
-    @Test
-    public void test_refuseInRange_long() {
-        String term = "kerker";
-        long arg = 1;
-
-        // test in range
-        Assertions.assertThatThrownBy(() -> Examiner.refuseInRange(term, arg, 0, 2))
-                .isInstanceOf(MistyException.class).is(CONDITION)
-                .hasMessageContaining(ExaminerMessage.refuseInRange(term, arg, 0, 2));
-        Assertions.assertThatThrownBy(() -> Examiner.refuseInRange(term, arg, 1, 2))
-                .isInstanceOf(MistyException.class).is(CONDITION)
-                .hasMessageContaining(ExaminerMessage.refuseInRange(term, arg, 1, 2));
-        Assertions.assertThatThrownBy(() -> Examiner.refuseInRange(term, arg, 1, 1))
-                .isInstanceOf(MistyException.class).is(CONDITION)
-                .hasMessageContaining(ExaminerMessage.refuseInRange(term, arg, 1, 1));
-
-        // test out range
-        Assertions.assertThat(Examiner.refuseInRange(term, arg, 2, 2)).isEqualTo(arg);
-        Assertions.assertThat(Examiner.refuseInRange(term, arg, 1, 0)).isEqualTo(arg);
-    }
-
-    @Test
-    public void test_refuseInRange_float() {
-        String term = "kerker";
-        float arg = 1.3f;
-
-        // test in range
-        Assertions.assertThatThrownBy(() -> Examiner.refuseInRange(term, arg, 1.2f, 1.4f))
-                .isInstanceOf(MistyException.class).is(CONDITION)
-                .hasMessageContaining(ExaminerMessage.refuseInRange(term, arg, 1.2f, 1.4f));
-        Assertions.assertThatThrownBy(() -> Examiner.refuseInRange(term, arg, 1.3f, 1.4f))
-                .isInstanceOf(MistyException.class).is(CONDITION)
-                .hasMessageContaining(ExaminerMessage.refuseInRange(term, arg, 1.3f, 1.4f));
-        Assertions.assertThatThrownBy(() -> Examiner.refuseInRange(term, arg, 1.3f, 1.3f))
-                .isInstanceOf(MistyException.class).is(CONDITION)
-                .hasMessageContaining(ExaminerMessage.refuseInRange(term, arg, 1.3f, 1.3f));
-
-        // test out range
-        Assertions.assertThat(Examiner.refuseInRange(term, arg, 1.4f, 1.4f)).isEqualTo(arg);
-        Assertions.assertThat(Examiner.refuseInRange(term, arg, 1.3f, 1.1f)).isEqualTo(arg);
-    }
-
-    @Test
-    public void test_refuseInRange_double() {
-        String term = "kerker";
-        double arg = 1.3d;
-
-        // test in range
-        Assertions.assertThatThrownBy(() -> Examiner.refuseInRange(term, arg, 1.2d, 1.4d))
-                .isInstanceOf(MistyException.class).is(CONDITION)
-                .hasMessageContaining(ExaminerMessage.refuseInRange(term, arg, 1.2d, 1.4d));
-        Assertions.assertThatThrownBy(() -> Examiner.refuseInRange(term, arg, 1.3d, 1.4d))
-                .isInstanceOf(MistyException.class).is(CONDITION)
-                .hasMessageContaining(ExaminerMessage.refuseInRange(term, arg, 1.3d, 1.4d));
-        Assertions.assertThatThrownBy(() -> Examiner.refuseInRange(term, arg, 1.3d, 1.3d))
-                .isInstanceOf(MistyException.class).is(CONDITION)
-                .hasMessageContaining(ExaminerMessage.refuseInRange(term, arg, 1.3d, 1.3d));
-
-        // test out range
-        Assertions.assertThat(Examiner.refuseInRange(term, arg, 1.4d, 1.4d)).isEqualTo(arg);
-        Assertions.assertThat(Examiner.refuseInRange(term, arg, 1.3d, 1.2d)).isEqualTo(arg);
-    }
-
-    @Test
-    public void test_refuseInRange_char() {
-        String term = "kerker";
-        char arg = 'b';
-
-        // test in range
-        Assertions.assertThatThrownBy(() -> Examiner.refuseInRange(term, arg, 'a', 'c'))
-                .isInstanceOf(MistyException.class).is(CONDITION)
-                .hasMessageContaining(ExaminerMessage.refuseInRange(term, arg, 'a', 'c'));
-        Assertions.assertThatThrownBy(() -> Examiner.refuseInRange(term, arg, 'b', 'c'))
-                .isInstanceOf(MistyException.class).is(CONDITION)
-                .hasMessageContaining(ExaminerMessage.refuseInRange(term, arg, 'b', 'c'));
-        Assertions.assertThatThrownBy(() -> Examiner.refuseInRange(term, arg, 'b', 'b'))
-                .isInstanceOf(MistyException.class).is(CONDITION)
-                .hasMessageContaining(ExaminerMessage.refuseInRange(term, arg, 'b', 'b'));
-
-        // test out range
-        Assertions.assertThat(Examiner.refuseInRange(term, arg, 'c', 'c')).isEqualTo(arg);
-        Assertions.assertThat(Examiner.refuseInRange(term, arg, 'b', 'a')).isEqualTo(arg);
-    }
-
-    @Test
-    public void test_refuseInRange_byte() {
-        String term = "kerker";
-        byte arg = 1;
-        byte _0 = 0;
-        byte _1 = 1;
-        byte _2 = 2;
-
-        // test in range
-        Assertions.assertThatThrownBy(() -> Examiner.refuseInRange(term, arg, _0, _2))
-                .isInstanceOf(MistyException.class).is(CONDITION)
-                .hasMessageContaining(ExaminerMessage.refuseInRange(term, arg, _0, _2));
-        Assertions.assertThatThrownBy(() -> Examiner.refuseInRange(term, arg, _1, _2))
-                .isInstanceOf(MistyException.class).is(CONDITION)
-                .hasMessageContaining(ExaminerMessage.refuseInRange(term, arg, _1, _2));
-        Assertions.assertThatThrownBy(() -> Examiner.refuseInRange(term, arg, _1, _1))
-                .isInstanceOf(MistyException.class).is(CONDITION)
-                .hasMessageContaining(ExaminerMessage.refuseInRange(term, arg, _1, _1));
-
-        // test out range
-        Assertions.assertThat(Examiner.refuseInRange(term, arg, _2, _2)).isEqualTo(arg);
-        Assertions.assertThat(Examiner.refuseInRange(term, arg, _1, _0)).isEqualTo(arg);
-    }
-
-    @Test
-    public void test_refuseInRange_Character() {
-        String term = "kerker";
-        Character arg = 'b';
-
-        // test in range
-        Assertions.assertThatThrownBy(() -> Examiner.refuseInRange(term, arg, new Character('a'), new Character('c')))
-                .isInstanceOf(MistyException.class).is(CONDITION)
-                .hasMessageContaining(ExaminerMessage.refuseInRange(term, arg, new Character('a'), new Character('c')));
-        Assertions.assertThatThrownBy(() -> Examiner.refuseInRange(term, arg, new Character('b'), new Character('c')))
-                .isInstanceOf(MistyException.class).is(CONDITION)
-                .hasMessageContaining(ExaminerMessage.refuseInRange(term, arg, new Character('b'), new Character('c')));
-        Assertions.assertThatThrownBy(() -> Examiner.refuseInRange(term, arg, new Character('b'), new Character('b')))
-                .isInstanceOf(MistyException.class).is(CONDITION)
-                .hasMessageContaining(ExaminerMessage.refuseInRange(term, arg, new Character('b'), new Character('b')));
-
-        // test out range
-        Assertions.assertThat(Examiner.refuseInRange(term, arg, new Character('c'), new Character('c'))).isEqualTo(arg);
-        Assertions.assertThat(Examiner.refuseInRange(term, arg, new Character('b'), new Character('a'))).isEqualTo(arg);
-    }
-
-    @Test
-    public void test_refuseInRange_Number() {
-        Map<String, Number> inRangeFloors = new LinkedHashMap<>();
-        inRangeFloors.putAll(NUMBER_OF_0);
-        inRangeFloors.putAll(NUMBER_OF_1);
-
-        Map<String, Number> inRangeCeilings = new LinkedHashMap<>();
-        inRangeCeilings.putAll(NUMBER_OF_2);
-        inRangeCeilings.putAll(NUMBER_OF_1);
-
-        String term = "kerker";
-
-        // test in range
-        TARGETS.forEach((targetTerm, targetNumber) -> {
-            inRangeFloors.forEach((floorTerm, floorNumber) -> {
-                inRangeCeilings.forEach((ceilingTerm, ceilingNumber) -> {
-                    try {
-                        Assertions.assertThatThrownBy(() -> Examiner.refuseInRange(term, targetNumber, floorNumber, ceilingNumber))
-                                .isInstanceOf(MistyException.class).is(CONDITION)
-                                .hasMessageContaining(ExaminerMessage.refuseInRange(term, targetNumber, floorNumber, ceilingNumber));
-                    } catch (Throwable t) {
-                        String msg = "target(" + targetTerm + "), floor(" + floorTerm + "), ceiling(" + ceilingTerm + ")";
-                        throw MistyError.UNKNOWN.thrown(msg, t);
-                    }
-                });
-            });
-        });
-
-        // test out range
-        TARGETS.forEach((targetTerm, targetNumber) -> {
-            NUMBER_OF_1.forEach((floorTerm, floorNumber) -> {
-                NUMBER_OF_0.forEach((ceilingTerm, ceilingNumber) -> {
-                    try {
-                        Assertions.assertThat(Examiner.refuseInRange(term, targetNumber, floorNumber, ceilingNumber))
-                                .isEqualTo(targetNumber);
-                    } catch (Throwable t) {
-                        String msg = "target(" + targetTerm + "), floor(" + floorTerm + "), ceiling(" + ceilingTerm + ")";
-                        throw MistyError.UNKNOWN.thrown(msg, t);
-                    }
-                });
-            });
-
-            NUMBER_OF_2.forEach((floorTerm, floorNumber) -> {
-                NUMBER_OF_1.forEach((ceilingTerm, ceilingNumber) -> {
-                    try {
-                        Assertions.assertThat(Examiner.refuseInRange(term, targetNumber, floorNumber, ceilingNumber))
-                                .isEqualTo(targetNumber);
-                    } catch (Throwable t) {
-                        String msg = "target(" + targetTerm + "), floor(" + floorTerm + "), ceiling(" + ceilingTerm + ")";
-                        throw MistyError.UNKNOWN.thrown(msg, t);
-                    }
-                });
-            });
-
-            NUMBER_OF_2.forEach((floorTerm, floorNumber) -> {
-                NUMBER_OF_0.forEach((ceilingTerm, ceilingNumber) -> {
-                    try {
-                        Assertions.assertThat(Examiner.refuseInRange(term, targetNumber, floorNumber, ceilingNumber))
-                                .isEqualTo(targetNumber);
-                    } catch (Throwable t) {
-                        String msg = "target(" + targetTerm + "), floor(" + floorTerm + "), ceiling(" + ceilingTerm + ")";
+                        String msg = "floor(" + floorTerm + "), unit(" + unitTerm + "), ceiling(" + ceilingTerm + ")";
                         throw MistyError.UNKNOWN.thrown(msg, t);
                     }
                 });
