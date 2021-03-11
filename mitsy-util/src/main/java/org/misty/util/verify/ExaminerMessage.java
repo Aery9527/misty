@@ -8,7 +8,7 @@ public class ExaminerMessage {
 
     public static final String REQUIRE_RANGE = "check error of \"%s\", the value is %s, require %s%s, %s%s";
 
-    public static final String REFUSE_RANGE = "check error of \"%s\", the value is %s, refuse (%s, %s)";
+    public static final String REFUSE_RANGE = "check error of \"%s\", the value is %s, refuse %s%s, %s%s";
 
     public static final String REQUIRE_MORE_EQUAL = "check error of \"%s\", the value is %s, require more then or equal to %s";
 
@@ -84,40 +84,64 @@ public class ExaminerMessage {
 
     // refuseInRange
 
-    public static String refuseInRange(String term, short arg, short floor, short ceiling) {
-        return String.format(REFUSE_RANGE, term, arg, floor, ceiling);
+    public static String refuseInRange(String term, short arg,
+                                       ExamineIntervals.Floor floorIntervals, short floor,
+                                       ExamineIntervals.Ceiling ceilingIntervals, short ceiling) {
+        return String.format(REFUSE_RANGE, term, arg, floorIntervals.getSymbol(), floor, ceiling, ceilingIntervals.getSymbol());
     }
 
-    public static String refuseInRange(String term, int arg, int floor, int ceiling) {
-        return String.format(REFUSE_RANGE, term, arg, floor, ceiling);
+    public static String refuseInRange(String term, int arg,
+                                       ExamineIntervals.Floor floorIntervals, int floor,
+                                       ExamineIntervals.Ceiling ceilingIntervals, int ceiling) {
+        return String.format(REFUSE_RANGE, term, arg, floorIntervals.getSymbol(), floor, ceiling, ceilingIntervals.getSymbol());
     }
 
-    public static String refuseInRange(String term, long arg, long floor, long ceiling) {
-        return String.format(REFUSE_RANGE, term, arg, floor, ceiling);
+    public static String refuseInRange(String term, long arg,
+                                       ExamineIntervals.Floor floorIntervals, long floor,
+                                       ExamineIntervals.Ceiling ceilingIntervals, long ceiling) {
+        return String.format(REFUSE_RANGE, term, arg, floorIntervals.getSymbol(), floor, ceiling, ceilingIntervals.getSymbol());
     }
 
-    public static String refuseInRange(String term, float arg, float floor, float ceiling) {
-        return String.format(REFUSE_RANGE, term, arg, floor, ceiling);
+    public static String refuseInRange(String term, float arg,
+                                       ExamineIntervals.Floor floorIntervals, float floor,
+                                       ExamineIntervals.Ceiling ceilingIntervals, float ceiling) {
+        return String.format(REFUSE_RANGE, term, arg, floorIntervals.getSymbol(), floor, ceiling, ceilingIntervals.getSymbol());
     }
 
-    public static String refuseInRange(String term, double arg, double floor, double ceiling) {
-        return String.format(REFUSE_RANGE, term, arg, floor, ceiling);
+    public static String refuseInRange(String term, double arg,
+                                       ExamineIntervals.Floor floorIntervals, double floor,
+                                       ExamineIntervals.Ceiling ceilingIntervals, double ceiling) {
+        return String.format(REFUSE_RANGE, term, arg, floorIntervals.getSymbol(), floor, ceiling, ceilingIntervals.getSymbol());
     }
 
-    public static String refuseInRange(String term, char arg, char floor, char ceiling) {
-        return String.format(REFUSE_RANGE, term, arg, floor, ceiling);
+    public static String refuseInRange(String term, char arg,
+                                       ExamineIntervals.Floor floorIntervals, char floor,
+                                       ExamineIntervals.Ceiling ceilingIntervals, char ceiling) {
+        return String.format(REFUSE_RANGE, term, arg, floorIntervals.getSymbol(), floor, ceiling, ceilingIntervals.getSymbol());
     }
 
-    public static String refuseInRange(String term, byte arg, byte floor, byte ceiling) {
-        return String.format(REFUSE_RANGE, term, arg, floor, ceiling);
+    public static String refuseInRange(String term, byte arg,
+                                       ExamineIntervals.Floor floorIntervals, byte floor,
+                                       ExamineIntervals.Ceiling ceilingIntervals, byte ceiling) {
+        return String.format(REFUSE_RANGE, term, arg, floorIntervals.getSymbol(), floor, ceiling, ceilingIntervals.getSymbol());
     }
 
-    public static String refuseInRange(String term, Character arg, Character floor, Character ceiling) {
-        return String.format(REFUSE_RANGE, term, arg, floor, ceiling);
+    public static String refuseInRange(String term, Character arg,
+                                       ExamineIntervals.Floor floorIntervals, Character floor,
+                                       ExamineIntervals.Ceiling ceilingIntervals, Character ceiling) {
+        return String.format(REFUSE_RANGE, term, arg, floorIntervals.getSymbol(), floor, ceiling, ceilingIntervals.getSymbol());
     }
 
-    public static String refuseInRange(String term, Number arg, Number floor, Number ceiling) {
-        return String.format(REFUSE_RANGE, term, arg, floor, ceiling);
+    public static String refuseInRange(String term, Number arg,
+                                       ExamineIntervals.Floor floorIntervals, Number floor,
+                                       ExamineIntervals.Ceiling ceilingIntervals, Number ceiling) {
+        return String.format(REFUSE_RANGE, term, arg, floorIntervals.getSymbol(), floor, ceiling, ceilingIntervals.getSymbol());
+    }
+
+    public static String refuseInRange(String term, Object arg,
+                                       ExamineIntervals.Floor floorIntervals, Object floor,
+                                       ExamineIntervals.Ceiling ceilingIntervals, Object ceiling) {
+        return String.format(REFUSE_RANGE, term, arg, floorIntervals.getSymbol(), floor, ceiling, ceilingIntervals.getSymbol());
     }
 
     // requireNumberMoreEqual

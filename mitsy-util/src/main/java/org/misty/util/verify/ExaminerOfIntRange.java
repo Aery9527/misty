@@ -69,7 +69,7 @@ public class ExaminerOfIntRange {
         Examiner.refuseNullAndEmpty("term", term);
 
         if (arg >= this.floor && arg <= this.ceiling) {
-            String description = ExaminerMessage.requireInRange(term, arg,
+            String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
             throw MistyError.ARGUMENT_ERROR.thrown(description);
@@ -82,7 +82,7 @@ public class ExaminerOfIntRange {
         Examiner.refuseNullAndEmpty("term", term);
 
         if (arg >= this.floor && arg < this.ceiling) {
-            String description = ExaminerMessage.requireInRange(term, arg,
+            String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
             throw MistyError.ARGUMENT_ERROR.thrown(description);
@@ -95,7 +95,7 @@ public class ExaminerOfIntRange {
         Examiner.refuseNullAndEmpty("term", term);
 
         if (arg > this.floor && arg <= this.ceiling) {
-            String description = ExaminerMessage.requireInRange(term, arg,
+            String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
             throw MistyError.ARGUMENT_ERROR.thrown(description);
@@ -108,7 +108,7 @@ public class ExaminerOfIntRange {
         Examiner.refuseNullAndEmpty("term", term);
 
         if (arg > this.floor && arg < this.ceiling) {
-            String description = ExaminerMessage.requireInRange(term, arg,
+            String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
             throw MistyError.ARGUMENT_ERROR.thrown(description);

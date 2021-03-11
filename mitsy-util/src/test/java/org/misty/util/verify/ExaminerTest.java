@@ -64,17 +64,32 @@ class ExaminerTest {
         }
 
         public void test(ArgType arg, BiFunction<String, ArgType, ArgType> action,
-                         ExamineIntervals.Floor floorIntervals, ExamineIntervals.Ceiling ceilingIntervals, boolean expectedError) {
+                         ExamineIntervals.Floor floorIntervals, ExamineIntervals.Ceiling ceilingIntervals,
+                         RangeType rangeType, boolean expectedError) {
             if (expectedError) {
+                String msg;
+                if (RangeType.REQUIRE.equals(rangeType)) {
+                    msg = ExaminerMessage.requireInRange(this.term, arg,
+                            floorIntervals, this.floor,
+                            ceilingIntervals, this.ceiling);
+                } else {
+                    msg = ExaminerMessage.refuseInRange(this.term, arg,
+                            floorIntervals, this.floor,
+                            ceilingIntervals, this.ceiling);
+                }
+
                 Assertions.assertThatThrownBy(() -> action.apply(this.term, arg))
                         .isInstanceOf(MistyException.class)
-                        .hasMessageContaining(ExaminerMessage.requireInRange(term, arg,
-                                floorIntervals, this.floor,
-                                ceilingIntervals, this.ceiling));
+                        .hasMessageContaining(msg);
+
             } else {
                 Assertions.assertThat(action.apply(this.term, arg)).isEqualTo(arg);
             }
         }
+    }
+
+    public enum RangeType {
+        REQUIRE, REFUSE
     }
 
     @Test
@@ -178,7 +193,7 @@ class ExaminerTest {
 
         Assertions.assertThatThrownBy(() -> Examiner.refuseNullAndEmpty(term, (Optional) null))
                 .isInstanceOf(MistyException.class).is(CONDITION);
-//                .hasMessage(ExaminerMessage.refuseNullAndEmpty(term)); // XXX 不知道為什麼這邊操作會錯@@?
+//                .hasMessage(ExaminerMessage.refuseNullAndEmpty(term)); // XXX 不知道為什麼這邊操作會錯?
         Assertions.assertThatThrownBy(() -> Examiner.refuseNullAndEmpty(term, Optional.empty()))
                 .isInstanceOf(MistyException.class).is(CONDITION)
                 .hasMessageContaining(ExaminerMessage.refuseNullAndEmpty(term));
@@ -209,25 +224,26 @@ class ExaminerTest {
         short ceiling = 4;
         RangeTester<Short> tester = new RangeTester<>("kerker", floor, ceiling);
 
-        ExamineIntervals.Floor floorInclude = ExamineIntervals.Floor.INCLUDE;
-        ExamineIntervals.Floor floorExclude = ExamineIntervals.Floor.EXCLUDE;
-        ExamineIntervals.Ceiling ceilingInclude = ExamineIntervals.Ceiling.INCLUDE;
-        ExamineIntervals.Ceiling ceilingExclude = ExamineIntervals.Ceiling.EXCLUDE;
+        ExamineIntervals.Floor fi = ExamineIntervals.Floor.INCLUDE; // fi = floor include
+        ExamineIntervals.Floor fe = ExamineIntervals.Floor.EXCLUDE; // fe = floor exclude
+        ExamineIntervals.Ceiling ci = ExamineIntervals.Ceiling.INCLUDE; // ci = ceiling include
+        ExamineIntervals.Ceiling ce = ExamineIntervals.Ceiling.EXCLUDE; // ce = ceiling exclude
 
+        ExaminerOfShortRange examiner = Examiner.ofRange(floor, ceiling);
         for (short i = floor; i <= ceiling; i += unit) {
             boolean isFloor = i == floor;
             boolean isCeiling = i == ceiling;
             boolean isBoth = isFloor || isCeiling;
 
-            tester.test(i, Examiner.ofRange(floor, ceiling)::requireIncludeInclude, floorInclude, ceilingInclude, false);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::requireIncludeExclude, floorInclude, ceilingExclude, isCeiling);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::requireExcludeInclude, floorExclude, ceilingInclude, isFloor);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::requireExcludeExclude, floorExclude, ceilingExclude, isBoth);
+            tester.test(i, examiner::requireIncludeInclude, fi, ci, RangeType.REQUIRE, false);
+            tester.test(i, examiner::requireIncludeExclude, fi, ce, RangeType.REQUIRE, isCeiling);
+            tester.test(i, examiner::requireExcludeInclude, fe, ci, RangeType.REQUIRE, isFloor);
+            tester.test(i, examiner::requireExcludeExclude, fe, ce, RangeType.REQUIRE, isBoth);
 
-            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseIncludeInclude, floorInclude, ceilingInclude, true);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseIncludeExclude, floorInclude, ceilingExclude, !isCeiling);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseExcludeInclude, floorExclude, ceilingInclude, !isFloor);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseExcludeExclude, floorExclude, ceilingExclude, !isBoth);
+            tester.test(i, examiner::refuseIncludeInclude, fi, ci, RangeType.REFUSE, true);
+            tester.test(i, examiner::refuseIncludeExclude, fi, ce, RangeType.REFUSE, !isCeiling);
+            tester.test(i, examiner::refuseExcludeInclude, fe, ci, RangeType.REFUSE, !isFloor);
+            tester.test(i, examiner::refuseExcludeExclude, fe, ce, RangeType.REFUSE, !isBoth);
         }
     }
 
@@ -238,25 +254,26 @@ class ExaminerTest {
         int ceiling = 4;
         RangeTester<Integer> tester = new RangeTester<>("kerker", floor, ceiling);
 
-        ExamineIntervals.Floor floorInclude = ExamineIntervals.Floor.INCLUDE;
-        ExamineIntervals.Floor floorExclude = ExamineIntervals.Floor.EXCLUDE;
-        ExamineIntervals.Ceiling ceilingInclude = ExamineIntervals.Ceiling.INCLUDE;
-        ExamineIntervals.Ceiling ceilingExclude = ExamineIntervals.Ceiling.EXCLUDE;
+        ExamineIntervals.Floor fi = ExamineIntervals.Floor.INCLUDE; // fi = floor include
+        ExamineIntervals.Floor fe = ExamineIntervals.Floor.EXCLUDE; // fe = floor exclude
+        ExamineIntervals.Ceiling ci = ExamineIntervals.Ceiling.INCLUDE; // ci = ceiling include
+        ExamineIntervals.Ceiling ce = ExamineIntervals.Ceiling.EXCLUDE; // ce = ceiling exclude
 
+        ExaminerOfIntRange examiner = Examiner.ofRange(floor, ceiling);
         for (int i = floor; i <= ceiling; i += unit) {
             boolean isFloor = i == floor;
             boolean isCeiling = i == ceiling;
             boolean isBoth = isFloor || isCeiling;
 
-            tester.test(i, Examiner.ofRange(floor, ceiling)::requireIncludeInclude, floorInclude, ceilingInclude, false);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::requireIncludeExclude, floorInclude, ceilingExclude, isCeiling);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::requireExcludeInclude, floorExclude, ceilingInclude, isFloor);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::requireExcludeExclude, floorExclude, ceilingExclude, isBoth);
+            tester.test(i, examiner::requireIncludeInclude, fi, ci, RangeType.REQUIRE, false);
+            tester.test(i, examiner::requireIncludeExclude, fi, ce, RangeType.REQUIRE, isCeiling);
+            tester.test(i, examiner::requireExcludeInclude, fe, ci, RangeType.REQUIRE, isFloor);
+            tester.test(i, examiner::requireExcludeExclude, fe, ce, RangeType.REQUIRE, isBoth);
 
-            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseIncludeInclude, floorInclude, ceilingInclude, true);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseIncludeExclude, floorInclude, ceilingExclude, !isCeiling);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseExcludeInclude, floorExclude, ceilingInclude, !isFloor);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseExcludeExclude, floorExclude, ceilingExclude, !isBoth);
+            tester.test(i, examiner::refuseIncludeInclude, fi, ci, RangeType.REFUSE, true);
+            tester.test(i, examiner::refuseIncludeExclude, fi, ce, RangeType.REFUSE, !isCeiling);
+            tester.test(i, examiner::refuseExcludeInclude, fe, ci, RangeType.REFUSE, !isFloor);
+            tester.test(i, examiner::refuseExcludeExclude, fe, ce, RangeType.REFUSE, !isBoth);
         }
     }
 
@@ -267,25 +284,26 @@ class ExaminerTest {
         long ceiling = 4;
         RangeTester<Long> tester = new RangeTester<>("kerker", floor, ceiling);
 
-        ExamineIntervals.Floor floorInclude = ExamineIntervals.Floor.INCLUDE;
-        ExamineIntervals.Floor floorExclude = ExamineIntervals.Floor.EXCLUDE;
-        ExamineIntervals.Ceiling ceilingInclude = ExamineIntervals.Ceiling.INCLUDE;
-        ExamineIntervals.Ceiling ceilingExclude = ExamineIntervals.Ceiling.EXCLUDE;
+        ExamineIntervals.Floor fi = ExamineIntervals.Floor.INCLUDE; // fi = floor include
+        ExamineIntervals.Floor fe = ExamineIntervals.Floor.EXCLUDE; // fe = floor exclude
+        ExamineIntervals.Ceiling ci = ExamineIntervals.Ceiling.INCLUDE; // ci = ceiling include
+        ExamineIntervals.Ceiling ce = ExamineIntervals.Ceiling.EXCLUDE; // ce = ceiling exclude
 
+        ExaminerOfLongRange examiner = Examiner.ofRange(floor, ceiling);
         for (long i = floor; i <= ceiling; i += unit) {
             boolean isFloor = i == floor;
             boolean isCeiling = i == ceiling;
             boolean isBoth = isFloor || isCeiling;
 
-            tester.test(i, Examiner.ofRange(floor, ceiling)::requireIncludeInclude, floorInclude, ceilingInclude, false);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::requireIncludeExclude, floorInclude, ceilingExclude, isCeiling);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::requireExcludeInclude, floorExclude, ceilingInclude, isFloor);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::requireExcludeExclude, floorExclude, ceilingExclude, isBoth);
+            tester.test(i, examiner::requireIncludeInclude, fi, ci, RangeType.REQUIRE, false);
+            tester.test(i, examiner::requireIncludeExclude, fi, ce, RangeType.REQUIRE, isCeiling);
+            tester.test(i, examiner::requireExcludeInclude, fe, ci, RangeType.REQUIRE, isFloor);
+            tester.test(i, examiner::requireExcludeExclude, fe, ce, RangeType.REQUIRE, isBoth);
 
-            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseIncludeInclude, floorInclude, ceilingInclude, true);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseIncludeExclude, floorInclude, ceilingExclude, !isCeiling);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseExcludeInclude, floorExclude, ceilingInclude, !isFloor);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseExcludeExclude, floorExclude, ceilingExclude, !isBoth);
+            tester.test(i, examiner::refuseIncludeInclude, fi, ci, RangeType.REFUSE, true);
+            tester.test(i, examiner::refuseIncludeExclude, fi, ce, RangeType.REFUSE, !isCeiling);
+            tester.test(i, examiner::refuseExcludeInclude, fe, ci, RangeType.REFUSE, !isFloor);
+            tester.test(i, examiner::refuseExcludeExclude, fe, ce, RangeType.REFUSE, !isBoth);
         }
     }
 
@@ -296,25 +314,26 @@ class ExaminerTest {
         float ceiling = 2.0f;
         RangeTester<Float> tester = new RangeTester<>("kerker", floor, ceiling);
 
-        ExamineIntervals.Floor floorInclude = ExamineIntervals.Floor.INCLUDE;
-        ExamineIntervals.Floor floorExclude = ExamineIntervals.Floor.EXCLUDE;
-        ExamineIntervals.Ceiling ceilingInclude = ExamineIntervals.Ceiling.INCLUDE;
-        ExamineIntervals.Ceiling ceilingExclude = ExamineIntervals.Ceiling.EXCLUDE;
+        ExamineIntervals.Floor fi = ExamineIntervals.Floor.INCLUDE; // fi = floor include
+        ExamineIntervals.Floor fe = ExamineIntervals.Floor.EXCLUDE; // fe = floor exclude
+        ExamineIntervals.Ceiling ci = ExamineIntervals.Ceiling.INCLUDE; // ci = ceiling include
+        ExamineIntervals.Ceiling ce = ExamineIntervals.Ceiling.EXCLUDE; // ce = ceiling exclude
 
+        ExaminerOfFloatRange examiner = Examiner.ofRange(floor, ceiling);
         for (float i = floor; i <= ceiling; i += unit) {
             boolean isFloor = i == floor;
             boolean isCeiling = i == ceiling;
             boolean isBoth = isFloor || isCeiling;
 
-            tester.test(i, Examiner.ofRange(floor, ceiling)::requireIncludeInclude, floorInclude, ceilingInclude, false);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::requireIncludeExclude, floorInclude, ceilingExclude, isCeiling);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::requireExcludeInclude, floorExclude, ceilingInclude, isFloor);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::requireExcludeExclude, floorExclude, ceilingExclude, isBoth);
+            tester.test(i, examiner::requireIncludeInclude, fi, ci, RangeType.REQUIRE, false);
+            tester.test(i, examiner::requireIncludeExclude, fi, ce, RangeType.REQUIRE, isCeiling);
+            tester.test(i, examiner::requireExcludeInclude, fe, ci, RangeType.REQUIRE, isFloor);
+            tester.test(i, examiner::requireExcludeExclude, fe, ce, RangeType.REQUIRE, isBoth);
 
-            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseIncludeInclude, floorInclude, ceilingInclude, true);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseIncludeExclude, floorInclude, ceilingExclude, !isCeiling);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseExcludeInclude, floorExclude, ceilingInclude, !isFloor);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseExcludeExclude, floorExclude, ceilingExclude, !isBoth);
+            tester.test(i, examiner::refuseIncludeInclude, fi, ci, RangeType.REFUSE, true);
+            tester.test(i, examiner::refuseIncludeExclude, fi, ce, RangeType.REFUSE, !isCeiling);
+            tester.test(i, examiner::refuseExcludeInclude, fe, ci, RangeType.REFUSE, !isFloor);
+            tester.test(i, examiner::refuseExcludeExclude, fe, ce, RangeType.REFUSE, !isBoth);
         }
     }
 
@@ -325,25 +344,26 @@ class ExaminerTest {
         double ceiling = 2.0d;
         RangeTester<Double> tester = new RangeTester<>("kerker", floor, ceiling);
 
-        ExamineIntervals.Floor floorInclude = ExamineIntervals.Floor.INCLUDE;
-        ExamineIntervals.Floor floorExclude = ExamineIntervals.Floor.EXCLUDE;
-        ExamineIntervals.Ceiling ceilingInclude = ExamineIntervals.Ceiling.INCLUDE;
-        ExamineIntervals.Ceiling ceilingExclude = ExamineIntervals.Ceiling.EXCLUDE;
+        ExamineIntervals.Floor fi = ExamineIntervals.Floor.INCLUDE; // fi = floor include
+        ExamineIntervals.Floor fe = ExamineIntervals.Floor.EXCLUDE; // fe = floor exclude
+        ExamineIntervals.Ceiling ci = ExamineIntervals.Ceiling.INCLUDE; // ci = ceiling include
+        ExamineIntervals.Ceiling ce = ExamineIntervals.Ceiling.EXCLUDE; // ce = ceiling exclude
 
+        ExaminerOfDoubleRange examiner = Examiner.ofRange(floor, ceiling);
         for (double i = floor; i <= ceiling; i += unit) {
             boolean isFloor = i == floor;
             boolean isCeiling = i == ceiling;
             boolean isBoth = isFloor || isCeiling;
 
-            tester.test(i, Examiner.ofRange(floor, ceiling)::requireIncludeInclude, floorInclude, ceilingInclude, false);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::requireIncludeExclude, floorInclude, ceilingExclude, isCeiling);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::requireExcludeInclude, floorExclude, ceilingInclude, isFloor);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::requireExcludeExclude, floorExclude, ceilingExclude, isBoth);
+            tester.test(i, examiner::requireIncludeInclude, fi, ci, RangeType.REQUIRE, false);
+            tester.test(i, examiner::requireIncludeExclude, fi, ce, RangeType.REQUIRE, isCeiling);
+            tester.test(i, examiner::requireExcludeInclude, fe, ci, RangeType.REQUIRE, isFloor);
+            tester.test(i, examiner::requireExcludeExclude, fe, ce, RangeType.REQUIRE, isBoth);
 
-            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseIncludeInclude, floorInclude, ceilingInclude, true);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseIncludeExclude, floorInclude, ceilingExclude, !isCeiling);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseExcludeInclude, floorExclude, ceilingInclude, !isFloor);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseExcludeExclude, floorExclude, ceilingExclude, !isBoth);
+            tester.test(i, examiner::refuseIncludeInclude, fi, ci, RangeType.REFUSE, true);
+            tester.test(i, examiner::refuseIncludeExclude, fi, ce, RangeType.REFUSE, !isCeiling);
+            tester.test(i, examiner::refuseExcludeInclude, fe, ci, RangeType.REFUSE, !isFloor);
+            tester.test(i, examiner::refuseExcludeExclude, fe, ce, RangeType.REFUSE, !isBoth);
         }
     }
 
@@ -354,25 +374,26 @@ class ExaminerTest {
         char ceiling = 'd';
         RangeTester<Character> tester = new RangeTester<>("kerker", floor, ceiling);
 
-        ExamineIntervals.Floor floorInclude = ExamineIntervals.Floor.INCLUDE;
-        ExamineIntervals.Floor floorExclude = ExamineIntervals.Floor.EXCLUDE;
-        ExamineIntervals.Ceiling ceilingInclude = ExamineIntervals.Ceiling.INCLUDE;
-        ExamineIntervals.Ceiling ceilingExclude = ExamineIntervals.Ceiling.EXCLUDE;
+        ExamineIntervals.Floor fi = ExamineIntervals.Floor.INCLUDE; // fi = floor include
+        ExamineIntervals.Floor fe = ExamineIntervals.Floor.EXCLUDE; // fe = floor exclude
+        ExamineIntervals.Ceiling ci = ExamineIntervals.Ceiling.INCLUDE; // ci = ceiling include
+        ExamineIntervals.Ceiling ce = ExamineIntervals.Ceiling.EXCLUDE; // ce = ceiling exclude
 
+        ExaminerOfCharRange examiner = Examiner.ofRange(floor, ceiling);
         for (char i = floor; i <= ceiling; i += unit) {
             boolean isFloor = i == floor;
             boolean isCeiling = i == ceiling;
             boolean isBoth = isFloor || isCeiling;
 
-            tester.test(i, Examiner.ofRange(floor, ceiling)::requireIncludeInclude, floorInclude, ceilingInclude, false);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::requireIncludeExclude, floorInclude, ceilingExclude, isCeiling);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::requireExcludeInclude, floorExclude, ceilingInclude, isFloor);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::requireExcludeExclude, floorExclude, ceilingExclude, isBoth);
+            tester.test(i, examiner::requireIncludeInclude, fi, ci, RangeType.REQUIRE, false);
+            tester.test(i, examiner::requireIncludeExclude, fi, ce, RangeType.REQUIRE, isCeiling);
+            tester.test(i, examiner::requireExcludeInclude, fe, ci, RangeType.REQUIRE, isFloor);
+            tester.test(i, examiner::requireExcludeExclude, fe, ce, RangeType.REQUIRE, isBoth);
 
-            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseIncludeInclude, floorInclude, ceilingInclude, true);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseIncludeExclude, floorInclude, ceilingExclude, !isCeiling);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseExcludeInclude, floorExclude, ceilingInclude, !isFloor);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseExcludeExclude, floorExclude, ceilingExclude, !isBoth);
+            tester.test(i, examiner::refuseIncludeInclude, fi, ci, RangeType.REFUSE, true);
+            tester.test(i, examiner::refuseIncludeExclude, fi, ce, RangeType.REFUSE, !isCeiling);
+            tester.test(i, examiner::refuseExcludeInclude, fe, ci, RangeType.REFUSE, !isFloor);
+            tester.test(i, examiner::refuseExcludeExclude, fe, ce, RangeType.REFUSE, !isBoth);
         }
     }
 
@@ -383,55 +404,57 @@ class ExaminerTest {
         byte ceiling = 4;
         RangeTester<Byte> tester = new RangeTester<>("kerker", floor, ceiling);
 
-        ExamineIntervals.Floor floorInclude = ExamineIntervals.Floor.INCLUDE;
-        ExamineIntervals.Floor floorExclude = ExamineIntervals.Floor.EXCLUDE;
-        ExamineIntervals.Ceiling ceilingInclude = ExamineIntervals.Ceiling.INCLUDE;
-        ExamineIntervals.Ceiling ceilingExclude = ExamineIntervals.Ceiling.EXCLUDE;
+        ExamineIntervals.Floor fi = ExamineIntervals.Floor.INCLUDE; // fi = floor include
+        ExamineIntervals.Floor fe = ExamineIntervals.Floor.EXCLUDE; // fe = floor exclude
+        ExamineIntervals.Ceiling ci = ExamineIntervals.Ceiling.INCLUDE; // ci = ceiling include
+        ExamineIntervals.Ceiling ce = ExamineIntervals.Ceiling.EXCLUDE; // ce = ceiling exclude
 
+        ExaminerOfByteRange examiner = Examiner.ofRange(floor, ceiling);
         for (byte i = floor; i <= ceiling; i += unit) {
             boolean isFloor = i == floor;
             boolean isCeiling = i == ceiling;
             boolean isBoth = isFloor || isCeiling;
 
-            tester.test(i, Examiner.ofRange(floor, ceiling)::requireIncludeInclude, floorInclude, ceilingInclude, false);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::requireIncludeExclude, floorInclude, ceilingExclude, isCeiling);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::requireExcludeInclude, floorExclude, ceilingInclude, isFloor);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::requireExcludeExclude, floorExclude, ceilingExclude, isBoth);
+            tester.test(i, examiner::requireIncludeInclude, fi, ci, RangeType.REQUIRE, false);
+            tester.test(i, examiner::requireIncludeExclude, fi, ce, RangeType.REQUIRE, isCeiling);
+            tester.test(i, examiner::requireExcludeInclude, fe, ci, RangeType.REQUIRE, isFloor);
+            tester.test(i, examiner::requireExcludeExclude, fe, ce, RangeType.REQUIRE, isBoth);
 
-            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseIncludeInclude, floorInclude, ceilingInclude, true);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseIncludeExclude, floorInclude, ceilingExclude, !isCeiling);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseExcludeInclude, floorExclude, ceilingInclude, !isFloor);
-            tester.test(i, Examiner.ofRange(floor, ceiling)::refuseExcludeExclude, floorExclude, ceilingExclude, !isBoth);
+            tester.test(i, examiner::refuseIncludeInclude, fi, ci, RangeType.REFUSE, true);
+            tester.test(i, examiner::refuseIncludeExclude, fi, ce, RangeType.REFUSE, !isCeiling);
+            tester.test(i, examiner::refuseExcludeInclude, fe, ci, RangeType.REFUSE, !isFloor);
+            tester.test(i, examiner::refuseExcludeExclude, fe, ce, RangeType.REFUSE, !isBoth);
         }
     }
 
     @Test
     public void test_ofRange_Number() {
-        ExamineIntervals.Floor floorInclude = ExamineIntervals.Floor.INCLUDE;
-        ExamineIntervals.Floor floorExclude = ExamineIntervals.Floor.EXCLUDE;
-        ExamineIntervals.Ceiling ceilingInclude = ExamineIntervals.Ceiling.INCLUDE;
-        ExamineIntervals.Ceiling ceilingExclude = ExamineIntervals.Ceiling.EXCLUDE;
+        ExamineIntervals.Floor fi = ExamineIntervals.Floor.INCLUDE; // fi = floor include
+        ExamineIntervals.Floor fe = ExamineIntervals.Floor.EXCLUDE; // fe = floor exclude
+        ExamineIntervals.Ceiling ci = ExamineIntervals.Ceiling.INCLUDE; // ci = ceiling include
+        ExamineIntervals.Ceiling ce = ExamineIntervals.Ceiling.EXCLUDE; // ce = ceiling exclude
 
         NUMBER_OF_FLOOR.forEach((floorTerm, floor) -> {
             NUMBER_OF_CEILING.forEach((ceilingTerm, ceiling) -> {
 
                 RangeTester<Number> tester = new RangeTester<>("kerker", floor, ceiling);
 
+                ExaminerOfNumberRange examiner = Examiner.ofRange(floor, ceiling);
                 NUMBER_OF_UNIT.forEach((unitTerm, i) -> {
                     try {
                         boolean isFloor = i.doubleValue() == floor.doubleValue();
                         boolean isCeiling = i.doubleValue() == ceiling.doubleValue();
                         boolean isBoth = isFloor || isCeiling;
 
-                        tester.test(i, Examiner.ofRange(floor, ceiling)::requireIncludeInclude, floorInclude, ceilingInclude, false);
-                        tester.test(i, Examiner.ofRange(floor, ceiling)::requireIncludeExclude, floorInclude, ceilingExclude, isCeiling);
-                        tester.test(i, Examiner.ofRange(floor, ceiling)::requireExcludeInclude, floorExclude, ceilingInclude, isFloor);
-                        tester.test(i, Examiner.ofRange(floor, ceiling)::requireExcludeExclude, floorExclude, ceilingExclude, isBoth);
+                        tester.test(i, examiner::requireIncludeInclude, fi, ci, RangeType.REQUIRE, false);
+                        tester.test(i, examiner::requireIncludeExclude, fi, ce, RangeType.REQUIRE, isCeiling);
+                        tester.test(i, examiner::requireExcludeInclude, fe, ci, RangeType.REQUIRE, isFloor);
+                        tester.test(i, examiner::requireExcludeExclude, fe, ce, RangeType.REQUIRE, isBoth);
 
-                        tester.test(i, Examiner.ofRange(floor, ceiling)::refuseIncludeInclude, floorInclude, ceilingInclude, true);
-                        tester.test(i, Examiner.ofRange(floor, ceiling)::refuseIncludeExclude, floorInclude, ceilingExclude, !isCeiling);
-                        tester.test(i, Examiner.ofRange(floor, ceiling)::refuseExcludeInclude, floorExclude, ceilingInclude, !isFloor);
-                        tester.test(i, Examiner.ofRange(floor, ceiling)::refuseExcludeExclude, floorExclude, ceilingExclude, !isBoth);
+                        tester.test(i, examiner::refuseIncludeInclude, fi, ci, RangeType.REFUSE, true);
+                        tester.test(i, examiner::refuseIncludeExclude, fi, ce, RangeType.REFUSE, !isCeiling);
+                        tester.test(i, examiner::refuseExcludeInclude, fe, ci, RangeType.REFUSE, !isFloor);
+                        tester.test(i, examiner::refuseExcludeExclude, fe, ce, RangeType.REFUSE, !isBoth);
 
                     } catch (Throwable t) {
                         String msg = "floor(" + floorTerm + "), unit(" + unitTerm + "), ceiling(" + ceilingTerm + ")";
