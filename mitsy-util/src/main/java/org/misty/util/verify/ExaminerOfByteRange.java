@@ -1,6 +1,7 @@
 package org.misty.util.verify;
 
 import org.misty.util.error.MistyError;
+import org.misty.util.fi.FiBiConsumerThrow1;
 
 public class ExaminerOfByteRange {
 
@@ -14,107 +15,155 @@ public class ExaminerOfByteRange {
     }
 
     public byte requireIncludeInclude(String term, byte arg) {
-        Examiner.refuseNullAndEmpty("term", term);
-
-        if (arg >= this.floor && arg <= this.ceiling) {
-            return arg;
-        } else {
+        return requireIncludeInclude(term, arg, (floor, ceiling) -> {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
             throw MistyError.ARGUMENT_ERROR.thrown(description);
+        });
+    }
+
+    public <ThrowableType extends Throwable> byte requireIncludeInclude(String term, byte arg, FiBiConsumerThrow1<Byte, Byte, ThrowableType> thrownAction) throws ThrowableType {
+        Examiner.refuseNullAndEmpty("term", term);
+
+        if (!(arg >= this.floor && arg <= this.ceiling)) {
+            thrownAction.acceptOrHandle(this.floor, this.ceiling);
         }
+
+        return arg;
     }
 
     public byte requireIncludeExclude(String term, byte arg) {
-        Examiner.refuseNullAndEmpty("term", term);
-
-        if (arg >= this.floor && arg < this.ceiling) {
-            return arg;
-        } else {
+        return requireIncludeExclude(term, arg, (floor, ceiling) -> {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
             throw MistyError.ARGUMENT_ERROR.thrown(description);
+        });
+    }
+
+    public <ThrowableType extends Throwable> byte requireIncludeExclude(String term, byte arg, FiBiConsumerThrow1<Byte, Byte, ThrowableType> thrownAction) throws ThrowableType {
+        Examiner.refuseNullAndEmpty("term", term);
+
+        if (!(arg >= this.floor && arg < this.ceiling)) {
+            thrownAction.acceptOrHandle(this.floor, this.ceiling);
         }
+
+        return arg;
     }
 
     public byte requireExcludeInclude(String term, byte arg) {
-        Examiner.refuseNullAndEmpty("term", term);
-
-        if (arg > this.floor && arg <= this.ceiling) {
-            return arg;
-        } else {
+        return requireExcludeInclude(term, arg, (floor, ceiling) -> {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
             throw MistyError.ARGUMENT_ERROR.thrown(description);
+        });
+    }
+
+    public <ThrowableType extends Throwable> byte requireExcludeInclude(String term, byte arg, FiBiConsumerThrow1<Byte, Byte, ThrowableType> thrownAction) throws ThrowableType {
+        Examiner.refuseNullAndEmpty("term", term);
+
+        if (!(arg > this.floor && arg <= this.ceiling)) {
+            thrownAction.acceptOrHandle(this.floor, this.ceiling);
         }
+
+        return arg;
     }
 
     public byte requireExcludeExclude(String term, byte arg) {
-        Examiner.refuseNullAndEmpty("term", term);
-
-        if (arg > this.floor && arg < this.ceiling) {
-            return arg;
-        } else {
+        return requireExcludeExclude(term, arg, (floor, ceiling) -> {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
             throw MistyError.ARGUMENT_ERROR.thrown(description);
+        });
+    }
+
+    public <ThrowableType extends Throwable> byte requireExcludeExclude(String term, byte arg, FiBiConsumerThrow1<Byte, Byte, ThrowableType> thrownAction) throws ThrowableType {
+        Examiner.refuseNullAndEmpty("term", term);
+
+        if (!(arg > this.floor && arg < this.ceiling)) {
+            thrownAction.acceptOrHandle(this.floor, this.ceiling);
         }
+
+        return arg;
     }
 
     public byte refuseIncludeInclude(String term, byte arg) {
+        return refuseIncludeInclude(term, arg, (floor, ceiling) -> {
+            String description = ExaminerMessage.refuseInRange(term, arg,
+                    ExamineIntervals.Floor.INCLUDE, this.floor,
+                    ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
+            throw MistyError.ARGUMENT_ERROR.thrown(description);
+        });
+    }
+
+    public <ThrowableType extends Throwable> byte refuseIncludeInclude(String term, byte arg, FiBiConsumerThrow1<Byte, Byte, ThrowableType> thrownAction) throws ThrowableType {
         Examiner.refuseNullAndEmpty("term", term);
 
         if (arg >= this.floor && arg <= this.ceiling) {
-            String description = ExaminerMessage.refuseInRange(term, arg,
-                    ExamineIntervals.Floor.INCLUDE, this.floor,
-                    ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
-        } else {
-            return arg;
+            thrownAction.acceptOrHandle(this.floor, this.ceiling);
         }
+
+        return arg;
     }
 
     public byte refuseIncludeExclude(String term, byte arg) {
-        Examiner.refuseNullAndEmpty("term", term);
-
-        if (arg >= this.floor && arg < this.ceiling) {
+        return refuseIncludeExclude(term, arg, (floor, ceiling) -> {
             String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
             throw MistyError.ARGUMENT_ERROR.thrown(description);
-        } else {
-            return arg;
+        });
+    }
+
+    public <ThrowableType extends Throwable> byte refuseIncludeExclude(String term, byte arg, FiBiConsumerThrow1<Byte, Byte, ThrowableType> thrownAction) throws ThrowableType {
+        Examiner.refuseNullAndEmpty("term", term);
+
+        if (arg >= this.floor && arg < this.ceiling) {
+            thrownAction.acceptOrHandle(this.floor, this.ceiling);
         }
+
+        return arg;
     }
 
     public byte refuseExcludeInclude(String term, byte arg) {
-        Examiner.refuseNullAndEmpty("term", term);
-
-        if (arg > this.floor && arg <= this.ceiling) {
+        return refuseExcludeInclude(term, arg, (floor, ceiling) -> {
             String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
             throw MistyError.ARGUMENT_ERROR.thrown(description);
-        } else {
-            return arg;
+        });
+    }
+
+    public <ThrowableType extends Throwable> byte refuseExcludeInclude(String term, byte arg, FiBiConsumerThrow1<Byte, Byte, ThrowableType> thrownAction) throws ThrowableType {
+        Examiner.refuseNullAndEmpty("term", term);
+
+        if (arg > this.floor && arg <= this.ceiling) {
+            thrownAction.acceptOrHandle(this.floor, this.ceiling);
         }
+
+        return arg;
     }
 
     public byte refuseExcludeExclude(String term, byte arg) {
-        Examiner.refuseNullAndEmpty("term", term);
-
-        if (arg > this.floor && arg < this.ceiling) {
+        return refuseExcludeExclude(term, arg, (floor, ceiling) -> {
             String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
             throw MistyError.ARGUMENT_ERROR.thrown(description);
-        } else {
-            return arg;
+        });
+    }
+
+    public <ThrowableType extends Throwable> byte refuseExcludeExclude(String term, byte arg, FiBiConsumerThrow1<Byte, Byte, ThrowableType> thrownAction) throws ThrowableType {
+        Examiner.refuseNullAndEmpty("term", term);
+
+        if (arg > this.floor && arg < this.ceiling) {
+            thrownAction.acceptOrHandle(this.floor, this.ceiling);
         }
+
+        return arg;
     }
 
 }
