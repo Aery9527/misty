@@ -402,10 +402,8 @@ class ExaminerTest {
 
     @Test
     public void test_ofRange_Number() {
-
         NUMBER_OF_FLOOR.forEach((floorTerm, floor) -> {
             NUMBER_OF_CEILING.forEach((ceilingTerm, ceiling) -> {
-
                 RangeTester<Number> tester = new RangeTester<>("kerker", floor, ceiling);
 
                 ExaminerOfNumberRange examiner = Examiner.ofRange(floor, ceiling);
