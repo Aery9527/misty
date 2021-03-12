@@ -7,7 +7,6 @@ import org.misty.util.fi.FiRunnableThrow1;
 import org.misty.util.tool.StringTool;
 
 import java.util.Optional;
-import java.util.function.BooleanSupplier;
 
 public class Examiner {
 
@@ -155,92 +154,83 @@ public class Examiner {
         return new ExaminerOfNumberRange(floor, ceiling);
     }
 
-    // requireMoreEqual
+    // requireMoreInclude
 
-    static short requireMoreEqual(String term, short arg, short floor) {
-        if (arg < floor) {
-            String description = ExaminerMessage.requireMoreEqual(term, arg, floor);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
-        } else {
+    static short requireMoreInclude(String term, short arg, short floor) {
+        if (arg >= floor) {
             return arg;
+        } else {
+            String description = ExaminerMessage.requireMoreInclude(term, arg, floor);
+            throw MistyError.ARGUMENT_ERROR.thrown(description);
         }
     }
 
-    static int requireMoreEqual(String term, int arg, int floor) {
-        if (arg < floor) {
-            String description = ExaminerMessage.requireMoreEqual(term, arg, floor);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
-        } else {
+    static int requireMoreInclude(String term, int arg, int floor) {
+        if (arg >= floor) {
             return arg;
+        } else {
+            String description = ExaminerMessage.requireMoreInclude(term, arg, floor);
+            throw MistyError.ARGUMENT_ERROR.thrown(description);
         }
     }
 
-    static long requireMoreEqual(String term, long arg, long floor) {
-        if (arg < floor) {
-            String description = ExaminerMessage.requireMoreEqual(term, arg, floor);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
-        } else {
+    static long requireMoreInclude(String term, long arg, long floor) {
+        if (arg >= floor) {
             return arg;
+        } else {
+            String description = ExaminerMessage.requireMoreInclude(term, arg, floor);
+            throw MistyError.ARGUMENT_ERROR.thrown(description);
         }
     }
 
-    static float requireMoreEqual(String term, float arg, float floor) {
-        if (arg < floor) {
-            String description = ExaminerMessage.requireMoreEqual(term, arg, floor);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
-        } else {
+    static float requireMoreInclude(String term, float arg, float floor) {
+        if (arg >= floor) {
             return arg;
+        } else {
+            String description = ExaminerMessage.requireMoreInclude(term, arg, floor);
+            throw MistyError.ARGUMENT_ERROR.thrown(description);
         }
     }
 
-    static double requireMoreEqual(String term, double arg, double floor) {
-        if (arg < floor) {
-            String description = ExaminerMessage.requireMoreEqual(term, arg, floor);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
-        } else {
+    static double requireMoreInclude(String term, double arg, double floor) {
+        if (arg >= floor) {
             return arg;
+        } else {
+            String description = ExaminerMessage.requireMoreInclude(term, arg, floor);
+            throw MistyError.ARGUMENT_ERROR.thrown(description);
         }
     }
 
-    static char requireMoreEqual(String term, char arg, char floor) {
-        if (arg < floor) {
-            String description = ExaminerMessage.requireMoreEqual(term, arg, floor);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
-        } else {
+    static char requireMoreInclude(String term, char arg, char floor) {
+        if (arg >= floor) {
             return arg;
+        } else {
+            String description = ExaminerMessage.requireMoreInclude(term, arg, floor);
+            throw MistyError.ARGUMENT_ERROR.thrown(description);
         }
     }
 
-    static byte requireMoreEqual(String term, byte arg, byte floor) {
-        if (arg < floor) {
-            String description = ExaminerMessage.requireMoreEqual(term, arg, floor);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
-        } else {
+    static byte requireMoreInclude(String term, byte arg, byte floor) {
+        if (arg >= floor) {
             return arg;
+        } else {
+            String description = ExaminerMessage.requireMoreInclude(term, arg, floor);
+            throw MistyError.ARGUMENT_ERROR.thrown(description);
         }
     }
 
-    static Character requireMoreEqual(String term, Character arg, Character floor) {
-        if (arg < floor) {
-            String description = ExaminerMessage.requireMoreEqual(term, arg, floor);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
-        } else {
-            return arg;
-        }
-    }
-
-    static <ArgType extends Number> ArgType requireMoreEqual(String term, ArgType arg, ArgType floor) {
+    static <ArgType extends Number> ArgType requireMoreInclude(String term, ArgType arg, ArgType floor) {
         refuseNullAndEmpty("arg", arg);
         refuseNullAndEmpty("floor", floor);
 
         double d_arg = arg.doubleValue();
         double d_floor = floor.doubleValue();
 
-        if (d_arg < d_floor) {
-            String description = ExaminerMessage.requireMoreEqual(term, arg, floor);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
-        } else {
+        if (d_arg >= d_floor) {
             return arg;
+        } else {
+            String description = ExaminerMessage.requireMoreInclude(term, arg, floor);
+            throw MistyError.ARGUMENT_ERROR.thrown(description);
         }
     }
 

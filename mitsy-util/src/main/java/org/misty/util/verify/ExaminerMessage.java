@@ -10,13 +10,13 @@ public class ExaminerMessage {
 
     public static final String REFUSE_RANGE = "check error of \"%s\", the value is %s, refuse %s%s, %s%s";
 
-    public static final String REQUIRE_MORE_EQUAL = "check error of \"%s\", the value is %s, require more then or equal to %s";
+    public static final String REQUIRE_MORE_INCLUDE = "check error of \"%s\", the value is %s, require more include %s";
 
-    public static final String REQUIRE_LESS_EQUAL = "check error of \"%s\", the value is %s, require less then or equal to %s";
+    public static final String REQUIRE_MORE_EXCLUDE = "check error of \"%s\", the value is %s, require more exclude %s";
 
-    public static final String REFUSE_MORE_EQUAL = "check error of \"%s\", the value is %s, refuse more then or equal to %s";
+    public static final String REQUIRE_LESS_INCLUDE = "check error of \"%s\", the value is %s, require less include %s";
 
-    public static final String REFUSE_LESS_EQUAL = "check error of \"%s\", the value is %s, refuse less then or equal to %s";
+    public static final String REQUIRE_LESS_EXCLUDE = "check error of \"%s\", the value is %s, require less exclude %s";
 
     public static String requireNullOrEmpty(String term, String arg) {
         return String.format(REQUIRE_NULL_OR_EMPTY, arg, term);
@@ -146,40 +146,36 @@ public class ExaminerMessage {
 
     // requireNumberMoreEqual
 
-    public static String requireMoreEqual(String term, short arg, short floor) {
-        return String.format(REQUIRE_MORE_EQUAL, term, arg, floor);
+    public static String requireMoreInclude(String term, short arg, short floor) {
+        return String.format(REQUIRE_MORE_INCLUDE, term, arg, floor);
     }
 
-    public static String requireMoreEqual(String term, int arg, int floor) {
-        return String.format(REQUIRE_MORE_EQUAL, term, arg, floor);
+    public static String requireMoreInclude(String term, int arg, int floor) {
+        return String.format(REQUIRE_MORE_INCLUDE, term, arg, floor);
     }
 
-    public static String requireMoreEqual(String term, long arg, long floor) {
-        return String.format(REQUIRE_MORE_EQUAL, term, arg, floor);
+    public static String requireMoreInclude(String term, long arg, long floor) {
+        return String.format(REQUIRE_MORE_INCLUDE, term, arg, floor);
     }
 
-    public static String requireMoreEqual(String term, float arg, float floor) {
-        return String.format(REQUIRE_MORE_EQUAL, term, arg, floor);
+    public static String requireMoreInclude(String term, float arg, float floor) {
+        return String.format(REQUIRE_MORE_INCLUDE, term, arg, floor);
     }
 
-    public static String requireMoreEqual(String term, double arg, double floor) {
-        return String.format(REQUIRE_MORE_EQUAL, term, arg, floor);
+    public static String requireMoreInclude(String term, double arg, double floor) {
+        return String.format(REQUIRE_MORE_INCLUDE, term, arg, floor);
     }
 
-    public static String requireMoreEqual(String term, char arg, char floor) {
-        return String.format(REQUIRE_MORE_EQUAL, term, arg, floor);
+    public static String requireMoreInclude(String term, char arg, char floor) {
+        return String.format(REQUIRE_MORE_INCLUDE, term, arg, floor);
     }
 
-    public static String requireMoreEqual(String term, byte arg, byte floor) {
-        return String.format(REQUIRE_MORE_EQUAL, term, arg, floor);
+    public static String requireMoreInclude(String term, byte arg, byte floor) {
+        return String.format(REQUIRE_MORE_INCLUDE, term, arg, floor);
     }
 
-    public static String requireMoreEqual(String term, Character arg, Character floor) {
-        return String.format(REQUIRE_MORE_EQUAL, term, arg, floor);
-    }
-
-    public static String requireMoreEqual(String term, Number arg, Number floor) {
-        return String.format(REQUIRE_MORE_EQUAL, term, arg, floor);
+    public static String requireMoreInclude(String term, Number arg, Number floor) {
+        return String.format(REQUIRE_MORE_INCLUDE, term, arg, floor);
     }
 
     // requireLessEqual

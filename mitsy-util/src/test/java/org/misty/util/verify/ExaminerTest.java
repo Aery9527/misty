@@ -434,6 +434,173 @@ class ExaminerTest {
 
     // requireMoreEqual
 
+    @Test
+    public void test_requireMoreInclude_short() {
+        String term = "kerker";
+        short floor = 0;
+        short unit = 1;
+        short ceiling = 4;
+        short bound = 2;
 
+        for (short i = floor; i <= ceiling; i += unit) {
+            short arg = i;
+            if (arg >= bound) {
+                Assertions.assertThat(Examiner.requireMoreInclude(term, arg, bound)).isEqualTo(arg);
+            } else {
+                Assertions.assertThatThrownBy(() -> Examiner.requireMoreInclude(term, arg, bound))
+                        .isInstanceOf(MistyException.class)
+                        .hasMessageContaining(ExaminerMessage.requireMoreInclude(term, arg, bound));
+            }
+        }
+    }
+
+    @Test
+    public void test_requireMoreInclude_int() {
+        String term = "kerker";
+        int floor = 0;
+        int unit = 1;
+        int ceiling = 4;
+        int bound = 2;
+
+        for (int i = floor; i <= ceiling; i += unit) {
+            int arg = i;
+            if (arg >= bound) {
+                Assertions.assertThat(Examiner.requireMoreInclude(term, arg, bound)).isEqualTo(arg);
+            } else {
+                Assertions.assertThatThrownBy(() -> Examiner.requireMoreInclude(term, arg, bound))
+                        .isInstanceOf(MistyException.class)
+                        .hasMessageContaining(ExaminerMessage.requireMoreInclude(term, arg, bound));
+            }
+        }
+    }
+
+    @Test
+    public void test_requireMoreInclude_long() {
+        String term = "kerker";
+        long floor = 0;
+        long unit = 1;
+        long ceiling = 4;
+        long bound = 2;
+
+        for (long i = floor; i <= ceiling; i += unit) {
+            long arg = i;
+            if (arg >= bound) {
+                Assertions.assertThat(Examiner.requireMoreInclude(term, arg, bound)).isEqualTo(arg);
+            } else {
+                Assertions.assertThatThrownBy(() -> Examiner.requireMoreInclude(term, arg, bound))
+                        .isInstanceOf(MistyException.class)
+                        .hasMessageContaining(ExaminerMessage.requireMoreInclude(term, arg, bound));
+            }
+        }
+    }
+
+    @Test
+    public void test_requireMoreInclude_float() {
+        String term = "kerker";
+        float floor = 0.0f;
+        float unit = 0.5f;
+        float ceiling = 4.0f;
+        float bound = 2.0f;
+
+        for (float i = floor; i <= ceiling; i += unit) {
+            float arg = i;
+            if (arg >= bound) {
+                Assertions.assertThat(Examiner.requireMoreInclude(term, arg, bound)).isEqualTo(arg);
+            } else {
+                Assertions.assertThatThrownBy(() -> Examiner.requireMoreInclude(term, arg, bound))
+                        .isInstanceOf(MistyException.class)
+                        .hasMessageContaining(ExaminerMessage.requireMoreInclude(term, arg, bound));
+            }
+        }
+    }
+
+    @Test
+    public void test_requireMoreInclude_double() {
+        String term = "kerker";
+        double floor = 0.0f;
+        double unit = 0.5f;
+        double ceiling = 4.0f;
+        double bound = 2.0f;
+
+        for (double i = floor; i <= ceiling; i += unit) {
+            double arg = i;
+            if (arg >= bound) {
+                Assertions.assertThat(Examiner.requireMoreInclude(term, arg, bound)).isEqualTo(arg);
+            } else {
+                Assertions.assertThatThrownBy(() -> Examiner.requireMoreInclude(term, arg, bound))
+                        .isInstanceOf(MistyException.class)
+                        .hasMessageContaining(ExaminerMessage.requireMoreInclude(term, arg, bound));
+            }
+        }
+    }
+
+    @Test
+    public void test_requireMoreInclude_char() {
+        String term = "kerker";
+        char floor = 'a';
+        char unit = 'a';
+        char ceiling = 'e';
+        char bound = 'c';
+
+        for (char i = floor; i <= ceiling; i += unit) {
+            char arg = i;
+            if (arg >= bound) {
+                Assertions.assertThat(Examiner.requireMoreInclude(term, arg, bound)).isEqualTo(arg);
+            } else {
+                Assertions.assertThatThrownBy(() -> Examiner.requireMoreInclude(term, arg, bound))
+                        .isInstanceOf(MistyException.class)
+                        .hasMessageContaining(ExaminerMessage.requireMoreInclude(term, arg, bound));
+            }
+        }
+    }
+
+    @Test
+    public void test_requireMoreInclude_byte() {
+        String term = "kerker";
+        byte floor = 'a';
+        byte unit = 'a';
+        byte ceiling = 'e';
+        byte bound = 'c';
+
+        for (byte i = floor; i <= ceiling; i += unit) {
+            byte arg = i;
+            if (arg >= bound) {
+                Assertions.assertThat(Examiner.requireMoreInclude(term, arg, bound)).isEqualTo(arg);
+            } else {
+                Assertions.assertThatThrownBy(() -> Examiner.requireMoreInclude(term, arg, bound))
+                        .isInstanceOf(MistyException.class)
+                        .hasMessageContaining(ExaminerMessage.requireMoreInclude(term, arg, bound));
+            }
+        }
+    }
+
+    @Test
+    public void test_requireMoreInclude_Number() {
+        NUMBER_OF_FLOOR.forEach((floorTerm, floor) -> {
+            NUMBER_OF_CEILING.forEach((ceilingTerm, ceiling) -> {
+                NUMBER_OF_UNIT.forEach((unitTerm, i) -> {
+//                    try {
+//                        boolean isFloor = i.doubleValue() == floor.doubleValue();
+//                        boolean isCeiling = i.doubleValue() == ceiling.doubleValue();
+//                        boolean isBoth = isFloor || isCeiling;
+//
+//                        tester.test(i, examiner::requireIncludeInclude, FI, CI, RangeType.REQUIRE, false);
+//                        tester.test(i, examiner::requireIncludeExclude, FI, CE, RangeType.REQUIRE, isCeiling);
+//                        tester.test(i, examiner::requireExcludeInclude, FE, CI, RangeType.REQUIRE, isFloor);
+//                        tester.test(i, examiner::requireExcludeExclude, FE, CE, RangeType.REQUIRE, isBoth);
+//
+//                        tester.test(i, examiner::refuseIncludeInclude, FI, CI, RangeType.REFUSE, true);
+//                        tester.test(i, examiner::refuseIncludeExclude, FI, CE, RangeType.REFUSE, !isCeiling);
+//                        tester.test(i, examiner::refuseExcludeInclude, FE, CI, RangeType.REFUSE, !isFloor);
+//                        tester.test(i, examiner::refuseExcludeExclude, FE, CE, RangeType.REFUSE, !isBoth);
+//
+//                    } catch (Throwable t) {
+//                        String msg = "floor(" + floorTerm + "), unit(" + unitTerm + "), ceiling(" + ceilingTerm + ")";
+//                        throw MistyError.UNKNOWN.thrown(msg, t);
+//                    }
+                });
+            });
+        });
+    }
 
 }
