@@ -1,7 +1,6 @@
 package org.misty.util.module;
 
 import org.misty.util.verify.Examiner;
-import org.misty.util.verify.Judge;
 
 import java.util.Objects;
 
@@ -37,12 +36,12 @@ public abstract class MistyModule {
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return Objects.hash(this.name, this.version);
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public final boolean equals(Object obj) {
         if (obj instanceof MistyModule) {
             MistyModule mistyModule = (MistyModule) obj;
             return mistyModule.name.equals(this.name) && mistyModule.version.equals(this.version);
@@ -56,23 +55,23 @@ public abstract class MistyModule {
         return this.fullName;
     }
 
-    public String getName() {
+    public final String getName() {
         return name;
     }
 
-    public String getVersion() {
+    public final String getVersion() {
         return version;
     }
 
-    public String getDescription() {
+    public final String getDescription() {
         return description;
     }
 
-    public String getFullName() {
+    public final String getFullName() {
         return fullName;
     }
 
-    public String getFullNameWithClass() {
+    public final String getFullNameWithClass() {
         return fullNameWithClass;
     }
 }
