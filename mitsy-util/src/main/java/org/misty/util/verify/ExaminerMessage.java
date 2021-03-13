@@ -70,12 +70,6 @@ public class ExaminerMessage {
         return String.format(REQUIRE_RANGE, term, arg, floorIntervals.getSymbol(), floor, ceiling, ceilingIntervals.getSymbol());
     }
 
-    public static String requireInRange(String term, Number arg,
-                                        ExamineIntervals.Floor floorIntervals, Number floor,
-                                        ExamineIntervals.Ceiling ceilingIntervals, Number ceiling) {
-        return String.format(REQUIRE_RANGE, term, arg, floorIntervals.getSymbol(), floor, ceiling, ceilingIntervals.getSymbol());
-    }
-
     public static String requireInRange(String term, Object arg,
                                         ExamineIntervals.Floor floorIntervals, Object floor,
                                         ExamineIntervals.Ceiling ceilingIntervals, Object ceiling) {
@@ -126,25 +120,13 @@ public class ExaminerMessage {
         return String.format(REFUSE_RANGE, term, arg, floorIntervals.getSymbol(), floor, ceiling, ceilingIntervals.getSymbol());
     }
 
-    public static String refuseInRange(String term, Character arg,
-                                       ExamineIntervals.Floor floorIntervals, Character floor,
-                                       ExamineIntervals.Ceiling ceilingIntervals, Character ceiling) {
-        return String.format(REFUSE_RANGE, term, arg, floorIntervals.getSymbol(), floor, ceiling, ceilingIntervals.getSymbol());
-    }
-
-    public static String refuseInRange(String term, Number arg,
-                                       ExamineIntervals.Floor floorIntervals, Number floor,
-                                       ExamineIntervals.Ceiling ceilingIntervals, Number ceiling) {
-        return String.format(REFUSE_RANGE, term, arg, floorIntervals.getSymbol(), floor, ceiling, ceilingIntervals.getSymbol());
-    }
-
     public static String refuseInRange(String term, Object arg,
                                        ExamineIntervals.Floor floorIntervals, Object floor,
                                        ExamineIntervals.Ceiling ceilingIntervals, Object ceiling) {
         return String.format(REFUSE_RANGE, term, arg, floorIntervals.getSymbol(), floor, ceiling, ceilingIntervals.getSymbol());
     }
 
-    // requireNumberMoreEqual
+    // requireMoreInclude
 
     public static String requireMoreInclude(String term, short arg, short floor) {
         return String.format(REQUIRE_MORE_INCLUDE, term, arg, floor);
@@ -178,6 +160,106 @@ public class ExaminerMessage {
         return String.format(REQUIRE_MORE_INCLUDE, term, arg, floor);
     }
 
-    // requireLessEqual
+    // requireMoreExclude
+
+    public static String requireMoreExclude(String term, short arg, short floor) {
+        return String.format(REQUIRE_MORE_INCLUDE, term, arg, floor);
+    }
+
+    public static String requireMoreExclude(String term, int arg, int floor) {
+        return String.format(REQUIRE_MORE_EXCLUDE, term, arg, floor);
+    }
+
+    public static String requireMoreExclude(String term, long arg, long floor) {
+        return String.format(REQUIRE_MORE_EXCLUDE, term, arg, floor);
+    }
+
+    public static String requireMoreExclude(String term, float arg, float floor) {
+        return String.format(REQUIRE_MORE_EXCLUDE, term, arg, floor);
+    }
+
+    public static String requireMoreExclude(String term, double arg, double floor) {
+        return String.format(REQUIRE_MORE_EXCLUDE, term, arg, floor);
+    }
+
+    public static String requireMoreExclude(String term, char arg, char floor) {
+        return String.format(REQUIRE_MORE_EXCLUDE, term, arg, floor);
+    }
+
+    public static String requireMoreExclude(String term, byte arg, byte floor) {
+        return String.format(REQUIRE_MORE_EXCLUDE, term, arg, floor);
+    }
+
+    public static String requireMoreExclude(String term, Number arg, Number floor) {
+        return String.format(REQUIRE_MORE_EXCLUDE, term, arg, floor);
+    }
+
+    // requireLessInclude
+
+    public static String requireLessInclude(String term, short arg, short ceiling) {
+        return String.format(REQUIRE_LESS_INCLUDE, term, arg, ceiling);
+    }
+
+    public static String requireLessInclude(String term, int arg, int ceiling) {
+        return String.format(REQUIRE_LESS_INCLUDE, term, arg, ceiling);
+    }
+
+    public static String requireLessInclude(String term, long arg, long ceiling) {
+        return String.format(REQUIRE_LESS_INCLUDE, term, arg, ceiling);
+    }
+
+    public static String requireLessInclude(String term, float arg, float ceiling) {
+        return String.format(REQUIRE_LESS_INCLUDE, term, arg, ceiling);
+    }
+
+    public static String requireLessInclude(String term, double arg, double ceiling) {
+        return String.format(REQUIRE_LESS_INCLUDE, term, arg, ceiling);
+    }
+
+    public static String requireLessInclude(String term, char arg, char ceiling) {
+        return String.format(REQUIRE_LESS_INCLUDE, term, arg, ceiling);
+    }
+
+    public static String requireLessInclude(String term, byte arg, byte ceiling) {
+        return String.format(REQUIRE_LESS_INCLUDE, term, arg, ceiling);
+    }
+
+    public static String requireLessInclude(String term, Number arg, Number ceiling) {
+        return String.format(REQUIRE_LESS_INCLUDE, term, arg, ceiling);
+    }
+
+    // requireLessExclude
+
+    public static String requireLessExclude(String term, short arg, short ceiling) {
+        return String.format(REQUIRE_LESS_EXCLUDE, term, arg, ceiling);
+    }
+
+    public static String requireLessExclude(String term, int arg, int ceiling) {
+        return String.format(REQUIRE_LESS_EXCLUDE, term, arg, ceiling);
+    }
+
+    public static String requireLessExclude(String term, long arg, long ceiling) {
+        return String.format(REQUIRE_LESS_EXCLUDE, term, arg, ceiling);
+    }
+
+    public static String requireLessExclude(String term, float arg, float ceiling) {
+        return String.format(REQUIRE_LESS_EXCLUDE, term, arg, ceiling);
+    }
+
+    public static String requireLessExclude(String term, double arg, double ceiling) {
+        return String.format(REQUIRE_LESS_EXCLUDE, term, arg, ceiling);
+    }
+
+    public static String requireLessExclude(String term, char arg, char ceiling) {
+        return String.format(REQUIRE_LESS_EXCLUDE, term, arg, ceiling);
+    }
+
+    public static String requireLessExclude(String term, byte arg, byte ceiling) {
+        return String.format(REQUIRE_LESS_EXCLUDE, term, arg, ceiling);
+    }
+
+    public static String requireLessExclude(String term, Number arg, Number ceiling) {
+        return String.format(REQUIRE_LESS_EXCLUDE, term, arg, ceiling);
+    }
 
 }

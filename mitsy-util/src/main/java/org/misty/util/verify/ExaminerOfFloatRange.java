@@ -15,7 +15,9 @@ public class ExaminerOfFloatRange {
     }
 
     public float requireIncludeInclude(String term, float arg) {
-        return requireIncludeInclude(term, arg, (floor, ceiling) -> {
+        Examiner.refuseNullAndEmpty("term", term);
+
+        return requireIncludeInclude(arg, (floor, ceiling) -> {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
@@ -23,9 +25,7 @@ public class ExaminerOfFloatRange {
         });
     }
 
-    public <ThrowableType extends Throwable> float requireIncludeInclude(String term, float arg, FiBiConsumerThrow1<Float, Float, ThrowableType> thrownAction) throws ThrowableType {
-        Examiner.refuseNullAndEmpty("term", term);
-
+    public <ThrowableType extends Throwable> float requireIncludeInclude(float arg, FiBiConsumerThrow1<Float, Float, ThrowableType> thrownAction) throws ThrowableType {
         if (!(arg >= this.floor && arg <= this.ceiling)) {
             thrownAction.acceptOrHandle(this.floor, this.ceiling);
         }
@@ -34,7 +34,9 @@ public class ExaminerOfFloatRange {
     }
 
     public float requireIncludeExclude(String term, float arg) {
-        return requireIncludeExclude(term, arg, (floor, ceiling) -> {
+        Examiner.refuseNullAndEmpty("term", term);
+
+        return requireIncludeExclude(arg, (floor, ceiling) -> {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
@@ -42,9 +44,7 @@ public class ExaminerOfFloatRange {
         });
     }
 
-    public <ThrowableType extends Throwable> float requireIncludeExclude(String term, float arg, FiBiConsumerThrow1<Float, Float, ThrowableType> thrownAction) throws ThrowableType {
-        Examiner.refuseNullAndEmpty("term", term);
-
+    public <ThrowableType extends Throwable> float requireIncludeExclude(float arg, FiBiConsumerThrow1<Float, Float, ThrowableType> thrownAction) throws ThrowableType {
         if (!(arg >= this.floor && arg < this.ceiling)) {
             thrownAction.acceptOrHandle(this.floor, this.ceiling);
         }
@@ -53,7 +53,9 @@ public class ExaminerOfFloatRange {
     }
 
     public float requireExcludeInclude(String term, float arg) {
-        return requireExcludeInclude(term, arg, (floor, ceiling) -> {
+        Examiner.refuseNullAndEmpty("term", term);
+
+        return requireExcludeInclude(arg, (floor, ceiling) -> {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
@@ -61,9 +63,7 @@ public class ExaminerOfFloatRange {
         });
     }
 
-    public <ThrowableType extends Throwable> float requireExcludeInclude(String term, float arg, FiBiConsumerThrow1<Float, Float, ThrowableType> thrownAction) throws ThrowableType {
-        Examiner.refuseNullAndEmpty("term", term);
-
+    public <ThrowableType extends Throwable> float requireExcludeInclude(float arg, FiBiConsumerThrow1<Float, Float, ThrowableType> thrownAction) throws ThrowableType {
         if (!(arg > this.floor && arg <= this.ceiling)) {
             thrownAction.acceptOrHandle(this.floor, this.ceiling);
         }
@@ -72,7 +72,9 @@ public class ExaminerOfFloatRange {
     }
 
     public float requireExcludeExclude(String term, float arg) {
-        return requireExcludeExclude(term, arg, (floor, ceiling) -> {
+        Examiner.refuseNullAndEmpty("term", term);
+
+        return requireExcludeExclude(arg, (floor, ceiling) -> {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
@@ -80,9 +82,7 @@ public class ExaminerOfFloatRange {
         });
     }
 
-    public <ThrowableType extends Throwable> float requireExcludeExclude(String term, float arg, FiBiConsumerThrow1<Float, Float, ThrowableType> thrownAction) throws ThrowableType {
-        Examiner.refuseNullAndEmpty("term", term);
-
+    public <ThrowableType extends Throwable> float requireExcludeExclude(float arg, FiBiConsumerThrow1<Float, Float, ThrowableType> thrownAction) throws ThrowableType {
         if (!(arg > this.floor && arg < this.ceiling)) {
             thrownAction.acceptOrHandle(this.floor, this.ceiling);
         }
@@ -91,7 +91,9 @@ public class ExaminerOfFloatRange {
     }
 
     public float refuseIncludeInclude(String term, float arg) {
-        return refuseIncludeInclude(term, arg, (floor, ceiling) -> {
+        Examiner.refuseNullAndEmpty("term", term);
+
+        return refuseIncludeInclude(arg, (floor, ceiling) -> {
             String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
@@ -99,9 +101,7 @@ public class ExaminerOfFloatRange {
         });
     }
 
-    public <ThrowableType extends Throwable> float refuseIncludeInclude(String term, float arg, FiBiConsumerThrow1<Float, Float, ThrowableType> thrownAction) throws ThrowableType {
-        Examiner.refuseNullAndEmpty("term", term);
-
+    public <ThrowableType extends Throwable> float refuseIncludeInclude(float arg, FiBiConsumerThrow1<Float, Float, ThrowableType> thrownAction) throws ThrowableType {
         if (arg >= this.floor && arg <= this.ceiling) {
             thrownAction.acceptOrHandle(this.floor, this.ceiling);
         }
@@ -110,7 +110,9 @@ public class ExaminerOfFloatRange {
     }
 
     public float refuseIncludeExclude(String term, float arg) {
-        return refuseIncludeExclude(term, arg, (floor, ceiling) -> {
+        Examiner.refuseNullAndEmpty("term", term);
+
+        return refuseIncludeExclude(arg, (floor, ceiling) -> {
             String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
@@ -118,9 +120,7 @@ public class ExaminerOfFloatRange {
         });
     }
 
-    public <ThrowableType extends Throwable> float refuseIncludeExclude(String term, float arg, FiBiConsumerThrow1<Float, Float, ThrowableType> thrownAction) throws ThrowableType {
-        Examiner.refuseNullAndEmpty("term", term);
-
+    public <ThrowableType extends Throwable> float refuseIncludeExclude(float arg, FiBiConsumerThrow1<Float, Float, ThrowableType> thrownAction) throws ThrowableType {
         if (arg >= this.floor && arg < this.ceiling) {
             thrownAction.acceptOrHandle(this.floor, this.ceiling);
         }
@@ -129,7 +129,9 @@ public class ExaminerOfFloatRange {
     }
 
     public float refuseExcludeInclude(String term, float arg) {
-        return refuseExcludeInclude(term, arg, (floor, ceiling) -> {
+        Examiner.refuseNullAndEmpty("term", term);
+
+        return refuseExcludeInclude(arg, (floor, ceiling) -> {
             String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
@@ -137,9 +139,7 @@ public class ExaminerOfFloatRange {
         });
     }
 
-    public <ThrowableType extends Throwable> float refuseExcludeInclude(String term, float arg, FiBiConsumerThrow1<Float, Float, ThrowableType> thrownAction) throws ThrowableType {
-        Examiner.refuseNullAndEmpty("term", term);
-
+    public <ThrowableType extends Throwable> float refuseExcludeInclude(float arg, FiBiConsumerThrow1<Float, Float, ThrowableType> thrownAction) throws ThrowableType {
         if (arg > this.floor && arg <= this.ceiling) {
             thrownAction.acceptOrHandle(this.floor, this.ceiling);
         }
@@ -148,7 +148,9 @@ public class ExaminerOfFloatRange {
     }
 
     public float refuseExcludeExclude(String term, float arg) {
-        return refuseExcludeExclude(term, arg, (floor, ceiling) -> {
+        Examiner.refuseNullAndEmpty("term", term);
+
+        return refuseExcludeExclude(arg, (floor, ceiling) -> {
             String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
@@ -156,9 +158,7 @@ public class ExaminerOfFloatRange {
         });
     }
 
-    public <ThrowableType extends Throwable> float refuseExcludeExclude(String term, float arg, FiBiConsumerThrow1<Float, Float, ThrowableType> thrownAction) throws ThrowableType {
-        Examiner.refuseNullAndEmpty("term", term);
-
+    public <ThrowableType extends Throwable> float refuseExcludeExclude(float arg, FiBiConsumerThrow1<Float, Float, ThrowableType> thrownAction) throws ThrowableType {
         if (arg > this.floor && arg < this.ceiling) {
             thrownAction.acceptOrHandle(this.floor, this.ceiling);
         }

@@ -15,7 +15,9 @@ public class ExaminerOfByteRange {
     }
 
     public byte requireIncludeInclude(String term, byte arg) {
-        return requireIncludeInclude(term, arg, (floor, ceiling) -> {
+        Examiner.refuseNullAndEmpty("term", term);
+
+        return requireIncludeInclude(arg, (floor, ceiling) -> {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
@@ -23,18 +25,17 @@ public class ExaminerOfByteRange {
         });
     }
 
-    public <ThrowableType extends Throwable> byte requireIncludeInclude(String term, byte arg, FiBiConsumerThrow1<Byte, Byte, ThrowableType> thrownAction) throws ThrowableType {
-        Examiner.refuseNullAndEmpty("term", term);
-
+    public <ThrowableType extends Throwable> byte requireIncludeInclude(byte arg, FiBiConsumerThrow1<Byte, Byte, ThrowableType> thrownAction) throws ThrowableType {
         if (!(arg >= this.floor && arg <= this.ceiling)) {
             thrownAction.acceptOrHandle(this.floor, this.ceiling);
         }
-
         return arg;
     }
 
     public byte requireIncludeExclude(String term, byte arg) {
-        return requireIncludeExclude(term, arg, (floor, ceiling) -> {
+        Examiner.refuseNullAndEmpty("term", term);
+
+        return requireIncludeExclude(arg, (floor, ceiling) -> {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
@@ -42,18 +43,17 @@ public class ExaminerOfByteRange {
         });
     }
 
-    public <ThrowableType extends Throwable> byte requireIncludeExclude(String term, byte arg, FiBiConsumerThrow1<Byte, Byte, ThrowableType> thrownAction) throws ThrowableType {
-        Examiner.refuseNullAndEmpty("term", term);
-
+    public <ThrowableType extends Throwable> byte requireIncludeExclude(byte arg, FiBiConsumerThrow1<Byte, Byte, ThrowableType> thrownAction) throws ThrowableType {
         if (!(arg >= this.floor && arg < this.ceiling)) {
             thrownAction.acceptOrHandle(this.floor, this.ceiling);
         }
-
         return arg;
     }
 
     public byte requireExcludeInclude(String term, byte arg) {
-        return requireExcludeInclude(term, arg, (floor, ceiling) -> {
+        Examiner.refuseNullAndEmpty("term", term);
+
+        return requireExcludeInclude(arg, (floor, ceiling) -> {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
@@ -61,18 +61,17 @@ public class ExaminerOfByteRange {
         });
     }
 
-    public <ThrowableType extends Throwable> byte requireExcludeInclude(String term, byte arg, FiBiConsumerThrow1<Byte, Byte, ThrowableType> thrownAction) throws ThrowableType {
-        Examiner.refuseNullAndEmpty("term", term);
-
+    public <ThrowableType extends Throwable> byte requireExcludeInclude(byte arg, FiBiConsumerThrow1<Byte, Byte, ThrowableType> thrownAction) throws ThrowableType {
         if (!(arg > this.floor && arg <= this.ceiling)) {
             thrownAction.acceptOrHandle(this.floor, this.ceiling);
         }
-
         return arg;
     }
 
     public byte requireExcludeExclude(String term, byte arg) {
-        return requireExcludeExclude(term, arg, (floor, ceiling) -> {
+        Examiner.refuseNullAndEmpty("term", term);
+
+        return requireExcludeExclude(arg, (floor, ceiling) -> {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
@@ -80,9 +79,7 @@ public class ExaminerOfByteRange {
         });
     }
 
-    public <ThrowableType extends Throwable> byte requireExcludeExclude(String term, byte arg, FiBiConsumerThrow1<Byte, Byte, ThrowableType> thrownAction) throws ThrowableType {
-        Examiner.refuseNullAndEmpty("term", term);
-
+    public <ThrowableType extends Throwable> byte requireExcludeExclude(byte arg, FiBiConsumerThrow1<Byte, Byte, ThrowableType> thrownAction) throws ThrowableType {
         if (!(arg > this.floor && arg < this.ceiling)) {
             thrownAction.acceptOrHandle(this.floor, this.ceiling);
         }
@@ -91,7 +88,9 @@ public class ExaminerOfByteRange {
     }
 
     public byte refuseIncludeInclude(String term, byte arg) {
-        return refuseIncludeInclude(term, arg, (floor, ceiling) -> {
+        Examiner.refuseNullAndEmpty("term", term);
+
+        return refuseIncludeInclude(arg, (floor, ceiling) -> {
             String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
@@ -99,9 +98,7 @@ public class ExaminerOfByteRange {
         });
     }
 
-    public <ThrowableType extends Throwable> byte refuseIncludeInclude(String term, byte arg, FiBiConsumerThrow1<Byte, Byte, ThrowableType> thrownAction) throws ThrowableType {
-        Examiner.refuseNullAndEmpty("term", term);
-
+    public <ThrowableType extends Throwable> byte refuseIncludeInclude(byte arg, FiBiConsumerThrow1<Byte, Byte, ThrowableType> thrownAction) throws ThrowableType {
         if (arg >= this.floor && arg <= this.ceiling) {
             thrownAction.acceptOrHandle(this.floor, this.ceiling);
         }
@@ -110,7 +107,9 @@ public class ExaminerOfByteRange {
     }
 
     public byte refuseIncludeExclude(String term, byte arg) {
-        return refuseIncludeExclude(term, arg, (floor, ceiling) -> {
+        Examiner.refuseNullAndEmpty("term", term);
+
+        return refuseIncludeExclude(arg, (floor, ceiling) -> {
             String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
@@ -118,9 +117,7 @@ public class ExaminerOfByteRange {
         });
     }
 
-    public <ThrowableType extends Throwable> byte refuseIncludeExclude(String term, byte arg, FiBiConsumerThrow1<Byte, Byte, ThrowableType> thrownAction) throws ThrowableType {
-        Examiner.refuseNullAndEmpty("term", term);
-
+    public <ThrowableType extends Throwable> byte refuseIncludeExclude(byte arg, FiBiConsumerThrow1<Byte, Byte, ThrowableType> thrownAction) throws ThrowableType {
         if (arg >= this.floor && arg < this.ceiling) {
             thrownAction.acceptOrHandle(this.floor, this.ceiling);
         }
@@ -129,7 +126,9 @@ public class ExaminerOfByteRange {
     }
 
     public byte refuseExcludeInclude(String term, byte arg) {
-        return refuseExcludeInclude(term, arg, (floor, ceiling) -> {
+        Examiner.refuseNullAndEmpty("term", term);
+
+        return refuseExcludeInclude(arg, (floor, ceiling) -> {
             String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
@@ -137,9 +136,7 @@ public class ExaminerOfByteRange {
         });
     }
 
-    public <ThrowableType extends Throwable> byte refuseExcludeInclude(String term, byte arg, FiBiConsumerThrow1<Byte, Byte, ThrowableType> thrownAction) throws ThrowableType {
-        Examiner.refuseNullAndEmpty("term", term);
-
+    public <ThrowableType extends Throwable> byte refuseExcludeInclude(byte arg, FiBiConsumerThrow1<Byte, Byte, ThrowableType> thrownAction) throws ThrowableType {
         if (arg > this.floor && arg <= this.ceiling) {
             thrownAction.acceptOrHandle(this.floor, this.ceiling);
         }
@@ -148,7 +145,9 @@ public class ExaminerOfByteRange {
     }
 
     public byte refuseExcludeExclude(String term, byte arg) {
-        return refuseExcludeExclude(term, arg, (floor, ceiling) -> {
+        Examiner.refuseNullAndEmpty("term", term);
+
+        return refuseExcludeExclude(arg, (floor, ceiling) -> {
             String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
@@ -156,9 +155,7 @@ public class ExaminerOfByteRange {
         });
     }
 
-    public <ThrowableType extends Throwable> byte refuseExcludeExclude(String term, byte arg, FiBiConsumerThrow1<Byte, Byte, ThrowableType> thrownAction) throws ThrowableType {
-        Examiner.refuseNullAndEmpty("term", term);
-
+    public <ThrowableType extends Throwable> byte refuseExcludeExclude(byte arg, FiBiConsumerThrow1<Byte, Byte, ThrowableType> thrownAction) throws ThrowableType {
         if (arg > this.floor && arg < this.ceiling) {
             thrownAction.acceptOrHandle(this.floor, this.ceiling);
         }

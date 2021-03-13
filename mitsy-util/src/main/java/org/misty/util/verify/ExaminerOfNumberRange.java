@@ -41,7 +41,9 @@ public class ExaminerOfNumberRange {
     }
 
     public Number requireIncludeInclude(String term, Number arg) {
-        return requireIncludeInclude(term, arg, (floor, ceiling) -> {
+        Examiner.refuseNullAndEmpty("term", term);
+
+        return requireIncludeInclude(arg, (floor, ceiling) -> {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
@@ -49,9 +51,7 @@ public class ExaminerOfNumberRange {
         });
     }
 
-    public <ThrowableType extends Throwable> Number requireIncludeInclude(String term, Number arg, FiBiConsumerThrow1<Number, Number, ThrowableType> thrownAction) throws ThrowableType {
-        Examiner.refuseNullAndEmpty("term", term);
-
+    public <ThrowableType extends Throwable> Number requireIncludeInclude(Number arg, FiBiConsumerThrow1<Number, Number, ThrowableType> thrownAction) throws ThrowableType {
         double d_arg = arg.doubleValue();
         if (!(d_arg >= this.floor.getDouble() && d_arg <= this.ceiling.getDouble())) {
             thrownAction.acceptOrHandle(this.floor.getNumber(), this.ceiling.getNumber());
@@ -61,7 +61,9 @@ public class ExaminerOfNumberRange {
     }
 
     public Number requireIncludeExclude(String term, Number arg) {
-        return requireIncludeExclude(term, arg, (floor, ceiling) -> {
+        Examiner.refuseNullAndEmpty("term", term);
+
+        return requireIncludeExclude(arg, (floor, ceiling) -> {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
@@ -69,9 +71,7 @@ public class ExaminerOfNumberRange {
         });
     }
 
-    public <ThrowableType extends Throwable> Number requireIncludeExclude(String term, Number arg, FiBiConsumerThrow1<Number, Number, ThrowableType> thrownAction) throws ThrowableType {
-        Examiner.refuseNullAndEmpty("term", term);
-
+    public <ThrowableType extends Throwable> Number requireIncludeExclude(Number arg, FiBiConsumerThrow1<Number, Number, ThrowableType> thrownAction) throws ThrowableType {
         double d_arg = arg.doubleValue();
         if (!(d_arg >= this.floor.getDouble() && d_arg < this.ceiling.getDouble())) {
             thrownAction.acceptOrHandle(this.floor.getNumber(), this.ceiling.getNumber());
@@ -81,7 +81,9 @@ public class ExaminerOfNumberRange {
     }
 
     public Number requireExcludeInclude(String term, Number arg) {
-        return requireExcludeInclude(term, arg, (floor, ceiling) -> {
+        Examiner.refuseNullAndEmpty("term", term);
+
+        return requireExcludeInclude(arg, (floor, ceiling) -> {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
@@ -89,9 +91,7 @@ public class ExaminerOfNumberRange {
         });
     }
 
-    public <ThrowableType extends Throwable> Number requireExcludeInclude(String term, Number arg, FiBiConsumerThrow1<Number, Number, ThrowableType> thrownAction) throws ThrowableType {
-        Examiner.refuseNullAndEmpty("term", term);
-
+    public <ThrowableType extends Throwable> Number requireExcludeInclude(Number arg, FiBiConsumerThrow1<Number, Number, ThrowableType> thrownAction) throws ThrowableType {
         double d_arg = arg.doubleValue();
         if (!(d_arg > this.floor.getDouble() && d_arg <= this.ceiling.getDouble())) {
             thrownAction.acceptOrHandle(this.floor.getNumber(), this.ceiling.getNumber());
@@ -101,7 +101,9 @@ public class ExaminerOfNumberRange {
     }
 
     public Number requireExcludeExclude(String term, Number arg) {
-        return requireExcludeExclude(term, arg, (floor, ceiling) -> {
+        Examiner.refuseNullAndEmpty("term", term);
+
+        return requireExcludeExclude(arg, (floor, ceiling) -> {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
@@ -109,9 +111,7 @@ public class ExaminerOfNumberRange {
         });
     }
 
-    public <ThrowableType extends Throwable> Number requireExcludeExclude(String term, Number arg, FiBiConsumerThrow1<Number, Number, ThrowableType> thrownAction) throws ThrowableType {
-        Examiner.refuseNullAndEmpty("term", term);
-
+    public <ThrowableType extends Throwable> Number requireExcludeExclude(Number arg, FiBiConsumerThrow1<Number, Number, ThrowableType> thrownAction) throws ThrowableType {
         double d_arg = arg.doubleValue();
         if (!(d_arg > this.floor.getDouble() && d_arg < this.ceiling.getDouble())) {
             thrownAction.acceptOrHandle(this.floor.getNumber(), this.ceiling.getNumber());
@@ -121,7 +121,9 @@ public class ExaminerOfNumberRange {
     }
 
     public Number refuseIncludeInclude(String term, Number arg) {
-        return refuseIncludeInclude(term, arg, (floor, ceiling) -> {
+        Examiner.refuseNullAndEmpty("term", term);
+
+        return refuseIncludeInclude(arg, (floor, ceiling) -> {
             String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
@@ -129,9 +131,7 @@ public class ExaminerOfNumberRange {
         });
     }
 
-    public <ThrowableType extends Throwable> Number refuseIncludeInclude(String term, Number arg, FiBiConsumerThrow1<Number, Number, ThrowableType> thrownAction) throws ThrowableType {
-        Examiner.refuseNullAndEmpty("term", term);
-
+    public <ThrowableType extends Throwable> Number refuseIncludeInclude(Number arg, FiBiConsumerThrow1<Number, Number, ThrowableType> thrownAction) throws ThrowableType {
         double d_arg = arg.doubleValue();
         if (d_arg >= this.floor.getDouble() && d_arg <= this.ceiling.getDouble()) {
             thrownAction.acceptOrHandle(this.floor.getNumber(), this.ceiling.getNumber());
@@ -141,7 +141,9 @@ public class ExaminerOfNumberRange {
     }
 
     public Number refuseIncludeExclude(String term, Number arg) {
-        return refuseIncludeExclude(term, arg, (floor, ceiling) -> {
+        Examiner.refuseNullAndEmpty("term", term);
+
+        return refuseIncludeExclude(arg, (floor, ceiling) -> {
             String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
@@ -149,9 +151,7 @@ public class ExaminerOfNumberRange {
         });
     }
 
-    public <ThrowableType extends Throwable> Number refuseIncludeExclude(String term, Number arg, FiBiConsumerThrow1<Number, Number, ThrowableType> thrownAction) throws ThrowableType {
-        Examiner.refuseNullAndEmpty("term", term);
-
+    public <ThrowableType extends Throwable> Number refuseIncludeExclude(Number arg, FiBiConsumerThrow1<Number, Number, ThrowableType> thrownAction) throws ThrowableType {
         double d_arg = arg.doubleValue();
         if (d_arg >= this.floor.getDouble() && d_arg < this.ceiling.getDouble()) {
             thrownAction.acceptOrHandle(this.floor.getNumber(), this.ceiling.getNumber());
@@ -161,7 +161,9 @@ public class ExaminerOfNumberRange {
     }
 
     public Number refuseExcludeInclude(String term, Number arg) {
-        return refuseExcludeInclude(term, arg, (floor, ceiling) -> {
+        Examiner.refuseNullAndEmpty("term", term);
+
+        return refuseExcludeInclude(arg, (floor, ceiling) -> {
             String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
@@ -169,9 +171,7 @@ public class ExaminerOfNumberRange {
         });
     }
 
-    public <ThrowableType extends Throwable> Number refuseExcludeInclude(String term, Number arg, FiBiConsumerThrow1<Number, Number, ThrowableType> thrownAction) throws ThrowableType {
-        Examiner.refuseNullAndEmpty("term", term);
-
+    public <ThrowableType extends Throwable> Number refuseExcludeInclude(Number arg, FiBiConsumerThrow1<Number, Number, ThrowableType> thrownAction) throws ThrowableType {
         double d_arg = arg.doubleValue();
         if (d_arg > this.floor.getDouble() && d_arg <= this.ceiling.getDouble()) {
             thrownAction.acceptOrHandle(this.floor.getNumber(), this.ceiling.getNumber());
@@ -181,7 +181,9 @@ public class ExaminerOfNumberRange {
     }
 
     public Number refuseExcludeExclude(String term, Number arg) {
-        return refuseExcludeExclude(term, arg, (floor, ceiling) -> {
+        Examiner.refuseNullAndEmpty("term", term);
+
+        return refuseExcludeExclude(arg, (floor, ceiling) -> {
             String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
@@ -189,9 +191,7 @@ public class ExaminerOfNumberRange {
         });
     }
 
-    public <ThrowableType extends Throwable> Number refuseExcludeExclude(String term, Number arg, FiBiConsumerThrow1<Number, Number, ThrowableType> thrownAction) throws ThrowableType {
-        Examiner.refuseNullAndEmpty("term", term);
-
+    public <ThrowableType extends Throwable> Number refuseExcludeExclude(Number arg, FiBiConsumerThrow1<Number, Number, ThrowableType> thrownAction) throws ThrowableType {
         double d_arg = arg.doubleValue();
         if (d_arg > this.floor.getDouble() && d_arg < this.ceiling.getDouble()) {
             thrownAction.acceptOrHandle(this.floor.getNumber(), this.ceiling.getNumber());

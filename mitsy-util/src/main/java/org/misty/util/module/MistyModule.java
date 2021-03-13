@@ -1,5 +1,8 @@
 package org.misty.util.module;
 
+import org.misty.util.verify.Examiner;
+import org.misty.util.verify.Judge;
+
 import java.util.Objects;
 
 public abstract class MistyModule {
@@ -23,10 +26,12 @@ public abstract class MistyModule {
     }
 
     public MistyModule(String name, String version, String description) {
-        // TODO 要做檢查
+        Examiner.refuseNullAndEmpty("name", name);
+        Examiner.refuseNullAndEmpty("version", version);
+
         this.name = name;
         this.version = version;
-        this.description = description;
+        this.description = description == null ? "" : description;
         this.fullName = String.format(FULL_NAME_FORMAT, name, version);
         this.fullNameWithClass = String.format(FULL_NAME_WITH_CLASS_FORMAT, name, version, getClass().getName());
     }
