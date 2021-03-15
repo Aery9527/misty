@@ -1,0 +1,6 @@
+
+version 'v1.0.0-SNAPSHOT'
+
+dependencies {
+    // do not dependency any lib
+}

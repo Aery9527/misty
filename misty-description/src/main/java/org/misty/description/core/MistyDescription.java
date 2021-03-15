@@ -1,12 +1,10 @@
-package org.misty.util.module;
-
-import org.misty.util.verify.Examiner;
+package org.misty.description.core;
 
 import java.util.Objects;
 
-public abstract class MistyModule {
+public class MistyDescription {
 
-    public static final String FULL_NAME_FORMAT = MistyModule.class.getSimpleName() + "(%s)(%s)";
+    public static final String FULL_NAME_FORMAT = MistyDescription.class.getSimpleName() + "(%s)(%s)";
 
     public static final String FULL_NAME_WITH_CLASS_FORMAT = FULL_NAME_FORMAT + "(%s)";
 
@@ -20,19 +18,16 @@ public abstract class MistyModule {
 
     private final String fullNameWithClass;
 
-    public MistyModule(String name, String version) {
+    public MistyDescription(String name, String version) {
         this(name, version, "");
     }
 
-    public MistyModule(String name, String version, String description) {
-        Examiner.refuseNullAndEmpty("name", name);
-        Examiner.refuseNullAndEmpty("version", version);
-
+    public MistyDescription(String name, String version, String description) {
         this.name = name;
         this.version = version;
-        this.description = description == null ? "" : description;
         this.fullName = String.format(FULL_NAME_FORMAT, name, version);
         this.fullNameWithClass = String.format(FULL_NAME_WITH_CLASS_FORMAT, name, version, getClass().getName());
+        this.description = description == null ? "" : description;
     }
 
     @Override
@@ -42,9 +37,9 @@ public abstract class MistyModule {
 
     @Override
     public final boolean equals(Object obj) {
-        if (obj instanceof MistyModule) {
-            MistyModule mistyModule = (MistyModule) obj;
-            return mistyModule.name.equals(this.name) && mistyModule.version.equals(this.version);
+        if (obj instanceof MistyDescription) {
+            MistyDescription mistyDescription = (MistyDescription) obj;
+            return mistyDescription.name.equals(this.name) && mistyDescription.version.equals(this.version);
         } else {
             return false;
         }
@@ -63,10 +58,6 @@ public abstract class MistyModule {
         return version;
     }
 
-    public final String getDescription() {
-        return description;
-    }
-
     public final String getFullName() {
         return fullName;
     }
@@ -74,4 +65,9 @@ public abstract class MistyModule {
     public final String getFullNameWithClass() {
         return fullNameWithClass;
     }
+
+    public String getDescription() {
+        return description;
+    }
+
 }
