@@ -12,9 +12,8 @@ class MistyDescription$SmoothApiTest {
     @Test
     public void test() {
         List<MistyDescription> list = MistyDescriptionFinder.findBySPI();
-
-        MistyDescription$SmoothApi main = new MistyDescription$SmoothApi();
-        Assertions.assertThat(list).contains(main);
+        list.forEach(System.out::println);
+        Assertions.assertThat(list).contains(new MistyDescription$SmoothApi());
     }
 
 }

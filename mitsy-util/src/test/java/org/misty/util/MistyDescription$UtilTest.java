@@ -13,9 +13,8 @@ class MistyDescription$UtilTest {
     @Test
     public void test() {
         List<MistyDescription> list = MistyDescriptionFinder.findBySPI();
-
-        MistyDescription$Util main = new MistyDescription$Util();
-        Assertions.assertThat(list).contains(main);
+        list.forEach(System.out::println);
+        Assertions.assertThat(list).contains(new MistyDescription$Util());
     }
 
 }
