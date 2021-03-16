@@ -1,4 +1,5 @@
 include 'misty-description'
 include 'mitsy-util'
 include 'misty-smooth-api'
+include 'misty-smooth-launcher'
 
