@@ -3,4 +3,6 @@ include 'util'
 include 'smooth-api'
 include 'smooth-launcher'
 include 'smooth-user'
+include 'smooth-user-module1'
+include 'smooth-user-module2'
 
