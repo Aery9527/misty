@@ -12,7 +12,7 @@ buildscript {
 import org.misty.description.core.MistyDescription
 import org.misty.util.MistyDescription$Util
 
-MistyDescription mistyDescription = new MistyDescription$Util()
+MistyDescription mistyDescription = new MistyDescription$Util() as MistyDescription
 archivesBaseName = mistyDescription.getName()
 version = mistyDescription.getVersion()
 

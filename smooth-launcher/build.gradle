@@ -12,7 +12,7 @@ buildscript {
 import org.misty.description.core.MistyDescription
 import org.misty.smooth.launcher.MistyDescription$SmoothLauncher
 
-MistyDescription mistyDescription = new MistyDescription$SmoothLauncher()
+MistyDescription mistyDescription = new MistyDescription$SmoothLauncher() as MistyDescription
 archivesBaseName = mistyDescription.getName()
 version = mistyDescription.getVersion()
 
