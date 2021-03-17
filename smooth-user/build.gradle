@@ -1,0 +1,7 @@
+
+dependencies {
+    implementation project(':description')
+    implementation project(':smooth-launcher')
+    implementation project(':smooth-api')
+//    implementation project(':smooth-core')
+}

@@ -1,0 +1,7 @@
+
+version '1.0.0-SNAPSHOT'
+
+dependencies {
+    implementation project(':description')
+    // do not dependency other lib
+}
