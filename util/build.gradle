@@ -1,5 +1,20 @@
+buildscript {
+    dependencies {
+        classpath files(
+                "../description/out/production/classes",
+                "out/production/classes",
+                "../description/for-gradle-init",
+                "for-gradle-init"
+        )
+    }
+}
 
-version '1.0.0-SNAPSHOT'
+import org.misty.description.core.MistyDescription
+import org.misty.util.MistyDescription$Util
+
+MistyDescription mistyDescription = new MistyDescription$Util()
+archivesBaseName = mistyDescription.getName()
+version = mistyDescription.getVersion()
 
 dependencies {
     implementation project(':description')

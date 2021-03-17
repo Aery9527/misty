@@ -2,7 +2,6 @@ package org.misty.util;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.misty.description.MistyDescription$DescriptionCode;
 import org.misty.description.core.MistyDescription;
 import org.misty.description.core.MistyDescriptionFinder;
 

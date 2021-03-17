@@ -5,6 +5,7 @@ import org.misty.description.core.MistyDescription;
 public class MistyDescription$Util extends MistyDescription {
 
     public MistyDescription$Util() {
-        super("misty-util", "v1.0.0-SNAPSHOT");
+        super("misty-util", "1.0.0-SNAPSHOT");
     }
+
 }

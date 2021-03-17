@@ -13,7 +13,7 @@ class MistyDescription$DescriptionCodeTest {
     public void test() {
         List<MistyDescription> list = MistyDescriptionFinder.findBySPI();
 
-        MistyDescription$DescriptionCode main = new MistyDescription$DescriptionCode();
+        MistyDescription$Description main = new MistyDescription$Description();
         Assertions.assertThat(list).contains(main);
     }
 
