@@ -1,7 +1,4 @@
 
 dependencies {
-    implementation project(':misty-description')
-    implementation project(':misty-smooth-launcher')
-    implementation project(':misty-smooth-api')
-//    implementation project(':smooth-core')
+    implementation project(':misty-smooth-core')
 }
