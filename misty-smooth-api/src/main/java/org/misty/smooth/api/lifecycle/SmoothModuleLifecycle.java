@@ -21,9 +21,9 @@ public interface SmoothModuleLifecycle {
 
     Map<String, SmoothService> initial();
 
-    void beforeOnline();
+    void online();
 
-    void afterOnline();
+    void offline();
 
     void destroy();
 
