@@ -1,4 +1,4 @@
-package org.misty.smooth.launcher.core;
+package org.misty.smooth.launcher;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

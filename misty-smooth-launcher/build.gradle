@@ -18,5 +18,6 @@ version = mistyDescription.getVersion()
 
 dependencies {
     implementation project(':misty-description')
+    testImplementation project(':misty-smooth-api')
     // do not dependency other lib
 }

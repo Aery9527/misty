@@ -1,6 +1,6 @@
 package org.misty.smooth.user;
 
-import org.misty.smooth.launcher.core.SmoothLauncher;
+import org.misty.smooth.launcher.SmoothLauncher;
 
 import java.net.URL;
 import java.net.URLClassLoader;
