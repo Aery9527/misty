@@ -8,17 +8,22 @@ import java.util.Arrays;
 
 public class SmoothUserEntry {
 
+    @SuppressWarnings("ConstantConditions")
     public static void main(String[] args) {
-        printClasspath("before");
+        boolean showClasspath = false; // to show classpath between before and after of SmoothLauncher.start()
+        printClasspath(showClasspath, "before");
+        SmoothLauncher.start(); // [1] invoke before any logic
+        printClasspath(showClasspath, "after");
 
-        SmoothLauncher.start();
-
-        // do business logic...
-
-        printClasspath("after");
+        // [2] do business logic, like SpringApplication.run(.class, args)
+        new SmoothUserLogic().go();
     }
 
-    private static void printClasspath(String action) {
+    private static void printClasspath(boolean showClasspath, String action) {
+        if (!showClasspath) {
+            return;
+        }
+
         System.out.println();
         System.out.println("===== " + action + " =====");
 

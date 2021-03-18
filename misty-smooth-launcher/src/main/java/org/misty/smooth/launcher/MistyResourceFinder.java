@@ -13,10 +13,10 @@ public class MistyResourceFinder {
     public static final String[] DEFAULT_IMPLANT_LIBS = new String[]{"misty-description", "misty-smooth-api"};
 
     public List<URL> findDefaultImplantLibs() {
-        return find(true, DEFAULT_IMPLANT_LIBS);
+        return findFromAppClassLoader(true, DEFAULT_IMPLANT_LIBS);
     }
 
-    public List<URL> find(boolean needFullyIncluded, String... matchs) {
+    public List<URL> findFromAppClassLoader(boolean needFullyIncluded, String... matchs) {
         List<URL> result = new ArrayList<>();
 
         URLClassLoader appClassLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
