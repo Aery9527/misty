@@ -1,6 +1,6 @@
 package org.misty.util;
 
-import org.misty.description.core.MistyDescription;
+import org.misty.description.MistyDescription;
 
 public class MistyDescription$Util extends MistyDescription {
 

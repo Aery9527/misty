@@ -1,6 +1,6 @@
 package org.misty.smooth.core;
 
-import org.misty.description.core.MistyDescription;
+import org.misty.description.MistyDescription;
 
 public class MistyDescription$SmoothCore extends MistyDescription {
 

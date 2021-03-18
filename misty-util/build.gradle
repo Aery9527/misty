@@ -9,7 +9,7 @@ buildscript {
     }
 }
 
-import org.misty.description.core.MistyDescription
+import org.misty.description.MistyDescription
 import org.misty.util.MistyDescription$Util
 
 MistyDescription mistyDescription = new MistyDescription$Util() as MistyDescription

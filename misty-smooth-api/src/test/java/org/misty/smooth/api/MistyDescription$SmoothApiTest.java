@@ -2,8 +2,8 @@ package org.misty.smooth.api;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.misty.description.core.MistyDescription;
-import org.misty.description.core.MistyDescriptionFinder;
+import org.misty.description.MistyDescription;
+import org.misty.description.MistyDescriptionFinder;
 
 import java.util.List;
 

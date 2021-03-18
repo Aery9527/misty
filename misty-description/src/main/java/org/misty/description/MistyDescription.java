@@ -1,4 +1,4 @@
-package org.misty.description.core;
+package org.misty.description;
 
 import java.util.Objects;
 

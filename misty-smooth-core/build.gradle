@@ -9,7 +9,7 @@ buildscript {
     }
 }
 
-import org.misty.description.core.MistyDescription
+import org.misty.description.MistyDescription
 import org.misty.smooth.core.MistyDescription$SmoothCore
 
 MistyDescription mistyDescription = new MistyDescription$SmoothCore() as MistyDescription

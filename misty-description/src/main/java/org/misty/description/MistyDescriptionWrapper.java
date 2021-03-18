@@ -1,4 +1,4 @@
-package org.misty.description.core;
+package org.misty.description;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

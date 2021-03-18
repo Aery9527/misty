@@ -1,4 +1,4 @@
-package org.misty.description.core;
+package org.misty.description;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ public class MistyDescriptionFinder {
     }
 
     public static List<MistyDescriptionWrapper> findBySPI(ClassLoader classLoader) throws ClassNotFoundException {
-        Class<?> clazz = classLoader.loadClass("org.misty.description.core.MistyDescription");
+        Class<?> clazz = classLoader.loadClass("org.misty.description.MistyDescription");
         ServiceLoader<?> mistyDescriptionServiceLoader = ServiceLoader.load(clazz, classLoader);
 
         List<MistyDescriptionWrapper> list = new ArrayList<>();
