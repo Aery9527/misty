@@ -1,22 +1,22 @@
 buildscript {
     dependencies {
         classpath files(
-                "../description/out/production/classes",
+                "../misty-description/out/production/classes",
                 "out/production/classes",
-                "../description/for-gradle-init",
+                "../misty-description/for-gradle-init",
                 "for-gradle-init"
         )
     }
 }
 
 import org.misty.description.core.MistyDescription
-import org.misty.smooth.launcher.MistyDescription$SmoothLauncher
+import org.misty.util.MistyDescription$Util
 
-MistyDescription mistyDescription = new MistyDescription$SmoothLauncher() as MistyDescription
+MistyDescription mistyDescription = new MistyDescription$Util() as MistyDescription
 archivesBaseName = mistyDescription.getName()
 version = mistyDescription.getVersion()
 
 dependencies {
-    implementation project(':description')
+    implementation project(':misty-description')
     // do not dependency other lib
 }

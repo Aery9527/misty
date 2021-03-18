@@ -1,9 +1,9 @@
 buildscript {
     dependencies {
         classpath files(
-                "../description/out/production/classes",
+                "../misty-description/out/production/classes",
                 "out/production/classes",
-                "../description/for-gradle-init",
+                "../misty-description/for-gradle-init",
                 "for-gradle-init"
         )
     }
@@ -17,6 +17,6 @@ archivesBaseName = mistyDescription.getName()
 version = mistyDescription.getVersion()
 
 dependencies {
-    implementation project(':description')
+    implementation project(':misty-description')
     // do not dependency other lib
 }
