@@ -1,10 +1,14 @@
 package org.misty.smooth.api.service;
 
-import org.misty.smooth.api.vo.SmoothRequest;
-import org.misty.smooth.api.vo.SmoothResponse;
+import org.misty.smooth.api.service.vo.SmoothServiceRequest;
+import org.misty.smooth.api.service.vo.SmoothServiceResponse;
 
 public interface SmoothService {
 
-    SmoothResponse serve(SmoothRequest request);
+    String getServiceId();
+
+    String getServiceName();
+
+    SmoothServiceResponse serve(SmoothServiceRequest request);
 
 }

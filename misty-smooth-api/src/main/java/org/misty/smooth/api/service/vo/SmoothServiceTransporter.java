@@ -1,24 +1,24 @@
-package org.misty.smooth.api.vo;
+package org.misty.smooth.api.service.vo;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class SmoothTransporter {
+class SmoothServiceTransporter {
 
     private Map<String, List<String>> header;
 
     private Map<String, String> body;
 
-    public SmoothTransporter() {
+    public SmoothServiceTransporter() {
         this(new HashMap<>());
     }
 
-    public SmoothTransporter(Map<String, List<String>> header) {
+    public SmoothServiceTransporter(Map<String, List<String>> header) {
         this(header, new HashMap<>());
     }
 
-    public SmoothTransporter(Map<String, List<String>> header, Map<String, String> body) {
+    public SmoothServiceTransporter(Map<String, List<String>> header, Map<String, String> body) {
         this.header = header;
         this.body = body;
     }
