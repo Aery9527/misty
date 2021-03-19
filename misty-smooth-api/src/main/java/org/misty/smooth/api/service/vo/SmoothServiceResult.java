@@ -10,7 +10,7 @@ public final class SmoothServiceResult {
      */
     public static final String TO_STRING_FORMAT = SmoothServiceResult.class.getSimpleName() + "[%s:%s]";
 
-    private final SmoothModuleId serviceProvider;
+    private final SmoothModuleId serviceModule;
 
     private final SmoothServiceId serviceId;
 
@@ -19,10 +19,10 @@ public final class SmoothServiceResult {
     private final String toString;
 
     public SmoothServiceResult(SmoothModuleId moduleId, SmoothServiceId serviceId, SmoothServiceResponse response) {
-        this.serviceProvider = moduleId;
+        this.serviceModule = moduleId;
         this.serviceId = serviceId;
         this.response = response;
-        this.toString = String.format(TO_STRING_FORMAT, this.serviceProvider.toString(), this.serviceId.toString());
+        this.toString = String.format(TO_STRING_FORMAT, this.serviceModule.toString(), this.serviceId.toString());
     }
 
     @Override
@@ -30,8 +30,8 @@ public final class SmoothServiceResult {
         return this.toString;
     }
 
-    public SmoothModuleId getServiceProvider() {
-        return serviceProvider;
+    public SmoothModuleId getServiceModule() {
+        return serviceModule;
     }
 
     public SmoothServiceId getServiceId() {

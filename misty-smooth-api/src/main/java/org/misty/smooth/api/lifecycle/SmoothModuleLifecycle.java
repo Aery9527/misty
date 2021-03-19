@@ -1,5 +1,6 @@
 package org.misty.smooth.api.lifecycle;
 
+import org.misty.smooth.api.context.SmoothActionRegister;
 import org.misty.smooth.api.context.SmoothContext;
 import org.misty.smooth.api.service.SmoothService;
 
@@ -20,7 +21,7 @@ public interface SmoothModuleLifecycle {
         return Collections.emptyList();
     }
 
-    List<SmoothService> initial(SmoothContext smoothContext);
+    void initial(SmoothContext smoothContext, SmoothActionRegister actionRegister);
 
     void online();
 
