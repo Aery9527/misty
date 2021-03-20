@@ -18,7 +18,7 @@ public class SmoothServiceId {
 
     @Override
     public String toString() {
-        return this.toString.toString();
+        return this.toString;
     }
 
     @Override

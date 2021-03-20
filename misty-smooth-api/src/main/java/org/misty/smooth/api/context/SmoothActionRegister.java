@@ -4,7 +4,7 @@ import org.misty.smooth.api.service.SmoothService;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 
 public interface SmoothActionRegister {
@@ -15,7 +15,7 @@ public interface SmoothActionRegister {
 
     void registerService(Collection<SmoothService> services);
 
-    void registerExecutor(Executor executor);
+    void registerExecutor(ExecutorService executor);
 
     void registerServiceResultProcessErrorHandler(Consumer<Throwable> errorHandler);
 

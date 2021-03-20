@@ -4,6 +4,7 @@ import org.misty.smooth.api.context.SmoothContext;
 import org.misty.smooth.api.service.vo.SmoothServiceRequest;
 import org.misty.smooth.api.service.vo.SmoothServiceResult;
 
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 public class SmoothServiceInvoker {
@@ -25,13 +26,17 @@ public class SmoothServiceInvoker {
         this.toString = String.format(FORMAT, moduleName, serviceId);
     }
 
+    public Future<SmoothServiceResult> invoke(SmoothServiceRequest serviceRequest) {
+        return this.smoothContext.invokeService(this.moduleName, this.serviceId, serviceRequest);
+    }
+
     public void invoke(SmoothServiceRequest serviceRequest, Consumer<SmoothServiceResult> resultProcessor) {
         this.smoothContext.invokeService(this.moduleName, this.serviceId, serviceRequest, resultProcessor);
     }
 
     @Override
     public String toString() {
-        return this.toString.toString();
+        return this.toString;
     }
 
     @Override

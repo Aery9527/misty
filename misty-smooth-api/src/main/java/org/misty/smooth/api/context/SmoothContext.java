@@ -22,6 +22,8 @@ public interface SmoothContext {
 
     Optional<Map<String, String>> listServiceWithMap(String moduleName);
 
+    Future<SmoothServiceResult> invokeService(String moduleName, String serviceId, SmoothServiceRequest serviceRequest);
+
     void invokeService(String moduleName, String serviceId, SmoothServiceRequest serviceRequest, Consumer<SmoothServiceResult> resultProcessor);
 
     default SmoothServiceInvoker buildServiceInvoker(String moduleName, String serviceId) {

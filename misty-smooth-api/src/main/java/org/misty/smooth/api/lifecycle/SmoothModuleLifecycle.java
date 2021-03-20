@@ -23,8 +23,10 @@ public interface SmoothModuleLifecycle {
 
     void initial(SmoothContext smoothContext, SmoothActionRegister actionRegister);
 
-    void online();
+    default void online() {
+    }
 
-    void destroy();
+    default void destroy() {
+    }
 
 }

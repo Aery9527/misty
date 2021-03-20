@@ -1,0 +1,27 @@
+package org.misty.smooth.user.m1;
+
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.misty.smooth.api.lifecycle.SmoothModuleLifecycle;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ServiceLoader;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+class Module1ApplicationTest {
+
+    @Test
+    public void test() {
+        ServiceLoader<SmoothModuleLifecycle> serviceLoader = ServiceLoader.load(SmoothModuleLifecycle.class);
+        List<SmoothModuleLifecycle> list = StreamSupport.stream(serviceLoader.spliterator(), false)
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        SmoothModuleLifecycle lifecycle = new Module1Application();
+        Assertions.assertThat(list).hasSize(1);
+        Assertions.assertThat(list.get(0).getName()).isEqualTo(lifecycle.getName());
+        Assertions.assertThat(list.get(0).getVersion()).isEqualTo(lifecycle.getVersion());
+    }
+
+}
