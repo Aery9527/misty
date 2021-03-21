@@ -18,5 +18,4 @@ version = mistyDescription.getVersion()
 
 dependencies {
     implementation project(':misty-description')
-    // do not dependency other lib
 }

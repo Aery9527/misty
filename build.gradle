@@ -17,7 +17,9 @@ subprojects {
     }
 
     dependencies {
-        implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+        implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+
+        testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
         testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.4.3'
     }
 

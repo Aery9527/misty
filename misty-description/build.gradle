@@ -17,5 +17,4 @@ archivesBaseName = mistyDescription.getName()
 version = mistyDescription.getVersion()
 
 dependencies {
-    // do not dependency any lib
 }

@@ -1,3 +1,3 @@
 dependencies {
-    implementation project(':misty-smooth-api')
+    implementation project(':misty-smooth-sole')
 }
