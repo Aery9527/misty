@@ -1,9 +1,7 @@
 package org.misty.smooth.core.context.api;
 
-import org.misty.smooth.api.context.SmoothContext;
+import org.misty.smooth.manager.context.SmoothManagerContext;
 
-import java.io.Closeable;
-
-public interface CoreSmoothContext extends SmoothContext, Closeable {
+public interface CoreSmoothContext extends SmoothManagerContext {
 
 }

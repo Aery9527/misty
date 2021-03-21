@@ -5,8 +5,11 @@ import org.misty.smooth.api.service.vo.SmoothServiceResult;
 import org.misty.smooth.api.vo.SmoothModuleId;
 import org.misty.smooth.api.vo.SmoothServiceId;
 import org.misty.smooth.core.context.api.CoreSmoothContext;
+import org.misty.smooth.manager.error.SmoothLoadException;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -42,6 +45,16 @@ public class CoreSmoothContextPreset implements CoreSmoothContext {
 
     @Override
     public void invokeService(String moduleName, String serviceId, SmoothServiceRequest serviceRequest, Consumer<SmoothServiceResult> resultProcessor) {
+
+    }
+
+    @Override
+    public void loadSmoothManager(Collection<URL> sources) throws SmoothLoadException {
+
+    }
+
+    @Override
+    public void loadSmoothModule(Collection<URL> sources) throws SmoothLoadException {
 
     }
 
