@@ -10,16 +10,13 @@ buildscript {
 }
 
 import org.misty.description.MistyDescription
-import org.misty.smooth.core.MistyDescription$SmoothCore
+import org.misty.smooth.manager.MistyDescription$SmoothManager
 
-MistyDescription mistyDescription = new MistyDescription$SmoothCore() as MistyDescription
+MistyDescription mistyDescription = new MistyDescription$SmoothManager() as MistyDescription
 archivesBaseName = mistyDescription.getName()
 version = mistyDescription.getVersion()
 
 dependencies {
     compile project(':misty-description')
-    compile project(':misty-util')
-    compile project(':misty-smooth-launcher')
     compile project(':misty-smooth-api')
-    compile project(':misty-smooth-manager')
 }
