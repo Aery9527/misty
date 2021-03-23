@@ -5,6 +5,7 @@ import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.Test;
 import org.misty.util.error.MistyError;
 import org.misty.util.error.MistyException;
+import org.misty.util.fi.FiBiConsumerThrow1;
 import org.misty.util.fi.FiConsumerThrow1;
 
 import java.math.BigDecimal;
@@ -30,7 +31,7 @@ class ExaminerTest {
 
     public static final ExamineIntervals.Ceiling CE = ExamineIntervals.Ceiling.EXCLUDE; // ce = ceiling exclude
 
-    public static final FiConsumerThrow1<Object, TestException> THROWN_ACTION = (arg) -> {
+    public static final FiBiConsumerThrow1<String, Object, TestException> THROWN_ACTION = (term, arg) -> {
         throw new TestException();
     };
 
@@ -80,10 +81,10 @@ class ExaminerTest {
     public void test_requireNullOrEmpty() {
         String term = "kerker";
 
-        Examiner.requireNullOrEmpty((Object) null, THROWN_ACTION);
+        Examiner.requireNullOrEmpty(term, (Object) null, THROWN_ACTION);
         Examiner.requireNullOrEmpty(term, (Object) null);
         AtomicReference<Object> arg1 = new AtomicReference<>(new Object());
-        Assertions.assertThatThrownBy(() -> Examiner.requireNullOrEmpty(arg1.get(), THROWN_ACTION)).isInstanceOf(TestException.class);
+        Assertions.assertThatThrownBy(() -> Examiner.requireNullOrEmpty(term, arg1.get(), THROWN_ACTION)).isInstanceOf(TestException.class);
         Assertions.assertThatThrownBy(() -> Examiner.requireNullOrEmpty(term, arg1.get()))
                 .isInstanceOf(MistyException.class).is(CONDITION)
                 .hasMessageContaining(ExaminerMessage.requireNullOrEmpty(term, arg1.get().toString()));
@@ -117,13 +118,13 @@ class ExaminerTest {
                 .hasMessageContaining(ExaminerMessage.requireNullOrEmpty(term, Arrays.toString(arg5.get())));
 
         Examiner.requireNullOrEmpty(term, (Optional) null);
-        Examiner.requireNullOrEmpty((Optional) null, THROWN_ACTION::acceptOrHandle);
+        Examiner.requireNullOrEmpty(term, (Optional) null, THROWN_ACTION::acceptOrHandle);
         Examiner.requireNullOrEmpty(term, Optional.empty());
         Examiner.requireNullOrEmpty(term, Optional.of(""));
         Examiner.requireNullOrEmpty(term, Optional.of(Collections.emptyList()));
         Examiner.requireNullOrEmpty(term, Optional.of(Collections.emptyMap()));
         Examiner.requireNullOrEmpty(term, Optional.of(new Object[0]));
-        Assertions.assertThatThrownBy(() -> Examiner.requireNullOrEmpty(Optional.of(new Object()), THROWN_ACTION::acceptOrHandle)).isInstanceOf(TestException.class);
+        Assertions.assertThatThrownBy(() -> Examiner.requireNullOrEmpty(term, Optional.of(new Object()), THROWN_ACTION::acceptOrHandle)).isInstanceOf(TestException.class);
         Assertions.assertThatThrownBy(() -> Examiner.requireNullOrEmpty(term, Optional.of(arg2.get())))
                 .isInstanceOf(MistyException.class).is(CONDITION)
                 .hasMessageContaining(ExaminerMessage.requireNullOrEmpty(term, arg2.get()));
@@ -141,11 +142,11 @@ class ExaminerTest {
     @Test
     public void test_refuseNullAndEmpty() {
         String term = "kerker";
-        Assertions.assertThatThrownBy(() -> Examiner.refuseNullAndEmpty((Object) null, THROWN_ACTION)).isInstanceOf(TestException.class);
+        Assertions.assertThatThrownBy(() -> Examiner.refuseNullAndEmpty(term, (Object) null, THROWN_ACTION)).isInstanceOf(TestException.class);
         Assertions.assertThatThrownBy(() -> Examiner.refuseNullAndEmpty(term, (Object) null))
                 .isInstanceOf(MistyException.class).is(CONDITION)
                 .hasMessageContaining(ExaminerMessage.refuseNullAndEmpty(term));
-        Assertions.assertThat(Examiner.refuseNullAndEmpty(new Object(), THROWN_ACTION));
+        Assertions.assertThat(Examiner.refuseNullAndEmpty(term, new Object(), THROWN_ACTION));
         Assertions.assertThat(Examiner.refuseNullAndEmpty(term, new Object()));
 
         Assertions.assertThatThrownBy(() -> Examiner.refuseNullAndEmpty(term, (String) null))
@@ -180,7 +181,8 @@ class ExaminerTest {
                 .hasMessageContaining(ExaminerMessage.refuseNullAndEmpty(term));
         Assertions.assertThat(Examiner.refuseNullAndEmpty(term, new String[]{""})).isNotEmpty();
 
-        Assertions.assertThatThrownBy(() -> Examiner.refuseNullAndEmpty((Optional) null, THROWN_ACTION::acceptOrHandle)).isInstanceOf(TestException.class);
+        Assertions.assertThatThrownBy(() -> Examiner.refuseNullAndEmpty(term, (Optional) null, THROWN_ACTION::acceptOrHandle))
+                .isInstanceOf(TestException.class);
         Assertions.assertThatThrownBy(() -> Examiner.refuseNullAndEmpty(term, (Optional) null))
                 .isInstanceOf(MistyException.class).is(CONDITION);
 //                .hasMessage(ExaminerMessage.refuseNullAndEmpty(term)); // XXX 不知道為什麼這邊操作會錯?
@@ -199,7 +201,7 @@ class ExaminerTest {
         Assertions.assertThatThrownBy(() -> Examiner.refuseNullAndEmpty(term, Optional.of(new Object[0])))
                 .isInstanceOf(MistyException.class).is(CONDITION)
                 .hasMessageContaining(ExaminerMessage.refuseNullAndEmpty(term));
-        Assertions.assertThat(Examiner.refuseNullAndEmpty(Optional.of(new Object()), THROWN_ACTION::acceptOrHandle));
+        Assertions.assertThat(Examiner.refuseNullAndEmpty(term, Optional.of(new Object()), THROWN_ACTION::acceptOrHandle));
         Assertions.assertThat(Examiner.refuseNullAndEmpty(term, Optional.of("123"))).isNotEmpty();
         Assertions.assertThat(Examiner.refuseNullAndEmpty(term, Optional.of(Collections.singleton("")))).isNotEmpty();
         Assertions.assertThat(Examiner.refuseNullAndEmpty(term, Optional.of(Collections.singletonMap("", "")))).isNotEmpty();

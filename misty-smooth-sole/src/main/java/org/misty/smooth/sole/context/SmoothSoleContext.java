@@ -1,20 +1,21 @@
-package org.misty.smooth.core.context.impl;
+package org.misty.smooth.sole.context;
 
+import org.misty.smooth.api.context.SmoothContext;
+import org.misty.smooth.api.context.SmoothEnvironment;
 import org.misty.smooth.api.service.vo.SmoothServiceRequest;
 import org.misty.smooth.api.service.vo.SmoothServiceResult;
 import org.misty.smooth.api.vo.SmoothModuleId;
 import org.misty.smooth.api.vo.SmoothServiceId;
-import org.misty.smooth.core.context.api.CoreSmoothContext;
-import org.misty.smooth.manager.error.SmoothLoadException;
 
-import java.io.IOException;
-import java.net.URL;
 import java.time.Instant;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
-public class CoreSmoothContextPreset implements CoreSmoothContext {
+public class SmoothSoleContext implements SmoothContext {
 
     @Override
     public Instant getLaunchInstant() {
@@ -22,7 +23,7 @@ public class CoreSmoothContextPreset implements CoreSmoothContext {
     }
 
     @Override
-    public List<String> getArgument() {
+    public SmoothEnvironment getEnvironment() {
         return null;
     }
 
@@ -53,16 +54,6 @@ public class CoreSmoothContextPreset implements CoreSmoothContext {
 
     @Override
     public void invokeService(String moduleName, String serviceId, SmoothServiceRequest serviceRequest, Consumer<SmoothServiceResult> resultProcessor) {
-
-    }
-
-    @Override
-    public void loadSmoothManager(Collection<URL> sources) throws SmoothLoadException {
-
-    }
-
-    @Override
-    public void loadSmoothModule(Collection<URL> sources) throws SmoothLoadException {
 
     }
 }

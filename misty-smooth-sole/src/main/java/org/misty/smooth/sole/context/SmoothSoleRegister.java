@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 
-public class SoleSmoothActionRegister implements SmoothModuleRegister {
+public class SmoothSoleRegister implements SmoothModuleRegister {
 
     @Override
     public void registerService(Collection<SmoothService> services) {

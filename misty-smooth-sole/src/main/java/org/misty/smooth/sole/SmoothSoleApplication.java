@@ -2,20 +2,20 @@ package org.misty.smooth.sole;
 
 import org.misty.smooth.api.lifecycle.module.SmoothModuleRegister;
 import org.misty.smooth.api.context.SmoothContext;
-import org.misty.smooth.sole.context.SoleSmoothActionRegister;
-import org.misty.smooth.sole.context.SoleSmoothContext;
+import org.misty.smooth.sole.context.SmoothSoleRegister;
+import org.misty.smooth.sole.context.SmoothSoleContext;
 
-public class SoleSmoothApplication {
+public class SmoothSoleApplication {
 
     public SmoothContext start() {
-        SoleSmoothApplication soleSmoothApplication = new SoleSmoothApplication();
+        SmoothSoleApplication soleSmoothApplication = new SmoothSoleApplication();
         soleSmoothApplication.launch();
         return soleSmoothApplication.getSmoothContext();
     }
 
-    private SmoothModuleRegister actionRegister = new SoleSmoothActionRegister();
+    private SmoothModuleRegister actionRegister = new SmoothSoleRegister();
 
-    private SmoothContext smoothContext = new SoleSmoothContext();
+    private SmoothContext smoothContext = new SmoothSoleContext();
 
     public SmoothContext launch() {
         // TODO 模擬smooth環境運行

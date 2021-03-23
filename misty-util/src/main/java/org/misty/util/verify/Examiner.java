@@ -14,25 +14,17 @@ public class Examiner {
     // requireNullOrEmpty of Object
 
     public static void requireNullOrEmpty(String term, Object arg) throws MistyException {
-        requireNullOrEmpty(arg, () -> {
+        requireNullOrEmpty(term, arg, (t, r) -> {
             String description = ExaminerMessage.requireNullOrEmpty(term, StringTool.toString(arg));
             throw MistyError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
-    public static <ThrowableType extends Throwable> void requireNullOrEmpty(
-            Object arg, FiRunnableThrow1<ThrowableType> thrownAction
-    ) throws ThrowableType {
-        if (Judge.notNullAndEmpty(arg)) {
-            thrownAction.runOrHandle();
-        }
-    }
-
     public static <ArgType, ThrowableType extends Throwable> void requireNullOrEmpty(
-            ArgType arg, FiConsumerThrow1<ArgType, ThrowableType> thrownAction
+            String term, ArgType arg, FiBiConsumerThrow1<String, ArgType, ThrowableType> thrownAction
     ) throws ThrowableType {
         if (Judge.notNullAndEmpty(arg)) {
-            thrownAction.acceptOrHandle(arg);
+            thrownAction.acceptOrHandle(term, arg);
         }
     }
 
@@ -40,53 +32,35 @@ public class Examiner {
 
     @SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "OptionalGetWithoutIsPresent"})
     public static void requireNullOrEmpty(String term, Optional<Object> arg) throws MistyException {
-        requireNullOrEmpty(arg, () -> {
+        requireNullOrEmpty(term, arg, (t, a) -> {
             String description = ExaminerMessage.requireNullOrEmpty(term, StringTool.toString(arg.get()));
             throw MistyError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    public static <ThrowableType extends Throwable> void requireNullOrEmpty(
-            Optional<Object> arg, FiRunnableThrow1<ThrowableType> thrownAction
-    ) throws ThrowableType {
-        if (Judge.notNullAndEmpty(arg)) {
-            thrownAction.runOrHandle();
-        }
-    }
-
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public static <ArgType, ThrowableType extends Throwable> void requireNullOrEmpty(
-            Optional<ArgType> arg, FiConsumerThrow1<Optional<ArgType>, ThrowableType> thrownAction
+            String term, Optional<ArgType> arg, FiBiConsumerThrow1<String, Optional<ArgType>, ThrowableType> thrownAction
     ) throws ThrowableType {
         if (Judge.notNullAndEmpty(arg)) {
-            thrownAction.acceptOrHandle(arg);
+            thrownAction.acceptOrHandle(term, arg);
         }
     }
 
     // refuseNullAndEmpty of Object
 
     public static <ArgType> ArgType refuseNullAndEmpty(String term, ArgType arg) throws MistyException {
-        return refuseNullAndEmpty(arg, () -> {
+        return refuseNullAndEmpty(term, arg, (t, a) -> {
             String description = ExaminerMessage.refuseNullAndEmpty(term);
             throw MistyError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
     public static <ArgType, ThrowableType extends Throwable> ArgType refuseNullAndEmpty(
-            ArgType arg, FiRunnableThrow1<ThrowableType> thrownAction
+            String term, ArgType arg, FiBiConsumerThrow1<String, ArgType, ThrowableType> thrownAction
     ) throws ThrowableType {
         if (Judge.isNullOrEmpty(arg)) {
-            thrownAction.runOrHandle();
-        }
-        return arg;
-    }
-
-    public static <ArgType, ThrowableType extends Throwable> ArgType refuseNullAndEmpty(
-            ArgType arg, FiConsumerThrow1<ArgType, ThrowableType> thrownAction
-    ) throws ThrowableType {
-        if (Judge.isNullOrEmpty(arg)) {
-            thrownAction.acceptOrHandle(arg);
+            thrownAction.acceptOrHandle(term, arg);
         }
         return arg;
     }
@@ -95,7 +69,7 @@ public class Examiner {
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public static <ArgType> ArgType refuseNullAndEmpty(String term, Optional<ArgType> arg) throws MistyException {
-        return refuseNullAndEmpty(arg, () -> {
+        return refuseNullAndEmpty(term, arg, (t, a) -> {
             String description = ExaminerMessage.refuseNullAndEmpty(term);
             throw MistyError.ARGUMENT_ERROR.thrown(description);
         });
@@ -103,20 +77,10 @@ public class Examiner {
 
     @SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "OptionalGetWithoutIsPresent"})
     public static <ArgType, ThrowableType extends Throwable> ArgType refuseNullAndEmpty(
-            Optional<ArgType> arg, FiRunnableThrow1<ThrowableType> thrownAction
+            String term, Optional<ArgType> arg, FiBiConsumerThrow1<String, Optional<ArgType>, ThrowableType> thrownAction
     ) throws ThrowableType {
         if (Judge.isNullOrEmpty(arg)) {
-            thrownAction.runOrHandle();
-        }
-        return arg.get();
-    }
-
-    @SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "OptionalGetWithoutIsPresent"})
-    public static <ArgType, ThrowableType extends Throwable> ArgType refuseNullAndEmpty(
-            Optional<ArgType> arg, FiConsumerThrow1<Optional<ArgType>, ThrowableType> thrownAction
-    ) throws ThrowableType {
-        if (Judge.isNullOrEmpty(arg)) {
-            thrownAction.acceptOrHandle(arg);
+            thrownAction.acceptOrHandle(term, arg);
         }
         return arg.get();
     }

@@ -1,29 +1,34 @@
-package org.misty.smooth.sole.context;
+package org.misty.smooth.core.context.impl;
 
-import org.misty.smooth.api.context.SmoothContext;
 import org.misty.smooth.api.service.vo.SmoothServiceRequest;
 import org.misty.smooth.api.service.vo.SmoothServiceResult;
 import org.misty.smooth.api.vo.SmoothModuleId;
 import org.misty.smooth.api.vo.SmoothServiceId;
+import org.misty.smooth.core.context.api.SmoothCoreContext;
+import org.misty.smooth.core.context.api.SmoothCoreEnvironment;
+import org.misty.smooth.manager.error.SmoothLoadException;
 
+import java.io.IOException;
+import java.net.URL;
 import java.time.Instant;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
-public class SoleSmoothContext implements SmoothContext {
+public class SmoothCoreContextPreset implements SmoothCoreContext {
+
+    private final Instant launchInstant = Instant.now();
+
+    private SmoothCoreEnvironment environment = new SmoothCoreEnvironmentPreset();
 
     @Override
     public Instant getLaunchInstant() {
-        return null;
+        return this.launchInstant;
     }
 
     @Override
-    public List<String> getArgument() {
-        return null;
+    public SmoothCoreEnvironment getEnvironment() {
+        return this.environment;
     }
 
     @Override
@@ -55,4 +60,27 @@ public class SoleSmoothContext implements SmoothContext {
     public void invokeService(String moduleName, String serviceId, SmoothServiceRequest serviceRequest, Consumer<SmoothServiceResult> resultProcessor) {
 
     }
+
+    @Override
+    public void loadSmoothManager(Collection<URL> sources) throws SmoothLoadException {
+
+    }
+
+    @Override
+    public void loadSmoothModule(Collection<URL> sources) throws SmoothLoadException {
+
+    }
+
+    @Override
+    public void close() throws IOException {
+
+    }
+
+    //
+
+    public void setEnvironment(SmoothCoreEnvironment environment) {
+        this.environment = environment;
+    }
+
+
 }

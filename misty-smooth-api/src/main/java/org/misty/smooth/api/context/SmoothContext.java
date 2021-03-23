@@ -18,7 +18,7 @@ public interface SmoothContext {
 
     Instant getLaunchInstant();
 
-    List<String> getArgument();
+    SmoothEnvironment getEnvironment();
 
     Optional<Set<SmoothModuleId>> listModuleWithSet();
 

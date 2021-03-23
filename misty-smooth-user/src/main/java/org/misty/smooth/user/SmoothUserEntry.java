@@ -16,7 +16,7 @@ public class SmoothUserEntry {
         printClasspath(showClasspath, "after");
 
         // [2] do business logic, like SpringApplication.run(.class, args)
-        new SmoothUserLogic().go();
+        new SmoothUserLogic().go(args);
     }
 
     private static void printClasspath(boolean showClasspath, String action) {
