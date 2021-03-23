@@ -14,8 +14,8 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
 
     private final Map<String, Set<String>> arguments = new HashMap<>();
 
-    private FiBiConsumerThrow1<String, String[], MistyException> elementErrorThrowAction = (term, arg) -> {
-        throw MistyError.ARGUMENT_ERROR.thrown("there is null or empty element in the " + term + " " + Arrays.toString(arg));
+    private FiBiConsumerThrow1<String, Collection<String>, MistyException> elementErrorThrowAction = (term, arg) -> {
+        throw MistyError.ARGUMENT_ERROR.thrown("there is null or empty element in the " + term + " " + arg);
     };
 
     @Override
@@ -25,18 +25,33 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
     }
 
     @Override
-    public boolean containsAllFlags(String... keys) {
+    public boolean containsAllFlags(Collection<String> keys) {
+        boolean containsAll = true;
+
         for (String k : keys) {
-            if (!this.flags.contains(k)) {
-                return false;
-            }
+            Examiner.refuseNullAndEmpty("keys", k, (term, arg) -> {
+                this.elementErrorThrowAction.acceptOrHandle(term, keys);
+            });
+
+            containsAll &= this.flags.contains(k);
         }
-        return true;
+
+        return containsAll;
     }
 
     @Override
-    public boolean containsAnyFlags(String... keys) {
-        return false;
+    public boolean containsAnyFlags(Collection<String> keys) {
+        boolean containsAny = false;
+
+        for (String k : keys) {
+            Examiner.refuseNullAndEmpty("keys", k, (term, arg) -> {
+                this.elementErrorThrowAction.acceptOrHandle(term, keys);
+            });
+
+            containsAny |= this.flags.contains(k);
+        }
+
+        return containsAny;
     }
 
     @Override
@@ -51,7 +66,37 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
     }
 
     @Override
-    public Optional<Set<String>> getValue(String key) {
+    public boolean containsAllKeys(Collection<String> keys) {
+        boolean containsAll = true;
+
+        for (String k : keys) {
+            Examiner.refuseNullAndEmpty("keys", k, (term, arg) -> {
+                this.elementErrorThrowAction.acceptOrHandle(term, keys);
+            });
+
+            containsAll &= this.arguments.containsKey(k);
+        }
+
+        return containsAll;
+    }
+
+    @Override
+    public boolean containsAnyKey(Collection<String> keys) {
+        boolean containsAny = false;
+
+        for (String k : keys) {
+            Examiner.refuseNullAndEmpty("keys", k, (term, arg) -> {
+                this.elementErrorThrowAction.acceptOrHandle(term, keys);
+            });
+
+            containsAny |= this.arguments.containsKey(k);
+        }
+
+        return containsAny;
+    }
+
+    @Override
+    public Optional<Set<String>> getValues(String key) {
         Examiner.refuseNullAndEmpty("key", key);
         Set<String> values = this.arguments.get(key);
         if (values == null) {
@@ -62,7 +107,7 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
     }
 
     @Override
-    public Optional<String> getFirstValue(String key) {
+    public Optional<String> getValue(String key) {
         Examiner.refuseNullAndEmpty("key", key);
         Set<String> values = this.arguments.get(key);
         if (values == null || values.size() == 0) {
@@ -85,7 +130,7 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
     }
 
     @Override
-    public List<String> parseArgument(String... args) {
+    public List<String> parseArgument(Collection<String> args) {
         // TODO
 
         return Collections.emptyList();
@@ -103,7 +148,7 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
     }
 
     @Override
-    public boolean addArgument(String key, String... values) {
+    public boolean addArgument(String key, List<String> values) {
         Examiner.refuseNullAndEmpty("key", key);
         if (!key.startsWith(SmoothCoreEnvironment.ARGUMENT_PREFIX)) {
             return false;
@@ -120,12 +165,13 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
         return true;
     }
 
-    public FiBiConsumerThrow1<String, String[], MistyException> getElementErrorThrowAction() {
+    public FiBiConsumerThrow1<String, Collection<String>, MistyException> getElementErrorThrowAction() {
         return elementErrorThrowAction;
     }
 
-    public void setElementErrorThrowAction(FiBiConsumerThrow1<String, String[], MistyException> elementErrorThrowAction) {
+    public void setElementErrorThrowAction(FiBiConsumerThrow1<String, Collection<String>, MistyException> elementErrorThrowAction) {
         Examiner.refuseNullAndEmpty("elementErrorThrowAction", elementErrorThrowAction);
         this.elementErrorThrowAction = elementErrorThrowAction;
     }
+
 }

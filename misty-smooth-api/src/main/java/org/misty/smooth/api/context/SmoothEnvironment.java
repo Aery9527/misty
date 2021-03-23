@@ -1,24 +1,42 @@
 package org.misty.smooth.api.context;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public interface SmoothEnvironment {
 
     boolean containsFlag(String key);
 
-    boolean containsAllFlags(String... keys);
+    boolean containsAllFlags(Collection<String> keys);
 
-    boolean containsAnyFlags(String... keys);
+    default boolean containsAllFlags(String... keys) {
+        return containsAllFlags(Arrays.asList(keys));
+    }
+
+    boolean containsAnyFlags(Collection<String> keys);
+
+    default boolean containsAnyFlags(String... keys) {
+        return containsAnyFlags(Arrays.asList(keys));
+    }
 
     Set<String> listFlags();
 
     boolean containsKey(String key);
 
-    Optional<Set<String>> getValue(String key);
+    boolean containsAllKeys(Collection<String> keys);
 
-    Optional<String> getFirstValue(String key);
+    default boolean containsAllKeys(String... keys) {
+        return containsAllKeys(Arrays.asList(keys));
+    }
+
+    boolean containsAnyKey(Collection<String> keys);
+
+    default boolean containsAnyKey(String... keys) {
+        return containsAnyKey(Arrays.asList(keys));
+    }
+
+    Optional<Set<String>> getValues(String key);
+
+    Optional<String> getValue(String key);
 
     Set<String> listKeys();
 
