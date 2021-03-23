@@ -1,8 +1,8 @@
 package org.misty.smooth.user.m1;
 
-import org.misty.smooth.api.context.SmoothActionRegister;
+import org.misty.smooth.api.lifecycle.module.SmoothModuleRegister;
 import org.misty.smooth.api.context.SmoothContext;
-import org.misty.smooth.api.lifecycle.SmoothModuleLifecycle;
+import org.misty.smooth.api.lifecycle.module.SmoothModuleLifecycle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +21,7 @@ public class Module1Application implements SmoothModuleLifecycle {
     }
 
     @Override
-    public void initial(SmoothContext smoothContext, SmoothActionRegister actionRegister) {
+    public void initial(SmoothContext smoothContext, SmoothModuleRegister actionRegister) {
 
     }
 

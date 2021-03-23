@@ -1,12 +1,9 @@
 package org.misty.smooth.api.lifecycle;
 
-import org.misty.smooth.api.context.SmoothActionRegister;
-import org.misty.smooth.api.context.SmoothContext;
-
 import java.util.Collections;
 import java.util.List;
 
-public interface SmoothModuleLifecycle {
+public interface SmoothLifecycle {
 
     String getName();
 
@@ -18,8 +15,6 @@ public interface SmoothModuleLifecycle {
     default List<String> getAttachment() {
         return Collections.emptyList();
     }
-
-    void initial(SmoothContext smoothContext, SmoothActionRegister actionRegister);
 
     default void online() {
     }

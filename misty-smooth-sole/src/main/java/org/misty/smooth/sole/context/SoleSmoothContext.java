@@ -6,6 +6,8 @@ import org.misty.smooth.api.service.vo.SmoothServiceResult;
 import org.misty.smooth.api.vo.SmoothModuleId;
 import org.misty.smooth.api.vo.SmoothServiceId;
 
+import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -13,6 +15,16 @@ import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 public class SoleSmoothContext implements SmoothContext {
+
+    @Override
+    public Instant getLaunchInstant() {
+        return null;
+    }
+
+    @Override
+    public List<String> getArgument() {
+        return null;
+    }
 
     @Override
     public Optional<Set<SmoothModuleId>> listModuleWithSet() {
@@ -43,5 +55,4 @@ public class SoleSmoothContext implements SmoothContext {
     public void invokeService(String moduleName, String serviceId, SmoothServiceRequest serviceRequest, Consumer<SmoothServiceResult> resultProcessor) {
 
     }
-
 }

@@ -5,10 +5,7 @@ import org.misty.smooth.api.vo.SmoothServiceId;
 
 public final class SmoothServiceResult {
 
-    /**
-     * EX: SmoothResult(ModuleName)(ModuleVersion)(ServiceId)(ServiceName)
-     */
-    public static final String TO_STRING_FORMAT = SmoothServiceResult.class.getSimpleName() + "[%s:%s]";
+    public static final String STRING_FORMAT = SmoothServiceResult.class.getSimpleName() + "[%s:%s]";
 
     private final SmoothModuleId serviceModule;
 
@@ -22,7 +19,7 @@ public final class SmoothServiceResult {
         this.serviceModule = moduleId;
         this.serviceId = serviceId;
         this.response = response;
-        this.toString = String.format(TO_STRING_FORMAT, this.serviceModule.toString(), this.serviceId.toString());
+        this.toString = String.format(STRING_FORMAT, this.serviceModule.toString(), this.serviceId.toString());
     }
 
     @Override

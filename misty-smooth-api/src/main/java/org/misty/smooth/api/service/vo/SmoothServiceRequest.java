@@ -28,17 +28,17 @@ public final class SmoothServiceRequest extends SmoothServiceTransporter {
     }
 
     public SmoothServiceRequest(InputStream attachment) {
-        this.attachment = Optional.ofNullable(attachment);
+        this.attachment = Optional.of(new SmoothInputStreamCrossWrapper(attachment));
     }
 
     public SmoothServiceRequest(Map<String, List<String>> header, InputStream attachment) {
         super(header);
-        this.attachment = Optional.ofNullable(attachment);
+        this.attachment = Optional.of(new SmoothInputStreamCrossWrapper(attachment));
     }
 
     public SmoothServiceRequest(Map<String, List<String>> header, Map<String, String> body, InputStream attachment) {
         super(header, body);
-        this.attachment = Optional.ofNullable(attachment);
+        this.attachment = Optional.of(new SmoothInputStreamCrossWrapper(attachment));
     }
 
     public Optional<InputStream> getAttachment() {

@@ -1,8 +1,8 @@
 package org.misty.smooth.user;
 
-import org.misty.smooth.api.context.SmoothActionRegister;
 import org.misty.smooth.manager.context.SmoothManagerContext;
 import org.misty.smooth.manager.lifecycle.SmoothManagerLifecycle;
+import org.misty.smooth.manager.lifecycle.SmoothManagerRegister;
 
 public class SmoothManagerUser implements SmoothManagerLifecycle {
 
@@ -17,7 +17,7 @@ public class SmoothManagerUser implements SmoothManagerLifecycle {
     }
 
     @Override
-    public void initial(SmoothManagerContext smoothContext, SmoothActionRegister actionRegister) {
+    public void initial(SmoothManagerContext managerContext, SmoothManagerRegister managerRegister) {
 
     }
 

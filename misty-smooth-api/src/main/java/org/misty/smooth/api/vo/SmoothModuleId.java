@@ -4,7 +4,7 @@ import java.time.Instant;
 
 public final class SmoothModuleId {
 
-    public static final String FORMAT = "SmoothModule(%s)(%s)";
+    public static final String STRING_FORMAT = "SmoothModule(%s)(%s)";
 
     private final String moduleName;
 
@@ -18,7 +18,7 @@ public final class SmoothModuleId {
         this.moduleName = moduleName;
         this.moduleVersion = moduleVersion;
         this.launchTime = launchTime;
-        this.toString = String.format(FORMAT, this.moduleName, this.moduleVersion);
+        this.toString = String.format(STRING_FORMAT, this.moduleName, this.moduleVersion);
     }
 
     public String toStringWithLaunchTime() {

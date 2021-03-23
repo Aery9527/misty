@@ -2,7 +2,7 @@ package org.misty.smooth.api.vo;
 
 public class SmoothServiceId {
 
-    public static final String FORMAT = "SmoothService(%s)(%s)";
+    public static final String STRING_FORMAT = "SmoothService(%s)(%s)";
 
     private final String serviceId;
 
@@ -13,7 +13,7 @@ public class SmoothServiceId {
     public SmoothServiceId(String serviceId, String serviceName) {
         this.serviceId = serviceId;
         this.serviceName = serviceName;
-        this.toString = String.format(FORMAT, this.serviceId, this.serviceName);
+        this.toString = String.format(STRING_FORMAT, this.serviceId, this.serviceName);
     }
 
     @Override

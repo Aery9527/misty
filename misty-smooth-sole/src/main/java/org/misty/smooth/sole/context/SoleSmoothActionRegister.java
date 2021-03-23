@@ -1,13 +1,13 @@
 package org.misty.smooth.sole.context;
 
-import org.misty.smooth.api.context.SmoothActionRegister;
+import org.misty.smooth.api.lifecycle.module.SmoothModuleRegister;
 import org.misty.smooth.api.service.SmoothService;
 
 import java.util.Collection;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 
-public class SoleSmoothActionRegister implements SmoothActionRegister {
+public class SoleSmoothActionRegister implements SmoothModuleRegister {
 
     @Override
     public void registerService(Collection<SmoothService> services) {

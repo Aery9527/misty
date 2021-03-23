@@ -2,7 +2,7 @@ package org.misty.smooth.user.m1;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.misty.smooth.api.lifecycle.SmoothModuleLifecycle;
+import org.misty.smooth.api.lifecycle.module.SmoothModuleLifecycle;
 
 import java.util.ArrayList;
 import java.util.List;

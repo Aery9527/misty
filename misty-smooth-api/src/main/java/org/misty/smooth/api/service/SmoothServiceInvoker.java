@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 
 public class SmoothServiceInvoker {
 
-    public static final String FORMAT = "SmoothServiceInvoker(%s)(%s)";
+    public static final String STRING_FORMAT = SmoothServiceInvoker.class.getSimpleName() + "(%s)(%s)";
 
     private final String moduleName;
 
@@ -23,7 +23,7 @@ public class SmoothServiceInvoker {
         this.moduleName = moduleName;
         this.serviceId = serviceId;
         this.smoothContext = smoothContext;
-        this.toString = String.format(FORMAT, moduleName, serviceId);
+        this.toString = String.format(STRING_FORMAT, moduleName, serviceId);
     }
 
     public Future<SmoothServiceResult> invoke(SmoothServiceRequest serviceRequest) {

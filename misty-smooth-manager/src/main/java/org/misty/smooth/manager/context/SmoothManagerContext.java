@@ -7,7 +7,7 @@ import java.io.Closeable;
 import java.net.URL;
 import java.util.Collection;
 
-public interface SmoothManagerContext extends SmoothContext, Closeable {
+public interface SmoothManagerContext extends SmoothContext {
 
     void loadSmoothManager(Collection<URL> sources) throws SmoothLoadException;
 

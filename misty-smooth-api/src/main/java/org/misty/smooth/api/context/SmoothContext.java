@@ -6,6 +6,8 @@ import org.misty.smooth.api.service.vo.SmoothServiceResult;
 import org.misty.smooth.api.vo.SmoothModuleId;
 import org.misty.smooth.api.vo.SmoothServiceId;
 
+import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -13,6 +15,10 @@ import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 public interface SmoothContext {
+
+    Instant getLaunchInstant();
+
+    List<String> getArgument();
 
     Optional<Set<SmoothModuleId>> listModuleWithSet();
 

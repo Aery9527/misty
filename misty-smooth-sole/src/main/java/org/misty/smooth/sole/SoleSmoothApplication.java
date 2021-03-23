@@ -1,8 +1,7 @@
 package org.misty.smooth.sole;
 
-import org.misty.smooth.api.context.SmoothActionRegister;
+import org.misty.smooth.api.lifecycle.module.SmoothModuleRegister;
 import org.misty.smooth.api.context.SmoothContext;
-import org.misty.smooth.api.lifecycle.SmoothModuleLifecycle;
 import org.misty.smooth.sole.context.SoleSmoothActionRegister;
 import org.misty.smooth.sole.context.SoleSmoothContext;
 
@@ -14,7 +13,7 @@ public class SoleSmoothApplication {
         return soleSmoothApplication.getSmoothContext();
     }
 
-    private SmoothActionRegister actionRegister = new SoleSmoothActionRegister();
+    private SmoothModuleRegister actionRegister = new SoleSmoothActionRegister();
 
     private SmoothContext smoothContext = new SoleSmoothContext();
 
@@ -23,11 +22,11 @@ public class SoleSmoothApplication {
         return this.smoothContext;
     }
 
-    public SmoothActionRegister getActionRegister() {
+    public SmoothModuleRegister getActionRegister() {
         return actionRegister;
     }
 
-    public void setActionRegister(SmoothActionRegister actionRegister) {
+    public void setActionRegister(SmoothModuleRegister actionRegister) {
         this.actionRegister = actionRegister;
     }
 

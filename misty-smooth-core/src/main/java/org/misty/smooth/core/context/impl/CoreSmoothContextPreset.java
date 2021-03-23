@@ -9,14 +9,22 @@ import org.misty.smooth.manager.error.SmoothLoadException;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.time.Instant;
+import java.util.*;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 public class CoreSmoothContextPreset implements CoreSmoothContext {
+
+    @Override
+    public Instant getLaunchInstant() {
+        return null;
+    }
+
+    @Override
+    public List<String> getArgument() {
+        return null;
+    }
 
     @Override
     public Optional<Set<SmoothModuleId>> listModuleWithSet() {
@@ -57,10 +65,4 @@ public class CoreSmoothContextPreset implements CoreSmoothContext {
     public void loadSmoothModule(Collection<URL> sources) throws SmoothLoadException {
 
     }
-
-    @Override
-    public void close() throws IOException {
-
-    }
-
 }
