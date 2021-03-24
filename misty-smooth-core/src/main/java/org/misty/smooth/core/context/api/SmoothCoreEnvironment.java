@@ -11,7 +11,7 @@ public interface SmoothCoreEnvironment extends SmoothEnvironment {
     String ARGUMENT_PREFIX = "misty.smooth";
 
     /**
-     * -key is flag, --key=value is argument
+     * --key is flag, -key=value is argument
      *
      * @param args arguments
      * @return arg not prefix with {@link #ARGUMENT_PREFIX} will return
@@ -26,23 +26,31 @@ public interface SmoothCoreEnvironment extends SmoothEnvironment {
     }
 
     /**
-     * @param key flag key
+     * @param flag flag name
      * @return true is key start with {@link #ARGUMENT_PREFIX}, false is not.
      */
-    boolean addFlag(String key);
+    boolean addFlag(String flag);
+
+    List<String> addFlags(Collection<String> flags);
+
+    default List<String> addFlags(String... flags) {
+        return addFlags(Arrays.asList(flags));
+    }
+
+    boolean addArgument(String key, String value);
 
     /**
      * @param key    argument key
      * @param values argument values
      * @return true is key start with {@link #ARGUMENT_PREFIX}, false is not.
      */
-    boolean addArgument(String key, List<String> values);
+    boolean addArguments(String key, List<String> values);
 
     /**
-     * {@link #addArgument(String, List)}
+     * {@link #addArguments(String, List)}
      */
-    default boolean addArgument(String key, String... values) {
-        return addArgument(key, Arrays.asList(values));
+    default boolean addArguments(String key, String... values) {
+        return addArguments(key, Arrays.asList(values));
     }
 
 }

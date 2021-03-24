@@ -71,7 +71,7 @@ public class ArgumentParser {
         return parse(Arrays.asList(args));
     }
 
-    public ArgumentParser.Result parse(List<String> args) {
+    public ArgumentParser.Result parse(Collection<String> args) {
         Result result = new Result();
 
         String flagPrefix = "--";

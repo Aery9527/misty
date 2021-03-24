@@ -4,18 +4,18 @@ import java.util.*;
 
 public interface SmoothEnvironment {
 
-    boolean containsFlag(String key);
+    boolean containsFlag(String flag);
 
-    boolean containsAllFlags(Collection<String> keys);
+    boolean containsAllFlags(Collection<String> flags);
 
-    default boolean containsAllFlags(String... keys) {
-        return containsAllFlags(Arrays.asList(keys));
+    default boolean containsAllFlags(String... flags) {
+        return containsAllFlags(Arrays.asList(flags));
     }
 
-    boolean containsAnyFlags(Collection<String> keys);
+    boolean containsAnyFlags(Collection<String> flags);
 
-    default boolean containsAnyFlags(String... keys) {
-        return containsAnyFlags(Arrays.asList(keys));
+    default boolean containsAnyFlags(String... flags) {
+        return containsAnyFlags(Arrays.asList(flags));
     }
 
     Set<String> listFlags();
@@ -28,10 +28,24 @@ public interface SmoothEnvironment {
         return containsAllKeys(Arrays.asList(keys));
     }
 
-    boolean containsAnyKey(Collection<String> keys);
+    boolean containsAnyKeys(Collection<String> keys);
 
-    default boolean containsAnyKey(String... keys) {
-        return containsAnyKey(Arrays.asList(keys));
+    default boolean containsAnyKeys(String... keys) {
+        return containsAnyKeys(Arrays.asList(keys));
+    }
+
+    boolean containsValue(String key, String value);
+
+    boolean containsAllValues(String key, Collection<String> values);
+
+    default boolean containsAllValues(String key, String... values) {
+        return containsAllValues(key, Arrays.asList(values));
+    }
+
+    boolean containsAnyValues(String key, Collection<String> values);
+
+    default boolean containsAnyValues(String key, String... values) {
+        return containsAnyValues(key, Arrays.asList(values));
     }
 
     Optional<Set<String>> getValues(String key);
