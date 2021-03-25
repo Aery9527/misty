@@ -134,7 +134,7 @@ public class ArgumentParser {
                 key = trim(key);
                 value = trim(value);
 
-                if (key.isEmpty() || !hasSeparator) {
+                if (!hasSeparator || key.isEmpty() || value.isEmpty()) {
                     unrecognizedReceiver.accept(arg);
                 } else {
                     keyValueReceiver.accept(arg, new KeyValuesPair(key, value));

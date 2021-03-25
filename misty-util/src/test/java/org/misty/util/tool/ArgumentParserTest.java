@@ -32,12 +32,11 @@ class ArgumentParserTest {
         String k1 = "aa";
         String k2 = "bb";
         String k3 = "kerker";
-        String k4 = "kerker9527";
         String v1 = "123";
         String v2 = "456";
         String v3 = "123";
         String v4 = "9527";
-        String v5 = "";
+        String u0 = "-kerker9527" + separator + "";
         String u1 = "-" + separator + "kerker9527";
         String u2 = "-kerker9527";
         String u3 = "rion" + separator + "awesome";
@@ -57,8 +56,8 @@ class ArgumentParserTest {
                 "-" + k2 + separator + v3,
                 "-" + k2 + separator + v3,
                 "-" + k3 + separator + v4,
-                "-" + k4 + separator + v5, // value可以為空
                 // unrecognized
+                u0, // value不能為空, 所以無法識別
                 u1, // key不能為空, 所以無法識別
                 u2, // 因為沒有=, 所以無法識別
                 u3, // 因為不是--或-開頭, 所以無法識別
@@ -76,15 +75,14 @@ class ArgumentParserTest {
 
         Map<String, Set<String>> kvPair = result.getKeyValuesPair();
         System.out.println("kvPair:" + kvPair);
-        Assertions.assertThat(kvPair.keySet()).containsAll(Arrays.asList(k1, k2, k3, k4));
+        Assertions.assertThat(kvPair.keySet()).containsAll(Arrays.asList(k1, k2, k3));
         Assertions.assertThat(kvPair.get(k1)).containsAll(Arrays.asList(v1, v2));
         Assertions.assertThat(kvPair.get(k2)).containsAll(Collections.singletonList(v3));
         Assertions.assertThat(kvPair.get(k3)).containsAll(Collections.singletonList(v4));
-        Assertions.assertThat(kvPair.get(k4)).containsAll(Collections.singletonList(v5));
 
         Set<String> unrecognized = result.getUnrecognized();
         System.out.println("unrecognized:" + unrecognized);
-        Assertions.assertThat(unrecognized).containsAll(Arrays.asList(u1, u2, u3, u4, u5, u6));
+        Assertions.assertThat(unrecognized).containsAll(Arrays.asList(u0, u1, u2, u3, u4, u5, u6));
     }
 
     @Test
