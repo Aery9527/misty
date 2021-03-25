@@ -11,6 +11,8 @@ public class ArgumentParser {
 
     public static final String KEY_VALUE_PAIR_SEPARATOR_ERROR_MSG = "keyValuePairSeparator can't be \"-\"";
 
+    public static final String DEFAULT_SEPARATOR = "=";
+
     public static class Result {
         private final Set<String> flags = new HashSet<>();
 
@@ -69,7 +71,7 @@ public class ArgumentParser {
         }
     }
 
-    private String keyValuePairSeparator = "=";
+    private String keyValuePairSeparator = DEFAULT_SEPARATOR;
 
     private Set<ArgumentParser.Quotation> trimQuotation = new HashSet<>();
 
@@ -107,7 +109,9 @@ public class ArgumentParser {
         String keyValuePairPrefix = "-";
         int keyValuePairPrefixLength = keyValuePairPrefix.length();
 
-        for (final String arg : args) {
+        for (String arg : args) {
+            arg = trim(arg);
+
             boolean isFlag = arg.startsWith(flagPrefix);
             boolean isKeyValuePair = arg.startsWith(keyValuePairPrefix);
 

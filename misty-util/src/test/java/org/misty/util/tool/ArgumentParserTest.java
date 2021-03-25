@@ -14,7 +14,7 @@ class ArgumentParserTest {
     @ValueSource(strings = {"=", ":", "-"})
     public void test_normal_and_separator(String separator) {
         ArgumentParser argumentParser = new ArgumentParser();
-        boolean isDefault = "=".equals(separator);
+        boolean isDefault = ArgumentParser.DEFAULT_SEPARATOR.equals(separator);
         if (!isDefault) {
             if ("-".equals(separator)) {
                 Assertions.assertThatThrownBy(() -> argumentParser.setKeyValuePairSeparator(separator))
@@ -91,27 +91,54 @@ class ArgumentParserTest {
     public void test_default_trim() {
         ArgumentParser argumentParser = new ArgumentParser();
 
-        String f = "kerker";
-        String f1 = "--\"" + f + "\""; // trim "
-        String f2 = "-- " + f + " "; // trim blank
-        String f3 = "--'" + f + "'"; // trim '
-        String f4 = "--\"\"" + f + "\"\""; // deep trim
-        String f5 = "--\" " + f + "\" "; // deep trim
-        String f6 = "--\"'" + f + "'\""; // deep trim
-        String f7 = "--  \"" + f + "  \""; // deep trim
-        String f8 = "--  ' " + f + "  ' "; // deep trim
+        String s = "ker\" 'ker";
+        String f1 = "--\"" + s + "\""; // trim "
+        String f2 = "-- " + s + " "; // trim blank
+        String f3 = "--'" + s + "'"; // trim '
+        String f4 = "--\"\"" + s + "\"\""; // deep trim
+        String f5 = "--\" " + s + "\" "; // deep trim
+        String f6 = "--\"'" + s + "'\""; // deep trim
+        String f7 = "--  \"" + s + "  \""; // deep trim
+        String f8 = "--  ' " + s + "  ' "; // deep trim
+        String k1 = "-\"" + s + "\""; // trim "
+        String k2 = "- " + s + " "; // trim blank
+        String k3 = "-'" + s + "'"; // trim '
+        String k4 = "-\"\"" + s + "\"\""; // deep trim
+        String k5 = "-\" " + s + "\" "; // deep trim
+        String k6 = "-\"'" + s + "'\""; // deep trim
+        String k7 = "-  \"" + s + "  \""; // deep trim
+        String k8 = "-  ' " + s + "  ' "; // deep trim
+        String v1 = "\"" + s + "\""; // trim "
+        String v2 = " " + s + " "; // trim blank
+        String v3 = "'" + s + "'"; // trim '
+        String v4 = "\"\"" + s + "\"\""; // deep trim
+        String v5 = "\" " + s + "\" "; // deep trim
+        String v6 = "\"'" + s + "'\""; // deep trim
+        String v7 = "  \"" + s + "  \""; // deep trim
+        String v8 = "  ' " + s + "  ' "; // deep trim
 
         Collection<String> args = Arrays.asList(
-                f1, f2, f3, f4, f5, f6, f7, f8
+                f1, f2, f3, f4, f5, f6, f7, f8,
+                k1 + "=" + v1,
+                k2 + "=" + v2,
+                k3 + "=" + v3,
+                k4 + "=" + v4,
+                k5 + "=" + v5,
+                k6 + "=" + v6,
+                k7 + "=" + v7,
+                k8 + "=" + v8
         );
 
         ArgumentParser.Result result = argumentParser.parse(args);
 
         Set<String> flags = result.getFlags();
         System.out.println("flags:" + flags);
-        Assertions.assertThat(flags).containsAll(Collections.singletonList(f));
+        Assertions.assertThat(flags).containsAll(Collections.singletonList(s));
 
-
+        Map<String, Set<String>> kvPair = result.getKeyValuesPair();
+        System.out.println("kvPair:" + kvPair);
+        Assertions.assertThat(kvPair.keySet()).containsAll(Collections.singletonList(s));
+        Assertions.assertThat(kvPair.get(s)).containsAll(Collections.singletonList(s));
     }
 
 
