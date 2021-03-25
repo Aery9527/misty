@@ -1,17 +1,22 @@
 package org.misty.util.tool;
 
+import org.misty.util.error.MistyError;
 import org.misty.util.verify.Examiner;
 
 import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class ArgumentParser {
+
+    public static final String KEY_VALUE_PAIR_SEPARATOR_ERROR_MSG = "keyValuePairSeparator can't be \"-\"";
 
     public static class Result {
         private final Set<String> flags = new HashSet<>();
 
         private final Map<String, Set<String>> keyValuesPair = new HashMap<>();
 
-        private final List<String> unrecognized = new ArrayList<>();
+        private final Set<String> unrecognized = new HashSet<>();
 
         public boolean addFlag(String flag) {
             return this.flags.add(flag);
@@ -34,7 +39,7 @@ public class ArgumentParser {
             return keyValuesPair;
         }
 
-        public List<String> getUnrecognized() {
+        public Set<String> getUnrecognized() {
             return unrecognized;
         }
     }
@@ -51,6 +56,16 @@ public class ArgumentParser {
         public Quotation(String left, String right) {
             this.left = left;
             this.right = right;
+        }
+    }
+
+    public static class KeyValuesPair {
+        public final String key;
+        public final String value;
+
+        public KeyValuesPair(String key, String value) {
+            this.key = key;
+            this.value = value;
         }
     }
 
@@ -74,19 +89,36 @@ public class ArgumentParser {
     public ArgumentParser.Result parse(Collection<String> args) {
         Result result = new Result();
 
+        parse(args, (rawArg, flag) -> {
+            result.addFlag(flag);
+        }, (rawArg, keyValuesPair) -> {
+            result.addKeyValuePair(keyValuesPair.key, keyValuesPair.value);
+        }, result::addUnrecognized);
+
+        return result;
+    }
+
+    public void parse(Collection<String> args,
+                      BiConsumer<String, String> flagReceiver,
+                      BiConsumer<String, KeyValuesPair> keyValueReceiver,
+                      Consumer<String> unrecognizedReceiver) {
         String flagPrefix = "--";
         int flagPrefixLength = flagPrefix.length();
         String keyValuePairPrefix = "-";
         int keyValuePairPrefixLength = keyValuePairPrefix.length();
 
-        for (String arg : args) {
+        for (final String arg : args) {
             boolean isFlag = arg.startsWith(flagPrefix);
             boolean isKeyValuePair = arg.startsWith(keyValuePairPrefix);
 
             if (isFlag) {
                 String flag = arg.substring(flagPrefixLength);
                 flag = trim(flag);
-                result.addFlag(flag);
+                if (flag.isEmpty()) {
+                    unrecognizedReceiver.accept(arg);
+                } else {
+                    flagReceiver.accept(arg, flag);
+                }
 
             } else if (isKeyValuePair) {
                 int splitIndex = arg.indexOf(this.keyValuePairSeparator);
@@ -98,18 +130,16 @@ public class ArgumentParser {
                 key = trim(key);
                 value = trim(value);
 
-                if (key.isEmpty()) {
-                    result.addKeyValuePair(key, value);
+                if (key.isEmpty() || !hasSeparator) {
+                    unrecognizedReceiver.accept(arg);
                 } else {
-                    result.addUnrecognized(arg);
+                    keyValueReceiver.accept(arg, new KeyValuesPair(key, value));
                 }
 
             } else {
-                result.addUnrecognized(arg);
+                unrecognizedReceiver.accept(arg);
             }
         }
-
-        return result;
     }
 
     public String trim(String arg) {
@@ -155,7 +185,7 @@ public class ArgumentParser {
         }
 
         if (this.trimDeep) {
-            arg = trim(arg);
+            arg = trim(after);
         }
 
         return arg;
@@ -167,6 +197,11 @@ public class ArgumentParser {
 
     public void setKeyValuePairSeparator(String keyValuePairSeparator) {
         Examiner.refuseNullAndEmpty("keyValuePairSeparator", keyValuePairSeparator);
+
+        if ("-".equals(keyValuePairSeparator)) {
+            throw MistyError.ARGUMENT_ERROR.thrown(KEY_VALUE_PAIR_SEPARATOR_ERROR_MSG);
+        }
+
         this.keyValuePairSeparator = keyValuePairSeparator;
     }
 

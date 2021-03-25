@@ -180,17 +180,24 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
             return Collections.emptyList();
         }
 
+        List<String> ignoreList = new ArrayList<>();
+
         ArgumentParser argumentParser = new ArgumentParser();
-        ArgumentParser.Result result = argumentParser.parse(args);
+        argumentParser.parse(args, (rawArg, flag) -> {
+            boolean added = addFlag(flag);
+            if (!added) {
+                ignoreList.add(rawArg);
+            }
 
-        addFlags(result.getFlags());
+        }, (rawArg, keyValuesPair) -> {
+            boolean added = addArgument(keyValuesPair.key, keyValuesPair.value);
+            if (!added) {
+                ignoreList.add(rawArg);
+            }
 
-        Map<String, Set<String>> kvp = result.getKeyValuesPair();
-        kvp.forEach((k, vs) -> {
-            // TODO
-        });
+        }, ignoreList::add);
 
-        return Collections.emptyList();
+        return ignoreList;
     }
 
     @Override
