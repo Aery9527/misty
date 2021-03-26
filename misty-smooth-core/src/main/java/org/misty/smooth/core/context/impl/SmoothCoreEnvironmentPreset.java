@@ -12,12 +12,14 @@ import java.util.*;
 
 public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
 
+    public static final String ELEMENT_ERROR_THROW_ACTION_FORMAT = "there is null or empty element in the %s:%s";
+
     private final Set<String> flags = new HashSet<>();
 
     private final Map<String, Set<String>> arguments = new HashMap<>();
 
     private FiBiConsumerThrow1<String, Collection<String>, MistyException> elementErrorThrowAction = (term, arg) -> {
-        throw MistyError.ARGUMENT_ERROR.thrown("there is null or empty element in the " + term + ":" + arg);
+        throw MistyError.ARGUMENT_ERROR.thrown(String.format(ELEMENT_ERROR_THROW_ACTION_FORMAT, term, arg));
     };
 
     @Override
@@ -56,7 +58,7 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
     }
 
     @Override
-    public Set<String> listFlags() {
+    public Set<String> getFlags() {
         return new HashSet<>(this.flags);
     }
 
@@ -163,105 +165,76 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
     }
 
     @Override
-    public Set<String> listKeys() {
+    public Set<String> getKeys() {
         return new HashSet<>(this.arguments.keySet());
     }
 
     @Override
-    public Map<String, Set<String>> listArguments() {
+    public Map<String, Set<String>> getArguments() {
         Map<String, Set<String>> result = new HashMap<>();
         this.arguments.forEach((k, v) -> result.put(k, new HashSet<>(v)));
         return result;
     }
 
     @Override
-    public List<String> parseArgument(Collection<String> args) {
+    public Set<String> parseArgument(Collection<String> args) {
         if (Judge.isNullOrEmpty(args)) {
-            return Collections.emptyList();
+            return Collections.emptySet();
         }
-
-        List<String> ignoreList = new ArrayList<>();
 
         ArgumentParser argumentParser = new ArgumentParser();
-        argumentParser.parse(args, (rawArg, flag) -> {
-            boolean added = addFlag(flag);
-            if (!added) {
-                ignoreList.add(rawArg);
-            }
+        ArgumentParser.Result result = argumentParser.parse(args);
+        Set<String> flags = result.getFlags();
+        Map<String, Set<String>> kvPair = result.getKeyValuesPair();
+        Set<String> unrecognized = result.getUnrecognized();
 
-        }, (rawArg, keyValuesPair) -> {
-            boolean added = addArgument(keyValuesPair.key, keyValuesPair.value);
-            if (!added) {
-                ignoreList.add(rawArg);
-            }
+        addFlags(flags);
+        kvPair.forEach(this::addArguments);
 
-        }, ignoreList::add);
-
-        return ignoreList;
+        return unrecognized;
     }
 
     @Override
-    public boolean addFlag(String flag) {
+    public void addFlag(String flag) {
         Examiner.refuseNullAndEmpty("flag", flag);
 
-        if (flag.startsWith(SmoothCoreEnvironment.ARGUMENT_PREFIX)) {
-            this.flags.add(flag);
-            return true;
-        } else {
-            return false;
-        }
+        this.flags.add(flag);
     }
 
     @Override
-    public List<String> addFlags(Collection<String> flags) {
+    public void addFlags(Collection<String> flags) {
         Examiner.refuseNullAndEmpty("flags", flags);
 
-        List<String> noAddedFlags = new ArrayList<>();
-        for (String f : flags) {
-            Examiner.refuseNullAndEmpty("flags", f, (term, arg) -> {
+        for (String flag : flags) {
+            Examiner.refuseNullAndEmpty("flags", flag, (term, arg) -> {
                 this.elementErrorThrowAction.acceptOrHandle(term, flags);
             });
 
-            boolean added = addFlag(f);
-            if (!added) {
-                noAddedFlags.add(f);
-            }
+            this.flags.add(flag);
         }
-        return noAddedFlags;
     }
 
     @Override
-    public boolean addArgument(String key, String value) {
+    public void addArgument(String key, String value) {
         Examiner.refuseNullAndEmpty("key", key);
         Examiner.refuseNullAndEmpty("value", value);
 
-        if (key.startsWith(SmoothCoreEnvironment.ARGUMENT_PREFIX)) {
-            Set<String> argumentValues = this.arguments.computeIfAbsent(key, k -> new HashSet<>());
-            argumentValues.add(value);
-            return true;
-        } else {
-            return false;
-        }
+        Set<String> argumentValues = this.arguments.computeIfAbsent(key, k -> new HashSet<>());
+        argumentValues.add(value);
     }
 
     @Override
-    public boolean addArguments(String key, List<String> values) {
+    public void addArguments(String key, Collection<String> values) {
         Examiner.refuseNullAndEmpty("key", key);
         Examiner.refuseNullAndEmpty("values", values);
 
-        if (!key.startsWith(SmoothCoreEnvironment.ARGUMENT_PREFIX)) {
-            return false;
-        }
-
         Set<String> argumentValues = this.arguments.computeIfAbsent(key, k -> new HashSet<>());
-        for (String v : values) {
-            Examiner.refuseNullAndEmpty("values", v, (term, arg) -> {
+        for (String value : values) {
+            Examiner.refuseNullAndEmpty("values", value, (term, arg) -> {
                 this.elementErrorThrowAction.acceptOrHandle(term, values);
             });
-            argumentValues.add(v);
+            argumentValues.add(value);
         }
-
-        return true;
     }
 
     public FiBiConsumerThrow1<String, Collection<String>, MistyException> getElementErrorThrowAction() {

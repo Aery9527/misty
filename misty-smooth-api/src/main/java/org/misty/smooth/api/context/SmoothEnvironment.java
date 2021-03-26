@@ -9,29 +9,45 @@ public interface SmoothEnvironment {
     boolean containsAllFlags(Collection<String> flags);
 
     default boolean containsAllFlags(String... flags) {
-        return containsAllFlags(Arrays.asList(flags));
+        if (flags == null) {
+            return containsAllFlags((Collection<String>) null);
+        } else {
+            return containsAllFlags(Arrays.asList(flags));
+        }
     }
 
     boolean containsAnyFlags(Collection<String> flags);
 
     default boolean containsAnyFlags(String... flags) {
-        return containsAnyFlags(Arrays.asList(flags));
+        if (flags == null) {
+            return containsAnyFlags((Collection<String>) null);
+        } else {
+            return containsAnyFlags(Arrays.asList(flags));
+        }
     }
 
-    Set<String> listFlags();
+    Set<String> getFlags();
 
     boolean containsKey(String key);
 
     boolean containsAllKeys(Collection<String> keys);
 
     default boolean containsAllKeys(String... keys) {
-        return containsAllKeys(Arrays.asList(keys));
+        if (keys == null) {
+            return containsAllKeys((Collection<String>) null);
+        } else {
+            return containsAllKeys(Arrays.asList(keys));
+        }
     }
 
     boolean containsAnyKeys(Collection<String> keys);
 
     default boolean containsAnyKeys(String... keys) {
-        return containsAnyKeys(Arrays.asList(keys));
+        if (keys == null) {
+            return containsAnyKeys((Collection<String>) null);
+        } else {
+            return containsAnyKeys(Arrays.asList(keys));
+        }
     }
 
     boolean containsValue(String key, String value);
@@ -39,21 +55,29 @@ public interface SmoothEnvironment {
     boolean containsAllValues(String key, Collection<String> values);
 
     default boolean containsAllValues(String key, String... values) {
-        return containsAllValues(key, Arrays.asList(values));
+        if (values == null) {
+            return containsAllValues(key, (Collection<String>) null);
+        } else {
+            return containsAllValues(key, Arrays.asList(values));
+        }
     }
 
     boolean containsAnyValues(String key, Collection<String> values);
 
     default boolean containsAnyValues(String key, String... values) {
-        return containsAnyValues(key, Arrays.asList(values));
+        if (values == null) {
+            return containsAnyValues(key, (Collection<String>) null);
+        } else {
+            return containsAnyValues(key, Arrays.asList(values));
+        }
     }
 
     Optional<Set<String>> getValues(String key);
 
     Optional<String> getValue(String key);
 
-    Set<String> listKeys();
+    Set<String> getKeys();
 
-    Map<String, Set<String>> listArguments();
+    Map<String, Set<String>> getArguments();
 
 }

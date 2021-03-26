@@ -2,55 +2,45 @@ package org.misty.smooth.core.context.api;
 
 import org.misty.smooth.api.context.SmoothEnvironment;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public interface SmoothCoreEnvironment extends SmoothEnvironment {
 
-    String ARGUMENT_PREFIX = "misty.smooth";
-
     /**
-     * --key is flag, -key=value is argument
+     * "--aaa" is flag "aaa", "-key=value" is argument "key:value",
+     * for example, args [--kerker, -aery=handsome], then kerker will classified to flag,
+     * and aery=handsome will to argument aery:handsome.
      *
      * @param args arguments
-     * @return arg not prefix with {@link #ARGUMENT_PREFIX} will return
+     * @return can't parse args will return
      */
-    List<String> parseArgument(Collection<String> args);
+    Set<String> parseArgument(Collection<String> args);
 
     /**
      * {@link #parseArgument(Collection)}
      */
-    default List<String> parseArgument(String... args) {
+    default Set<String> parseArgument(String... args) {
         return parseArgument(Arrays.asList(args));
     }
 
-    /**
-     * @param flag flag name
-     * @return true is key start with {@link #ARGUMENT_PREFIX}, false is not.
-     */
-    boolean addFlag(String flag);
+    void addFlag(String flag);
 
-    List<String> addFlags(Collection<String> flags);
+    void addFlags(Collection<String> flags);
 
-    default List<String> addFlags(String... flags) {
-        return addFlags(Arrays.asList(flags));
+    default void addFlags(String... flags) {
+        addFlags(Arrays.asList(flags));
     }
 
-    boolean addArgument(String key, String value);
+    void addArgument(String key, String value);
 
-    /**
-     * @param key    argument key
-     * @param values argument values
-     * @return true is key start with {@link #ARGUMENT_PREFIX}, false is not.
-     */
-    boolean addArguments(String key, List<String> values);
+    void addArguments(String key, Collection<String> values);
 
-    /**
-     * {@link #addArguments(String, List)}
-     */
-    default boolean addArguments(String key, String... values) {
-        return addArguments(key, Arrays.asList(values));
+    default void addArguments(String key, String... values) {
+        addArguments(key, Arrays.asList(values));
+    }
+
+    default void addArguments(Map<String, String> args) {
+        args.forEach(this::addArgument);
     }
 
 }
