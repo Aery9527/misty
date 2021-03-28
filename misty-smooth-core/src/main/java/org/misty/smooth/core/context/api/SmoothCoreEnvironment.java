@@ -20,7 +20,11 @@ public interface SmoothCoreEnvironment extends SmoothEnvironment {
      * {@link #parseArgument(Collection)}
      */
     default Set<String> parseArgument(String... args) {
-        return parseArgument(Arrays.asList(args));
+        if (args == null) {
+            return parseArgument((Collection<String>) null);
+        } else {
+            return parseArgument(Arrays.asList(args));
+        }
     }
 
     void addFlag(String flag);
@@ -28,7 +32,11 @@ public interface SmoothCoreEnvironment extends SmoothEnvironment {
     void addFlags(Collection<String> flags);
 
     default void addFlags(String... flags) {
-        addFlags(Arrays.asList(flags));
+        if (flags == null) {
+            addFlags((Collection<String>) null);
+        } else {
+            addFlags(Arrays.asList(flags));
+        }
     }
 
     void addArgument(String key, String value);
@@ -36,11 +44,13 @@ public interface SmoothCoreEnvironment extends SmoothEnvironment {
     void addArguments(String key, Collection<String> values);
 
     default void addArguments(String key, String... values) {
-        addArguments(key, Arrays.asList(values));
+        if (values == null) {
+            addArguments(key, (Collection<String>) null);
+        } else {
+            addArguments(key, Arrays.asList(values));
+        }
     }
 
-    default void addArguments(Map<String, String> args) {
-        args.forEach(this::addArgument);
-    }
+    void addArguments(Map<String, String> args);
 
 }

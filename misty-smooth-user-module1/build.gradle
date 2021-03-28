@@ -1,3 +1,6 @@
+
+apply from: '../global-smooth-user.gradle'
+
 dependencies {
     implementation project(':misty-smooth-sole')
 }

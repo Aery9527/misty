@@ -72,9 +72,7 @@ public interface SmoothEnvironment {
         }
     }
 
-    Optional<Set<String>> getValues(String key);
-
-    Optional<String> getValue(String key);
+    Set<String> getValues(String key);
 
     Set<String> getKeys();
 

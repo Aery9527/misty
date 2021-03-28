@@ -16,6 +16,8 @@ MistyDescription mistyDescription = new MistyDescription$SmoothSole() as MistyDe
 archivesBaseName = mistyDescription.getName()
 version = mistyDescription.getVersion()
 
+apply from: '../global-log-api.gradle'
+
 dependencies {
     compile project(':misty-description')
     compile project(':misty-smooth-api')

@@ -18,7 +18,7 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
 
     private final Map<String, Set<String>> arguments = new HashMap<>();
 
-    private FiBiConsumerThrow1<String, Collection<String>, MistyException> elementErrorThrowAction = (term, arg) -> {
+    private final FiBiConsumerThrow1<String, Collection<String>, MistyException> elementErrorThrowAction = (term, arg) -> {
         throw MistyError.ARGUMENT_ERROR.thrown(String.format(ELEMENT_ERROR_THROW_ACTION_FORMAT, term, arg));
     };
 
@@ -141,26 +141,14 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
     }
 
     @Override
-    public Optional<Set<String>> getValues(String key) {
+    public Set<String> getValues(String key) {
         Examiner.refuseNullAndEmpty("key", key);
 
         Set<String> values = this.arguments.get(key);
         if (values == null) {
-            return Optional.empty();
+            return Collections.emptySet();
         } else {
-            return Optional.of(new HashSet<>(values));
-        }
-    }
-
-    @Override
-    public Optional<String> getValue(String key) {
-        Examiner.refuseNullAndEmpty("key", key);
-
-        Set<String> values = this.arguments.get(key);
-        if (values == null || values.size() == 0) {
-            return Optional.empty();
-        } else {
-            return Optional.of(values.iterator().next());
+            return new HashSet<>(values);
         }
     }
 
@@ -237,13 +225,11 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
         }
     }
 
-    public FiBiConsumerThrow1<String, Collection<String>, MistyException> getElementErrorThrowAction() {
-        return elementErrorThrowAction;
-    }
+    @Override
+    public void addArguments(Map<String, String> args) {
+        Examiner.refuseNullAndEmpty("args", args);
 
-    public void setElementErrorThrowAction(FiBiConsumerThrow1<String, Collection<String>, MistyException> elementErrorThrowAction) {
-        Examiner.refuseNullAndEmpty("elementErrorThrowAction", elementErrorThrowAction);
-        this.elementErrorThrowAction = elementErrorThrowAction;
+        args.forEach(this::addArgument);
     }
 
 }
