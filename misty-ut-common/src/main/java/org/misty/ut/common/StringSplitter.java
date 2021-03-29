@@ -17,9 +17,9 @@ public class StringSplitter extends SimpleArgumentConverter {
 
         for (int i = 0; i < result.length; i++) {
             String s = result[i];
-            if (s.equals("<null>")) {
+            if (s.equals("'null'")) {
                 result[i] = null;
-            } else if (s.equals("<empty>")) {
+            } else if (s.equals("''")) {
                 result[i] = "";
             }
         }

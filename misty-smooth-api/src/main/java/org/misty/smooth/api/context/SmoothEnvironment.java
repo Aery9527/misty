@@ -6,6 +6,16 @@ public interface SmoothEnvironment {
 
     boolean containsFlag(String flag);
 
+    boolean containsExactlyFlags(Collection<String> flags);
+
+    default boolean containsExactlyFlags(String... flags) {
+        if (flags == null) {
+            return containsExactlyFlags((Collection<String>) null);
+        } else {
+            return containsExactlyFlags(Arrays.asList(flags));
+        }
+    }
+
     boolean containsAllFlags(Collection<String> flags);
 
     default boolean containsAllFlags(String... flags) {

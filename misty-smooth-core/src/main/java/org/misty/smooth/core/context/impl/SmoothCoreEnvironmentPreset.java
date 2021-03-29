@@ -30,6 +30,17 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
     }
 
     @Override
+    public boolean containsExactlyFlags(Collection<String> flags) {
+        Examiner.refuseNullAndEmpty("flags", flags);
+
+        if (flags.size() != this.flags.size()) {
+            return false;
+        }
+
+        return containsAllFlags(flags);
+    }
+
+    @Override
     public boolean containsAllFlags(Collection<String> flags) {
         Examiner.refuseNullAndEmpty("flags", flags);
 
