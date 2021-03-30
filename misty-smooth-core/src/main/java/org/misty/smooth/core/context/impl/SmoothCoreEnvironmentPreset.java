@@ -81,6 +81,17 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
     }
 
     @Override
+    public boolean containsExactlyKeys(Collection<String> keys) {
+        Examiner.refuseNullAndEmpty("keys", keys);
+
+        if (keys.size() != this.arguments.size()) {
+            return false;
+        }
+
+        return containsAllKeys(keys);
+    }
+
+    @Override
     public boolean containsAllKeys(Collection<String> keys) {
         Examiner.refuseNullAndEmpty("keys", keys);
 
@@ -115,6 +126,18 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
 
         Set<String> argumentValues = this.arguments.getOrDefault(key, Collections.emptySet());
         return argumentValues.contains(value);
+    }
+
+    @Override
+    public boolean containsExactlyValues(String key, Collection<String> values) {
+        Examiner.refuseNullAndEmpty("key", key);
+        Examiner.refuseNullAndEmpty("values", values);
+
+        if (values.size() != this.arguments.getOrDefault(key, Collections.emptySet()).size()) {
+            return false;
+        }
+
+        return containsAllValues(key, values);
     }
 
     @Override

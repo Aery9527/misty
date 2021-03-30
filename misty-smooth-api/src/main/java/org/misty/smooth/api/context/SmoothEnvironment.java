@@ -4,6 +4,8 @@ import java.util.*;
 
 public interface SmoothEnvironment {
 
+    // flag
+
     boolean containsFlag(String flag);
 
     boolean containsExactlyFlags(Collection<String> flags);
@@ -38,7 +40,19 @@ public interface SmoothEnvironment {
 
     Set<String> getFlags();
 
+    // argument key
+
     boolean containsKey(String key);
+
+    boolean containsExactlyKeys(Collection<String> keys);
+
+    default boolean containsExactlyKeys(String... keys) {
+        if (keys == null) {
+            return containsExactlyKeys((Collection<String>) null);
+        } else {
+            return containsExactlyKeys(Arrays.asList(keys));
+        }
+    }
 
     boolean containsAllKeys(Collection<String> keys);
 
@@ -60,7 +74,19 @@ public interface SmoothEnvironment {
         }
     }
 
+    // arguments value
+
     boolean containsValue(String key, String value);
+
+    boolean containsExactlyValues(String key, Collection<String> values);
+
+    default boolean containsExactlyValues(String key, String... values) {
+        if (values == null) {
+            return containsExactlyValues(key, (Collection<String>) null);
+        } else {
+            return containsExactlyValues(key, Arrays.asList(values));
+        }
+    }
 
     boolean containsAllValues(String key, Collection<String> values);
 

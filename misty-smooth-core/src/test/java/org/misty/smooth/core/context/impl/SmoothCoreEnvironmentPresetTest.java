@@ -110,8 +110,84 @@ class SmoothCoreEnvironmentPresetTest {
     @ParameterizedTest
     @ValueSource(strings = {"'',e", "e,''", "e,'null'", "'null',e", "e1,'',e2", "e1,'null',e2"})
     public void containsExactlyFlags$error_element_null_empty(@ConvertWith(StringSplitter.class) String[] flags) {
+        Assertions.assertThat(this.environment.containsExactlyFlags(flags)).isFalse();
+
+        List<String> l = new ArrayList<>();
+        for (int i = 0; i < flags.length; i++) {
+            l.add(i + "");
+        }
+        this.environment.addFlags(l);
+
         String msg = String.format(SmoothCoreEnvironmentPreset.ELEMENT_ERROR_THROW_ACTION_FORMAT, "flags", Arrays.toString(flags));
-        Assertions.assertThatThrownBy(() -> this.environment.addFlags(flags))
+        Assertions.assertThatThrownBy(() -> this.environment.containsExactlyFlags(flags))
+                .isInstanceOf(MistyException.class)
+                .hasMessageContaining(msg);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"e1,e2", "e1,e2,e3"})
+    public void containsAllFlags$normal(@ConvertWith(StringSplitter.class) String[] flags) {
+        this.environment.addFlags(flags);
+
+        Assertions.assertThat(this.environment.containsAllFlags(flags)).isTrue();
+
+        List<String> l = new ArrayList<>(Arrays.asList(flags));
+        l.remove(0);
+        Assertions.assertThat(this.environment.containsAllFlags(l)).isTrue();
+
+        l.add("123");
+        Assertions.assertThat(this.environment.containsAllFlags(l)).isFalse();
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    public void containsAllFlags$error_null_empty(String[] flags) {
+        Assertions.assertThatThrownBy(() -> this.environment.containsAllFlags(flags))
+                .isInstanceOf(MistyException.class)
+                .hasMessageContaining(ExaminerMessage.refuseNullAndEmpty("flags"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"'',e", "e,''", "e,'null'", "'null',e", "e1,'',e2", "e1,'null',e2"})
+    public void containsAllFlags$error_element_null_empty(@ConvertWith(StringSplitter.class) String[] flags) {
+        String msg = String.format(SmoothCoreEnvironmentPreset.ELEMENT_ERROR_THROW_ACTION_FORMAT, "flags", Arrays.toString(flags));
+        Assertions.assertThatThrownBy(() -> this.environment.containsAllFlags(flags))
+                .isInstanceOf(MistyException.class)
+                .hasMessageContaining(msg);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"e1,e2", "e1,e2,e3"})
+    public void containsAnyFlags$normal(@ConvertWith(StringSplitter.class) String[] flags) {
+        this.environment.addFlags(flags);
+
+        Assertions.assertThat(this.environment.containsAnyFlags(flags)).isTrue();
+
+        List<String> l = new ArrayList<>(Arrays.asList(flags));
+        l.remove(0);
+        Assertions.assertThat(this.environment.containsAnyFlags(l)).isTrue();
+
+        l.add("123");
+        Assertions.assertThat(this.environment.containsAnyFlags(l)).isTrue();
+
+        l = new ArrayList<>();
+        l.add("9527");
+        Assertions.assertThat(this.environment.containsAnyFlags(l)).isFalse();
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    public void containsAnyFlags$error_null_empty(String[] flags) {
+        Assertions.assertThatThrownBy(() -> this.environment.containsAnyFlags(flags))
+                .isInstanceOf(MistyException.class)
+                .hasMessageContaining(ExaminerMessage.refuseNullAndEmpty("flags"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"'',e", "e,''", "e,'null'", "'null',e", "e1,'',e2", "e1,'null',e2"})
+    public void containsAnyFlags$error_element_null_empty(@ConvertWith(StringSplitter.class) String[] flags) {
+        String msg = String.format(SmoothCoreEnvironmentPreset.ELEMENT_ERROR_THROW_ACTION_FORMAT, "flags", Arrays.toString(flags));
+        Assertions.assertThatThrownBy(() -> this.environment.containsAnyFlags(flags))
                 .isInstanceOf(MistyException.class)
                 .hasMessageContaining(msg);
     }
