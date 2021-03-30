@@ -21,6 +21,8 @@ public class StringSplitter extends SimpleArgumentConverter {
                 result[i] = null;
             } else if (s.equals("''")) {
                 result[i] = "";
+            } else if (s.equals("' '")) {
+                result[i] = " ";
             }
         }
 

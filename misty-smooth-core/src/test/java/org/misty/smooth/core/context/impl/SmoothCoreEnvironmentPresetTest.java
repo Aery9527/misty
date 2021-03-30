@@ -2,8 +2,10 @@ package org.misty.smooth.core.context.impl;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ConvertWith;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.misty.ut.common.StringSplitter;
@@ -192,8 +194,79 @@ class SmoothCoreEnvironmentPresetTest {
                 .hasMessageContaining(msg);
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"e1,e2", "e1,e2,e3"})
+    public void getFlags(@ConvertWith(StringSplitter.class) String[] flags) {
+        this.environment.addFlags(flags);
+        Assertions.assertThat(this.environment.getFlags()).containsExactlyInAnyOrder(flags);
+    }
+
     // argument key
 
+    @ParameterizedTest
+    @ValueSource(strings = {"k,v", "k,' '"})
+    public void addArgument$key$normal(@ConvertWith(StringSplitter.class) String[] kvPair) {
+        String k = kvPair[0];
+        String v = kvPair[1];
+        this.environment.addArgument(k, v);
+
+        Assertions.assertThat(this.environment.containsKey(k)).isTrue();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"'null',v", "'',v"})
+    public void addArgument$key$error(@ConvertWith(StringSplitter.class) String[] kvPair) {
+        String k = kvPair[0];
+        String v = kvPair[1];
+
+        Assertions.assertThatThrownBy(() -> this.environment.addArgument(k, v))
+                .isInstanceOf(MistyException.class)
+                .hasMessageContaining(ExaminerMessage.refuseNullAndEmpty("key"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"k,v", "k,' '"})
+    public void addArguments$key$normal(@ConvertWith(StringSplitter.class) String[] kvPair) {
+        String k = kvPair[0];
+        String v = kvPair[1];
+        this.environment.addArguments(k, v);
+
+        Assertions.assertThat(this.environment.containsKey(k)).isTrue();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"'null',v", "'',v"})
+    public void addArguments$key$error(@ConvertWith(StringSplitter.class) String[] kvPair) {
+        String k = kvPair[0];
+        String v = kvPair[1];
+
+        Assertions.assertThatThrownBy(() -> this.environment.addArguments(k, v))
+                .isInstanceOf(MistyException.class)
+                .hasMessageContaining(ExaminerMessage.refuseNullAndEmpty("key"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"k,v", "k,' '"})
+    public void containsKey$normal(@ConvertWith(StringSplitter.class) String[] kvPair) {
+        String k = kvPair[0];
+        String v = kvPair[1];
+        this.environment.addArgument(k, v);
+
+        Assertions.assertThat(this.environment.containsKey(k)).isTrue();
+        Assertions.assertThat(this.environment.containsKey("kkk")).isFalse();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"'null',v", "'',v"})
+    public void containsKey$error(@ConvertWith(StringSplitter.class) String[] kvPair) {
+        String k = kvPair[0];
+        Assertions.assertThatThrownBy(() -> this.environment.containsKey(k))
+                .isInstanceOf(MistyException.class)
+                .hasMessageContaining(ExaminerMessage.refuseNullAndEmpty("key"));
+    }
+
     // arguments value
+
+    // parseArgument
 
 }
