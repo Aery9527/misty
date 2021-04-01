@@ -14,9 +14,11 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
 
     public static final String ELEMENT_ERROR_THROW_ACTION_FORMAT = "there is null or empty element in the %s:%s";
 
+    public static final String ADD_ARGUMENTS_ERROR_THROW_ACTION_FORMAT = "addArguments key(%s) or value(%s) can't be null or empty";
+
     private final Set<String> flags = new HashSet<>();
 
-    private final Map<String, Set<String>> arguments = new HashMap<>();
+    private final Map<String, String> arguments = new HashMap<>();
 
     private final FiBiConsumerThrow1<String, Collection<String>, MistyException> elementErrorThrowAction = (term, arg) -> {
         throw MistyError.ARGUMENT_ERROR.thrown(String.format(ELEMENT_ERROR_THROW_ACTION_FORMAT, term, arg));
@@ -120,70 +122,32 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
     }
 
     @Override
-    public boolean containsValue(String key, String value) {
+    public boolean equalsValue(String key, String value) {
         Examiner.refuseNullAndEmpty("key", key);
         Examiner.refuseNullAndEmpty("value", value);
 
-        Set<String> argumentValues = this.arguments.getOrDefault(key, Collections.emptySet());
-        return argumentValues.contains(value);
+        String argValue = this.arguments.get(key);
+        return value.equals(argValue);
     }
 
     @Override
-    public boolean containsExactlyValues(String key, Collection<String> values) {
+    public boolean equalsAnyValues(String key, Collection<String> values) {
         Examiner.refuseNullAndEmpty("key", key);
         Examiner.refuseNullAndEmpty("values", values);
 
-        if (values.size() != this.arguments.getOrDefault(key, Collections.emptySet()).size()) {
-            return false;
-        }
+        String argValue = this.arguments.get(key);
 
-        return containsAllValues(key, values);
-    }
-
-    @Override
-    public boolean containsAllValues(String key, Collection<String> values) {
-        Examiner.refuseNullAndEmpty("key", key);
-        Examiner.refuseNullAndEmpty("values", values);
-
-        Set<String> argumentValues = this.arguments.getOrDefault(key, Collections.emptySet());
-
-        boolean containsAll = true;
         for (String v : values) {
             Examiner.refuseNullAndEmpty("values", v, (term, arg) -> {
                 this.elementErrorThrowAction.acceptOrHandle(term, values);
             });
-            containsAll &= argumentValues.contains(v);
+
+            if (v.equals(argValue)) {
+                return true;
+            }
         }
-        return containsAll;
-    }
 
-    @Override
-    public boolean containsAnyValues(String key, Collection<String> values) {
-        Examiner.refuseNullAndEmpty("key", key);
-        Examiner.refuseNullAndEmpty("values", values);
-
-        Set<String> argumentValues = this.arguments.getOrDefault(key, Collections.emptySet());
-
-        boolean containsAny = false;
-        for (String v : values) {
-            Examiner.refuseNullAndEmpty("values", v, (term, arg) -> {
-                this.elementErrorThrowAction.acceptOrHandle(term, values);
-            });
-            containsAny |= argumentValues.contains(v);
-        }
-        return containsAny;
-    }
-
-    @Override
-    public Set<String> getValues(String key) {
-        Examiner.refuseNullAndEmpty("key", key);
-
-        Set<String> values = this.arguments.get(key);
-        if (values == null) {
-            return Collections.emptySet();
-        } else {
-            return new HashSet<>(values);
-        }
+        return false;
     }
 
     @Override
@@ -192,10 +156,8 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
     }
 
     @Override
-    public Map<String, Set<String>> getArguments() {
-        Map<String, Set<String>> result = new HashMap<>();
-        this.arguments.forEach((k, v) -> result.put(k, new HashSet<>(v)));
-        return result;
+    public Map<String, String> getArguments() {
+        return new HashMap<>(this.arguments);
     }
 
     @Override
@@ -207,11 +169,11 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
         ArgumentParser argumentParser = new ArgumentParser();
         ArgumentParser.Result result = argumentParser.parse(args);
         Set<String> flags = result.getFlags();
-        Map<String, Set<String>> kvPair = result.getKeyValuesPair();
+        Map<String, String> kvPair = result.getKeyValuesPair();
         Set<String> unrecognized = result.getUnrecognized();
 
         addFlags(flags);
-        kvPair.forEach(this::addArguments);
+        addArguments(kvPair);
 
         return unrecognized;
     }
@@ -237,33 +199,30 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
     }
 
     @Override
-    public void addArgument(String key, String value) {
+    public Optional<String> addArgument(String key, String value) {
         Examiner.refuseNullAndEmpty("key", key);
         Examiner.refuseNullAndEmpty("value", value);
 
-        Set<String> argumentValues = this.arguments.computeIfAbsent(key, k -> new HashSet<>());
-        argumentValues.add(value);
+        String oldValue = this.arguments.put(key, value);
+        return Optional.ofNullable(oldValue);
     }
 
     @Override
-    public void addArguments(String key, Collection<String> values) {
-        Examiner.refuseNullAndEmpty("key", key);
-        Examiner.refuseNullAndEmpty("values", values);
-
-        Set<String> argumentValues = this.arguments.computeIfAbsent(key, k -> new HashSet<>());
-        for (String value : values) {
-            Examiner.refuseNullAndEmpty("values", value, (term, arg) -> {
-                this.elementErrorThrowAction.acceptOrHandle(term, values);
-            });
-            argumentValues.add(value);
-        }
-    }
-
-    @Override
-    public void addArguments(Map<String, String> args) {
+    public Map<String, Optional<String>> addArguments(Map<String, String> args) {
         Examiner.refuseNullAndEmpty("args", args);
 
-        args.forEach(this::addArgument);
+        Map<String, Optional<String>> oldValues = new HashMap<>();
+
+        args.forEach((k, v) -> {
+            if (Judge.isNullOrEmpty(k) || Judge.isNullOrEmpty(v)) {
+                throw MistyError.ARGUMENT_ERROR.thrown(String.format(ADD_ARGUMENTS_ERROR_THROW_ACTION_FORMAT, k, v));
+            } else {
+                Optional<String> oldValue = addArgument(k, v);
+                oldValues.put(k, oldValue);
+            }
+        });
+
+        return oldValues;
     }
 
 }

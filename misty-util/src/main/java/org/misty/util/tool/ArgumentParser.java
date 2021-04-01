@@ -16,7 +16,7 @@ public class ArgumentParser {
     public static class Result {
         private final Set<String> flags = new HashSet<>();
 
-        private final Map<String, Set<String>> keyValuesPair = new HashMap<>();
+        private final Map<String, String> keyValuesPair = new HashMap<>();
 
         private final Set<String> unrecognized = new HashSet<>();
 
@@ -25,8 +25,8 @@ public class ArgumentParser {
         }
 
         public boolean addKeyValuePair(String key, String value) {
-            Set<String> values = this.keyValuesPair.computeIfAbsent(key, k -> new HashSet<>());
-            return values.add(value);
+            String oldValue = this.keyValuesPair.put(key, value);
+            return oldValue == null;
         }
 
         public boolean addUnrecognized(String arg) {
@@ -37,7 +37,7 @@ public class ArgumentParser {
             return flags;
         }
 
-        public Map<String, Set<String>> getKeyValuesPair() {
+        public Map<String, String> getKeyValuesPair() {
             return keyValuesPair;
         }
 

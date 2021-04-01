@@ -76,42 +76,20 @@ public interface SmoothEnvironment {
 
     // arguments value
 
-    boolean containsValue(String key, String value);
+    boolean equalsValue(String key, String value);
 
-    boolean containsExactlyValues(String key, Collection<String> values);
+    boolean equalsAnyValues(String key, Collection<String> values);
 
-    default boolean containsExactlyValues(String key, String... values) {
+    default boolean equalsAnyValues(String key, String... values) {
         if (values == null) {
-            return containsExactlyValues(key, (Collection<String>) null);
+            return equalsAnyValues(key, (Collection<String>) null);
         } else {
-            return containsExactlyValues(key, Arrays.asList(values));
+            return equalsAnyValues(key, Arrays.asList(values));
         }
     }
-
-    boolean containsAllValues(String key, Collection<String> values);
-
-    default boolean containsAllValues(String key, String... values) {
-        if (values == null) {
-            return containsAllValues(key, (Collection<String>) null);
-        } else {
-            return containsAllValues(key, Arrays.asList(values));
-        }
-    }
-
-    boolean containsAnyValues(String key, Collection<String> values);
-
-    default boolean containsAnyValues(String key, String... values) {
-        if (values == null) {
-            return containsAnyValues(key, (Collection<String>) null);
-        } else {
-            return containsAnyValues(key, Arrays.asList(values));
-        }
-    }
-
-    Set<String> getValues(String key);
 
     Set<String> getKeys();
 
-    Map<String, Set<String>> getArguments();
+    Map<String, String> getArguments();
 
 }

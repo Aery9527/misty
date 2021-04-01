@@ -2,10 +2,8 @@ package org.misty.smooth.core.context.impl;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ConvertWith;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.misty.ut.common.StringSplitter;
@@ -13,7 +11,6 @@ import org.misty.util.error.MistyException;
 import org.misty.util.verify.ExaminerMessage;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 class SmoothCoreEnvironmentPresetTest {
 
@@ -87,17 +84,19 @@ class SmoothCoreEnvironmentPresetTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"e1,e2", "e1,e2,e3"})
+    @ValueSource(strings = {"e1", "e1,e2"})
     public void containsExactlyFlags$normal(@ConvertWith(StringSplitter.class) String[] flags) {
+        Assertions.assertThat(this.environment.containsExactlyFlags(flags)).isFalse();
+
         this.environment.addFlags(flags);
 
         Assertions.assertThat(this.environment.containsExactlyFlags(flags)).isTrue();
 
         List<String> l = new ArrayList<>(Arrays.asList(flags));
-        l.remove(0);
+        l.add("123");
         Assertions.assertThat(this.environment.containsExactlyFlags(l)).isFalse();
 
-        l.add("123");
+        l.remove(0);
         Assertions.assertThat(this.environment.containsExactlyFlags(l)).isFalse();
     }
 
@@ -204,68 +203,260 @@ class SmoothCoreEnvironmentPresetTest {
     // argument key
 
     @ParameterizedTest
-    @ValueSource(strings = {"k,v", "k,' '"})
-    public void addArgument$key$normal(@ConvertWith(StringSplitter.class) String[] kvPair) {
-        String k = kvPair[0];
-        String v = kvPair[1];
-        this.environment.addArgument(k, v);
-
-        Assertions.assertThat(this.environment.containsKey(k)).isTrue();
+    @ValueSource(strings = {"k", " "})
+    public void addArgument$key$normal(String key) {
+        Assertions.assertThat(this.environment.containsKey(key)).isFalse();
+        this.environment.addArgument(key, "9527");
+        Assertions.assertThat(this.environment.containsKey(key)).isTrue();
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"'null',v", "'',v"})
-    public void addArgument$key$error(@ConvertWith(StringSplitter.class) String[] kvPair) {
-        String k = kvPair[0];
-        String v = kvPair[1];
-
-        Assertions.assertThatThrownBy(() -> this.environment.addArgument(k, v))
+    @NullAndEmptySource
+    public void addArgument$key$error(String key) {
+        Assertions.assertThatThrownBy(() -> this.environment.addArgument(key, "9527"))
                 .isInstanceOf(MistyException.class)
                 .hasMessageContaining(ExaminerMessage.refuseNullAndEmpty("key"));
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"k,v", "k,' '"})
-    public void addArguments$key$normal(@ConvertWith(StringSplitter.class) String[] kvPair) {
-        String k = kvPair[0];
-        String v = kvPair[1];
-        this.environment.addArguments(k, v);
+    @ValueSource(strings = {"k", " "})
+    public void addArguments$key$normal(String key) {
+        String[] values = {"9527", "9487"};
 
-        Assertions.assertThat(this.environment.containsKey(k)).isTrue();
+        Assertions.assertThat(this.environment.containsKey(key)).isFalse();
+        this.environment.addArguments(key, values);
+        Assertions.assertThat(this.environment.containsKey(key)).isTrue();
+
+        initialEnvironment();
+
+        Assertions.assertThat(this.environment.containsKey(key)).isFalse();
+        this.environment.addArguments(key, Arrays.asList(values));
+        Assertions.assertThat(this.environment.containsKey(key)).isTrue();
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"'null',v", "'',v"})
-    public void addArguments$key$error(@ConvertWith(StringSplitter.class) String[] kvPair) {
-        String k = kvPair[0];
-        String v = kvPair[1];
+    @NullAndEmptySource
+    public void addArguments$key$error(String key) {
+        String[] values = {"9527", "9487"};
 
-        Assertions.assertThatThrownBy(() -> this.environment.addArguments(k, v))
+        Assertions.assertThatThrownBy(() -> this.environment.addArguments(key, values))
+                .isInstanceOf(MistyException.class)
+                .hasMessageContaining(ExaminerMessage.refuseNullAndEmpty("key"));
+        Assertions.assertThatThrownBy(() -> this.environment.addArguments(key, Arrays.asList(values)))
                 .isInstanceOf(MistyException.class)
                 .hasMessageContaining(ExaminerMessage.refuseNullAndEmpty("key"));
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"k,v", "k,' '"})
-    public void containsKey$normal(@ConvertWith(StringSplitter.class) String[] kvPair) {
-        String k = kvPair[0];
-        String v = kvPair[1];
-        this.environment.addArgument(k, v);
-
-        Assertions.assertThat(this.environment.containsKey(k)).isTrue();
-        Assertions.assertThat(this.environment.containsKey("kkk")).isFalse();
+    @ValueSource(strings = {"k", " "})
+    public void containsKey$normal(String key) {
+        Assertions.assertThat(this.environment.containsKey(key)).isFalse();
+        this.environment.addArgument(key, "9527");
+        Assertions.assertThat(this.environment.containsKey(key)).isTrue();
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"'null',v", "'',v"})
-    public void containsKey$error(@ConvertWith(StringSplitter.class) String[] kvPair) {
-        String k = kvPair[0];
-        Assertions.assertThatThrownBy(() -> this.environment.containsKey(k))
+    @NullAndEmptySource
+    public void containsKey$error(String key) {
+        Assertions.assertThatThrownBy(() -> this.environment.containsKey(key))
                 .isInstanceOf(MistyException.class)
                 .hasMessageContaining(ExaminerMessage.refuseNullAndEmpty("key"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"k1", "k1,k2"})
+    public void containsExactlyKeys$normal(@ConvertWith(StringSplitter.class) String[] keys) {
+        Assertions.assertThat(this.environment.containsExactlyKeys(keys)).isFalse();
+
+        for (String key : keys) {
+            this.environment.addArgument(key, "9527");
+        }
+
+        Assertions.assertThat(this.environment.containsExactlyKeys(keys)).isTrue();
+
+        List<String> l = new ArrayList<>(Arrays.asList(keys));
+        l.add("123");
+        Assertions.assertThat(this.environment.containsExactlyKeys(l)).isFalse();
+
+        l.remove(0);
+        Assertions.assertThat(this.environment.containsExactlyKeys(l)).isFalse();
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    public void containsExactlyKey$error_null_empty(String[] keys) {
+        Assertions.assertThatThrownBy(() -> this.environment.containsExactlyKeys(keys))
+                .isInstanceOf(MistyException.class)
+                .hasMessageContaining(ExaminerMessage.refuseNullAndEmpty("keys"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"'',e", "e,''", "e,'null'", "'null',e", "e1,'',e2", "e1,'null',e2"})
+    public void containsExactlyKeys$error_element_null_empty(@ConvertWith(StringSplitter.class) String[] keys) {
+        Assertions.assertThat(this.environment.containsExactlyKeys(keys)).isFalse();
+
+        for (int i = 0; i < keys.length; i++) {
+            String k = i + "";
+            this.environment.addArgument(k, "9527");
+        }
+
+        String msg = String.format(SmoothCoreEnvironmentPreset.ELEMENT_ERROR_THROW_ACTION_FORMAT, "keys", Arrays.toString(keys));
+        Assertions.assertThatThrownBy(() -> this.environment.containsExactlyKeys(keys))
+                .isInstanceOf(MistyException.class)
+                .hasMessageContaining(msg);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"e1,e2", "e1,e2,e3"})
+    public void containsAllKeys$normal(@ConvertWith(StringSplitter.class) String[] keys) {
+        for (String key : keys) {
+            this.environment.addArgument(key, "9527");
+        }
+
+        Assertions.assertThat(this.environment.containsAllKeys(keys)).isTrue();
+
+        List<String> l = new ArrayList<>(Arrays.asList(keys));
+        l.remove(0);
+        Assertions.assertThat(this.environment.containsAllKeys(l)).isTrue();
+
+        l.add("123");
+        Assertions.assertThat(this.environment.containsAllKeys(l)).isFalse();
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    public void containsAllKeys$error_null_empty(String[] keys) {
+        Assertions.assertThatThrownBy(() -> this.environment.containsAllKeys(keys))
+                .isInstanceOf(MistyException.class)
+                .hasMessageContaining(ExaminerMessage.refuseNullAndEmpty("keys"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"'',e", "e,''", "e,'null'", "'null',e", "e1,'',e2", "e1,'null',e2"})
+    public void containsAllKeys$error_element_null_empty(@ConvertWith(StringSplitter.class) String[] keys) {
+        String msg = String.format(SmoothCoreEnvironmentPreset.ELEMENT_ERROR_THROW_ACTION_FORMAT, "keys", Arrays.toString(keys));
+        Assertions.assertThatThrownBy(() -> this.environment.containsAllKeys(keys))
+                .isInstanceOf(MistyException.class)
+                .hasMessageContaining(msg);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"e1,e2", "e1,e2,e3"})
+    public void containsAnyKeys$normal(@ConvertWith(StringSplitter.class) String[] keys) {
+        for (String key : keys) {
+            this.environment.addArgument(key, "9527");
+        }
+
+        Assertions.assertThat(this.environment.containsAnyKeys(keys)).isTrue();
+
+        List<String> l = new ArrayList<>(Arrays.asList(keys));
+        l.remove(0);
+        Assertions.assertThat(this.environment.containsAnyKeys(l)).isTrue();
+
+        l.add("123");
+        Assertions.assertThat(this.environment.containsAnyKeys(l)).isTrue();
+
+        l = new ArrayList<>();
+        l.add("9527");
+        Assertions.assertThat(this.environment.containsAnyKeys(l)).isFalse();
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    public void containsAnyFKeys$error_null_empty(String[] keys) {
+        Assertions.assertThatThrownBy(() -> this.environment.containsAnyKeys(keys))
+                .isInstanceOf(MistyException.class)
+                .hasMessageContaining(ExaminerMessage.refuseNullAndEmpty("keys"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"'',e", "e,''", "e,'null'", "'null',e", "e1,'',e2", "e1,'null',e2"})
+    public void containsAnyKeys$error_element_null_empty(@ConvertWith(StringSplitter.class) String[] keys) {
+        String msg = String.format(SmoothCoreEnvironmentPreset.ELEMENT_ERROR_THROW_ACTION_FORMAT, "keys", Arrays.toString(keys));
+        Assertions.assertThatThrownBy(() -> this.environment.containsAnyKeys(keys))
+                .isInstanceOf(MistyException.class)
+                .hasMessageContaining(msg);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"e1,e2", "e1,e2,e3"})
+    public void getKeys(@ConvertWith(StringSplitter.class) String[] keys) {
+        for (String key : keys) {
+            this.environment.addArgument(key, "9527");
+        }
+        Assertions.assertThat(this.environment.getKeys()).containsExactlyInAnyOrder(keys);
     }
 
     // arguments value
+
+    @ParameterizedTest
+    @ValueSource(strings = {"v", " "})
+    public void addArgument$value$normal(String value) {
+        String key = "key";
+        Assertions.assertThat(this.environment.equalsValue(key, value)).isFalse();
+        this.environment.addArgument(key, value);
+        Assertions.assertThat(this.environment.equalsValue(key, value)).isTrue();
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    public void addArgument$value$error(String value) {
+        Assertions.assertThatThrownBy(() -> this.environment.addArgument("key", value))
+                .isInstanceOf(MistyException.class)
+                .hasMessageContaining(ExaminerMessage.refuseNullAndEmpty("value"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"v1", "v1,' '"})
+    public void addArguments$value$normal(@ConvertWith(StringSplitter.class) String[] values) {
+        String key = "key";
+
+        Assertions.assertThat(this.environment.containsAllValues(key, values)).isFalse();
+        this.environment.addArguments(key, values);
+        Assertions.assertThat(this.environment.containsAllValues(key, values)).isTrue();
+
+        initialEnvironment();
+
+        Assertions.assertThat(this.environment.containsAllValues(key, values)).isFalse();
+        this.environment.addArguments(key, Arrays.asList(values));
+        Assertions.assertThat(this.environment.containsAllValues(key, values)).isTrue();
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    public void addArguments$value$error_null_empty(String[] values) {
+        Assertions.assertThatThrownBy(() -> this.environment.addArguments("key", values))
+                .isInstanceOf(MistyException.class)
+                .hasMessageContaining(ExaminerMessage.refuseNullAndEmpty("values"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"'',e", "e,''", "e,'null'", "'null',e", "e1,'',e2", "e1,'null',e2"})
+    public void addArguments$value$error_element_null_empty(@ConvertWith(StringSplitter.class) String[] values) {
+        String msg = String.format(SmoothCoreEnvironmentPreset.ELEMENT_ERROR_THROW_ACTION_FORMAT, "values", Arrays.toString(values));
+        Assertions.assertThatThrownBy(() -> this.environment.addArguments("key", values))
+                .isInstanceOf(MistyException.class)
+                .hasMessageContaining(msg);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"e1", " "})
+    public void containsValue$normal(String value) {
+        String key = "key";
+        this.environment.addArgument(key, value);
+
+        Assertions.assertThat(this.environment.equalsValue(key, value)).isTrue();
+        Assertions.assertThat(this.environment.equalsValue(key, "9527")).isFalse();
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    public void containsValue$error(String value) {
+        Assertions.assertThatThrownBy(() -> this.environment.equalsValue("key", value))
+                .isInstanceOf(MistyException.class)
+                .hasMessageContaining(ExaminerMessage.refuseNullAndEmpty("value"));
+    }
+
 
     // parseArgument
 

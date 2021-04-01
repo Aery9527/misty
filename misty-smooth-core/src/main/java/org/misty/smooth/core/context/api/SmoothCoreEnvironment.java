@@ -39,18 +39,8 @@ public interface SmoothCoreEnvironment extends SmoothEnvironment {
         }
     }
 
-    void addArgument(String key, String value);
+    Optional<String> addArgument(String key, String value);
 
-    void addArguments(String key, Collection<String> values);
-
-    default void addArguments(String key, String... values) {
-        if (values == null) {
-            addArguments(key, (Collection<String>) null);
-        } else {
-            addArguments(key, Arrays.asList(values));
-        }
-    }
-
-    void addArguments(Map<String, String> args);
+    Map<String, Optional<String>> addArguments(Map<String, String> args);
 
 }
