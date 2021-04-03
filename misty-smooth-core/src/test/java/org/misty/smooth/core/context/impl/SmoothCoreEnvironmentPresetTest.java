@@ -2,6 +2,7 @@ package org.misty.smooth.core.context.impl;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ConvertWith;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
@@ -221,30 +222,26 @@ class SmoothCoreEnvironmentPresetTest {
     @ParameterizedTest
     @ValueSource(strings = {"k", " "})
     public void addArguments$key$normal(String key) {
-        String[] values = {"9527", "9487"};
+        Map<String, String> map = new HashMap<>();
+        map.put(key, "9527");
 
         Assertions.assertThat(this.environment.containsKey(key)).isFalse();
-        this.environment.addArguments(key, values);
-        Assertions.assertThat(this.environment.containsKey(key)).isTrue();
-
-        initialEnvironment();
-
-        Assertions.assertThat(this.environment.containsKey(key)).isFalse();
-        this.environment.addArguments(key, Arrays.asList(values));
+        this.environment.addArguments(map);
         Assertions.assertThat(this.environment.containsKey(key)).isTrue();
     }
 
     @ParameterizedTest
     @NullAndEmptySource
     public void addArguments$key$error(String key) {
-        String[] values = {"9527", "9487"};
+        String value = "9527";
 
-        Assertions.assertThatThrownBy(() -> this.environment.addArguments(key, values))
+        Map<String, String> map = new HashMap<>();
+        map.put(key, value);
+
+        String msg = String.format(SmoothCoreEnvironmentPreset.ADD_ARGUMENTS_ERROR_THROW_ACTION_FORMAT, key, value);
+        Assertions.assertThatThrownBy(() -> this.environment.addArguments(map))
                 .isInstanceOf(MistyException.class)
-                .hasMessageContaining(ExaminerMessage.refuseNullAndEmpty("key"));
-        Assertions.assertThatThrownBy(() -> this.environment.addArguments(key, Arrays.asList(values)))
-                .isInstanceOf(MistyException.class)
-                .hasMessageContaining(ExaminerMessage.refuseNullAndEmpty("key"));
+                .hasMessageContaining(msg);
     }
 
     @ParameterizedTest
@@ -407,41 +404,58 @@ class SmoothCoreEnvironmentPresetTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"v1", "v1,' '"})
-    public void addArguments$value$normal(@ConvertWith(StringSplitter.class) String[] values) {
+    @ValueSource(strings = {"v1", " "})
+    public void addArguments$value$normal(String value) {
         String key = "key";
 
-        Assertions.assertThat(this.environment.containsAllValues(key, values)).isFalse();
-        this.environment.addArguments(key, values);
-        Assertions.assertThat(this.environment.containsAllValues(key, values)).isTrue();
+        Map<String, String> map = new HashMap<>();
+        map.put(key, value);
 
-        initialEnvironment();
-
-        Assertions.assertThat(this.environment.containsAllValues(key, values)).isFalse();
-        this.environment.addArguments(key, Arrays.asList(values));
-        Assertions.assertThat(this.environment.containsAllValues(key, values)).isTrue();
+        Assertions.assertThat(this.environment.equalsValue(key, value)).isFalse();
+        this.environment.addArguments(map);
+        Assertions.assertThat(this.environment.equalsValue(key, value)).isTrue();
     }
 
     @ParameterizedTest
     @NullAndEmptySource
-    public void addArguments$value$error_null_empty(String[] values) {
-        Assertions.assertThatThrownBy(() -> this.environment.addArguments("key", values))
+    public void addArguments$value$error_null_empty(String value) {
+        String key = "key";
+
+        Map<String, String> map = new HashMap<>();
+        map.put(key, value);
+
+        String msg = String.format(SmoothCoreEnvironmentPreset.ADD_ARGUMENTS_ERROR_THROW_ACTION_FORMAT, key, value);
+        Assertions.assertThatThrownBy(() -> this.environment.addArguments(map))
                 .isInstanceOf(MistyException.class)
-                .hasMessageContaining(ExaminerMessage.refuseNullAndEmpty("values"));
+                .hasMessageContaining(msg);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"'',e", "e,''", "e,'null'", "'null',e", "e1,'',e2", "e1,'null',e2"})
     public void addArguments$value$error_element_null_empty(@ConvertWith(StringSplitter.class) String[] values) {
-        String msg = String.format(SmoothCoreEnvironmentPreset.ELEMENT_ERROR_THROW_ACTION_FORMAT, "values", Arrays.toString(values));
-        Assertions.assertThatThrownBy(() -> this.environment.addArguments("key", values))
+        String key = null;
+        String value = null;
+
+        Map<String, String> map = new HashMap<>();
+        for (int i = 0; i < values.length; i++) {
+            String k = i + "";
+            String v = values[i];
+            map.put(k, v);
+            if (v == null || v.isEmpty()) {
+                key = k;
+                value = v;
+            }
+        }
+
+        String msg = String.format(SmoothCoreEnvironmentPreset.ADD_ARGUMENTS_ERROR_THROW_ACTION_FORMAT, key, value);
+        Assertions.assertThatThrownBy(() -> this.environment.addArguments(map))
                 .isInstanceOf(MistyException.class)
                 .hasMessageContaining(msg);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"e1", " "})
-    public void containsValue$normal(String value) {
+    public void equalsValue$normal(String value) {
         String key = "key";
         this.environment.addArgument(key, value);
 
@@ -451,13 +465,89 @@ class SmoothCoreEnvironmentPresetTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    public void containsValue$error(String value) {
+    public void equalsValue$error(String value) {
         Assertions.assertThatThrownBy(() -> this.environment.equalsValue("key", value))
                 .isInstanceOf(MistyException.class)
                 .hasMessageContaining(ExaminerMessage.refuseNullAndEmpty("value"));
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"e1,e2", "e1,e2,e3"})
+    public void equalsAnyValues$normal(@ConvertWith(StringSplitter.class) String[] values) {
+        String key = "key";
+        String value = values[0];
+
+        this.environment.addArgument(key, value);
+
+        Assertions.assertThat(this.environment.equalsAnyValues(key, values)).isTrue();
+
+        List<String> l = new ArrayList<>(Arrays.asList(values));
+        l.remove(0);
+        Assertions.assertThat(this.environment.equalsAnyValues(key, l)).isFalse();
+
+        l.add(values[values.length - 1]);
+        Assertions.assertThat(this.environment.equalsAnyValues(key, values)).isTrue();
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    public void equalsAnyValues$error_null_empty(String[] values) {
+        Assertions.assertThatThrownBy(() -> this.environment.equalsAnyValues("key", values))
+                .isInstanceOf(MistyException.class)
+                .hasMessageContaining(ExaminerMessage.refuseNullAndEmpty("values"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"'',e", "e,''", "e,'null'", "'null',e", "e1,'',e2", "e1,'null',e2"})
+    public void equalsAnyValues$error_element_null_empty(@ConvertWith(StringSplitter.class) String[] values) {
+        String msg = String.format(SmoothCoreEnvironmentPreset.ELEMENT_ERROR_THROW_ACTION_FORMAT, "values", Arrays.toString(values));
+        Assertions.assertThatThrownBy(() -> this.environment.equalsAnyValues("key", values))
+                .isInstanceOf(MistyException.class)
+                .hasMessageContaining(msg);
+    }
+
+    @SuppressWarnings("unchecked")
+    @ParameterizedTest
+    @ValueSource(strings = {"e1,e2", "e1,e2,e3"})
+    public void getArguments(@ConvertWith(StringSplitter.class) String[] values) {
+        Map<String, String> map = new HashMap<>();
+        for (int i = 0; i < values.length; i++) {
+            String k = i + "";
+            String v = values[i];
+            map.put(k, v);
+            this.environment.addArgument(k, v);
+        }
+        Assertions.assertThat(this.environment.getArguments()).contains(map.entrySet().toArray(new Map.Entry[values.length]));
+    }
 
     // parseArgument
+
+    @Test
+    public void parseArgument$normal() {
+        String flag1 = "f1";
+        String flag2 = "f2";
+        String k1 = "k1";
+        String k2 = "k2";
+        String v1 = "v1";
+        String v2 = "v2";
+        String u1 = "aaa";
+        String u2 = "-123";
+
+        String[] args = {
+                "--" + flag1,
+                "--" + flag2,
+                "-" + k1 + "=" + v1,
+                "-" + k2 + "=" + v2,
+                u1, u2
+        };
+
+        Set<String> unrecognized = this.environment.parseArgument(args);
+
+        Assertions.assertThat(unrecognized).containsExactlyInAnyOrder(u1, u2);
+        Assertions.assertThat(this.environment.containsExactlyFlags(flag1, flag2)).isTrue();
+        Assertions.assertThat(this.environment.containsExactlyKeys(k1, k2)).isTrue();
+        Assertions.assertThat(this.environment.equalsValue(k1, v1)).isTrue();
+        Assertions.assertThat(this.environment.equalsValue(k2, v2)).isTrue();
+    }
 
 }

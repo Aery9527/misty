@@ -73,12 +73,12 @@ class ArgumentParserTest {
         System.out.println("flags:" + flags);
         Assertions.assertThat(flags).containsAll(Arrays.asList(f1, f2, f3));
 
-        Map<String, Set<String>> kvPair = result.getKeyValuesPair();
+        Map<String, String> kvPair = result.getKeyValuesPair();
         System.out.println("kvPair:" + kvPair);
         Assertions.assertThat(kvPair.keySet()).containsAll(Arrays.asList(k1, k2, k3));
-        Assertions.assertThat(kvPair.get(k1)).containsAll(Arrays.asList(v1, v2));
-        Assertions.assertThat(kvPair.get(k2)).containsAll(Collections.singletonList(v3));
-        Assertions.assertThat(kvPair.get(k3)).containsAll(Collections.singletonList(v4));
+        Assertions.assertThat(kvPair.get(k1)).isEqualTo(v2);
+        Assertions.assertThat(kvPair.get(k2)).isEqualTo(v3);
+        Assertions.assertThat(kvPair.get(k3)).isEqualTo(v4);
 
         Set<String> unrecognized = result.getUnrecognized();
         System.out.println("unrecognized:" + unrecognized);
@@ -133,10 +133,10 @@ class ArgumentParserTest {
         System.out.println("flags:" + flags);
         Assertions.assertThat(flags).containsAll(Collections.singletonList(s));
 
-        Map<String, Set<String>> kvPair = result.getKeyValuesPair();
+        Map<String, String> kvPair = result.getKeyValuesPair();
         System.out.println("kvPair:" + kvPair);
         Assertions.assertThat(kvPair.keySet()).containsAll(Collections.singletonList(s));
-        Assertions.assertThat(kvPair.get(s)).containsAll(Collections.singletonList(s));
+        Assertions.assertThat(kvPair.get(s)).isEqualTo(s);
     }
 
 
