@@ -21,7 +21,7 @@ public interface SmoothContext {
 
     default Map<String, String> listModuleWithMap() {
         Set<SmoothModuleId> set = listModuleWithSet();
-        return set.stream().reduce(new HashMap<String, String>(), (map, moduleId) -> {
+        return set.stream().reduce(new HashMap<>(), (map, moduleId) -> {
             map.put(moduleId.getModuleName(), moduleId.getModuleVersion());
             return map;
         }, (m1, m2) -> {
@@ -39,8 +39,8 @@ public interface SmoothContext {
         }
 
         Set<SmoothServiceId> set = op.get();
-        return Optional.of(set.stream().reduce(new HashMap<String, String>(), (map, serviceId) -> {
-            map.put(serviceId.getServiceId(), serviceId.getServiceName());
+        return Optional.of(set.stream().reduce(new HashMap<>(), (map, serviceId) -> {
+            map.put(serviceId.getServiceKey(), serviceId.getServiceName());
             return map;
         }, (m1, m2) -> {
             m1.putAll(m2);
@@ -48,12 +48,12 @@ public interface SmoothContext {
         }));
     }
 
-    Future<SmoothServiceResult> invokeService(String moduleName, String serviceId, SmoothServiceRequest serviceRequest);
+    Future<SmoothServiceResult> invokeService(String moduleName, String serviceKey, SmoothServiceRequest serviceRequest);
 
-    void invokeService(String moduleName, String serviceId, SmoothServiceRequest serviceRequest, Consumer<SmoothServiceResult> resultProcessor);
+    void invokeService(String moduleName, String serviceKey, SmoothServiceRequest serviceRequest, Consumer<SmoothServiceResult> resultProcessor);
 
-    default SmoothServiceInvoker buildServiceInvoker(String moduleName, String serviceId) {
-        return new SmoothServiceInvoker(moduleName, serviceId, this);
+    default SmoothServiceInvoker buildServiceInvoker(String moduleName, String serviceKey) {
+        return new SmoothServiceInvoker(moduleName, serviceKey, this);
     }
 
 }

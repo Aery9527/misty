@@ -5,12 +5,18 @@ import org.misty.smooth.core.context.api.SmoothCoreEnvironment;
 import org.misty.smooth.core.context.impl.SmoothCoreContextPreset;
 import org.misty.util.verify.Examiner;
 import org.misty.util.verify.Judge;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class SmoothCoreContextBuilder {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final String[] args;
 
@@ -33,6 +39,7 @@ public class SmoothCoreContextBuilder {
 
         SmoothCoreEnvironment usedEnvironment = smoothCoreContextPreset.getEnvironment();
         usedEnvironment.parseArgument(this.args);
+        showEnvironment(usedEnvironment);
 
         ExecutorService executorService = this.executorServiceBuilder.apply(usedEnvironment);
         Examiner.refuseNullAndEmpty("executorService", executorService);
@@ -41,11 +48,21 @@ public class SmoothCoreContextBuilder {
         return smoothCoreContextPreset;
     }
 
-    private <FieldType> void setup(FieldType field, Consumer<FieldType> setter) {
+    public <FieldType> void setup(FieldType field, Consumer<FieldType> setter) {
         if (Judge.notNullAndEmpty(field)) {
             setter.accept(field);
         }
     }
+
+    public void showEnvironment(SmoothCoreEnvironment environment) {
+        Set<String> flags = environment.getFlags();
+        Map<String, String> arguments = environment.getArguments();
+
+        this.logger.info("SmoothEnvironment flags : " + flags);
+        this.logger.info("SmoothEnvironment arguments : " + arguments);
+    }
+
+    //
 
     public SmoothCoreEnvironment getCoreEnvironment() {
         return coreEnvironment;

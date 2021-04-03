@@ -13,25 +13,25 @@ public class SmoothServiceInvoker {
 
     private final String moduleName;
 
-    private final String serviceId;
+    private final String serviceKey;
 
     private final SmoothContext smoothContext;
 
     private final String toString;
 
-    public SmoothServiceInvoker(String moduleName, String serviceId, SmoothContext smoothContext) {
+    public SmoothServiceInvoker(String moduleName, String serviceKey, SmoothContext smoothContext) {
         this.moduleName = moduleName;
-        this.serviceId = serviceId;
+        this.serviceKey = serviceKey;
         this.smoothContext = smoothContext;
-        this.toString = String.format(STRING_FORMAT, moduleName, serviceId);
+        this.toString = String.format(STRING_FORMAT, moduleName, serviceKey);
     }
 
     public Future<SmoothServiceResult> invoke(SmoothServiceRequest serviceRequest) {
-        return this.smoothContext.invokeService(this.moduleName, this.serviceId, serviceRequest);
+        return this.smoothContext.invokeService(this.moduleName, this.serviceKey, serviceRequest);
     }
 
     public void invoke(SmoothServiceRequest serviceRequest, Consumer<SmoothServiceResult> resultProcessor) {
-        this.smoothContext.invokeService(this.moduleName, this.serviceId, serviceRequest, resultProcessor);
+        this.smoothContext.invokeService(this.moduleName, this.serviceKey, serviceRequest, resultProcessor);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class SmoothServiceInvoker {
         return moduleName;
     }
 
-    public String getServiceId() {
-        return serviceId;
+    public String getServiceKey() {
+        return serviceKey;
     }
 }

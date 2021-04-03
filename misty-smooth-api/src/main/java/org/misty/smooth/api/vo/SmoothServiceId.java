@@ -4,16 +4,16 @@ public class SmoothServiceId {
 
     public static final String STRING_FORMAT = "SmoothService(%s)(%s)";
 
-    private final String serviceId;
+    private final String serviceKey;
 
     private final String serviceName;
 
     private final String toString;
 
-    public SmoothServiceId(String serviceId, String serviceName) {
-        this.serviceId = serviceId;
+    public SmoothServiceId(String serviceKey, String serviceName) {
+        this.serviceKey = serviceKey;
         this.serviceName = serviceName;
-        this.toString = String.format(STRING_FORMAT, this.serviceId, this.serviceName);
+        this.toString = String.format(STRING_FORMAT, this.serviceKey, this.serviceName);
     }
 
     @Override
@@ -23,7 +23,7 @@ public class SmoothServiceId {
 
     @Override
     public int hashCode() {
-        return this.serviceId.hashCode();
+        return this.serviceKey.hashCode();
     }
 
     @Override
@@ -35,8 +35,8 @@ public class SmoothServiceId {
         }
     }
 
-    public String getServiceId() {
-        return serviceId;
+    public String getServiceKey() {
+        return serviceKey;
     }
 
     public String getServiceName() {

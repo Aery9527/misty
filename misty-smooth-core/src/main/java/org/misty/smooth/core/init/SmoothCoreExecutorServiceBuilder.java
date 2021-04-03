@@ -21,7 +21,7 @@ public class SmoothCoreExecutorServiceBuilder implements Function<SmoothCoreEnvi
     }
 
     public int getCorePoolSize(SmoothCoreEnvironment smoothCoreEnvironment) {
-        return 4;
+        return 2;
     }
 
     public int getMaximumPoolSize(SmoothCoreEnvironment smoothCoreEnvironment) {
