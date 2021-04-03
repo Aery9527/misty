@@ -8,10 +8,7 @@ import org.misty.smooth.api.vo.SmoothModuleId;
 import org.misty.smooth.api.vo.SmoothServiceId;
 
 import java.time.Instant;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
@@ -28,22 +25,12 @@ public class SmoothSoleContext implements SmoothContext {
     }
 
     @Override
-    public Optional<Set<SmoothModuleId>> listModuleWithSet() {
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<Map<String, String>> listModuleWithMap() {
-        return Optional.empty();
+    public Set<SmoothModuleId> listModuleWithSet() {
+        return Collections.emptySet();
     }
 
     @Override
     public Optional<Set<SmoothServiceId>> listServiceWithSet(String moduleName) {
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<Map<String, String>> listServiceWithMap(String moduleName) {
         return Optional.empty();
     }
 

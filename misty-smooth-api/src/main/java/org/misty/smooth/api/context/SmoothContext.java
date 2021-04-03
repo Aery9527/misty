@@ -7,10 +7,7 @@ import org.misty.smooth.api.vo.SmoothModuleId;
 import org.misty.smooth.api.vo.SmoothServiceId;
 
 import java.time.Instant;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
@@ -20,13 +17,36 @@ public interface SmoothContext {
 
     SmoothEnvironment getEnvironment();
 
-    Optional<Set<SmoothModuleId>> listModuleWithSet();
+    Set<SmoothModuleId> listModuleWithSet();
 
-    Optional<Map<String, String>> listModuleWithMap();
+    default Map<String, String> listModuleWithMap() {
+        Set<SmoothModuleId> set = listModuleWithSet();
+        return set.stream().reduce(new HashMap<String, String>(), (map, moduleId) -> {
+            map.put(moduleId.getModuleName(), moduleId.getModuleVersion());
+            return map;
+        }, (m1, m2) -> {
+            m1.putAll(m2);
+            return m1;
+        });
+    }
 
     Optional<Set<SmoothServiceId>> listServiceWithSet(String moduleName);
 
-    Optional<Map<String, String>> listServiceWithMap(String moduleName);
+    default Optional<Map<String, String>> listServiceWithMap(String moduleName) {
+        Optional<Set<SmoothServiceId>> op = listServiceWithSet(moduleName);
+        if (!op.isPresent()) {
+            return Optional.empty();
+        }
+
+        Set<SmoothServiceId> set = op.get();
+        return Optional.of(set.stream().reduce(new HashMap<String, String>(), (map, serviceId) -> {
+            map.put(serviceId.getServiceId(), serviceId.getServiceName());
+            return map;
+        }, (m1, m2) -> {
+            m1.putAll(m2);
+            return m1;
+        }));
+    }
 
     Future<SmoothServiceResult> invokeService(String moduleName, String serviceId, SmoothServiceRequest serviceRequest);
 

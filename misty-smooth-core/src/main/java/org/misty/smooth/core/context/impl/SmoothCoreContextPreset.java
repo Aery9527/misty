@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
@@ -20,6 +21,8 @@ public class SmoothCoreContextPreset implements SmoothCoreContext {
     private final Instant launchInstant = Instant.now();
 
     private SmoothCoreEnvironment environment = new SmoothCoreEnvironmentPreset();
+
+    private ExecutorService executorService;
 
     @Override
     public Instant getLaunchInstant() {
@@ -32,22 +35,12 @@ public class SmoothCoreContextPreset implements SmoothCoreContext {
     }
 
     @Override
-    public Optional<Set<SmoothModuleId>> listModuleWithSet() {
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<Map<String, String>> listModuleWithMap() {
-        return Optional.empty();
+    public Set<SmoothModuleId> listModuleWithSet() {
+        return Collections.emptySet();
     }
 
     @Override
     public Optional<Set<SmoothServiceId>> listServiceWithSet(String moduleName) {
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<Map<String, String>> listServiceWithMap(String moduleName) {
         return Optional.empty();
     }
 
@@ -73,14 +66,15 @@ public class SmoothCoreContextPreset implements SmoothCoreContext {
 
     @Override
     public void close() throws IOException {
-
+        this.executorService.shutdown();
     }
-
-    //
 
     public void setEnvironment(SmoothCoreEnvironment environment) {
         this.environment = environment;
     }
 
+    public void setExecutorService(ExecutorService executorService) {
+        this.executorService = executorService;
+    }
 
 }
