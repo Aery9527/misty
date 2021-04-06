@@ -3,6 +3,9 @@ package org.misty.util.verify;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.misty.util.error.MistyError;
 import org.misty.util.error.MistyException;
 import org.misty.util.fi.FiBiConsumerThrow1;
@@ -1081,5 +1084,18 @@ class ExaminerTest {
             }
         }
     }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"-1", "0", "1", "1.1"})
+    public void requireNumber$normal(String value) {
+        Assertions.assertThat(Examiner.requireNumber(value)).isEqualTo(value);
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    public void requireNumber$error$NullAndEmpty(String value) {
+        Examiner.requireNumber(value);
+    }
+
 
 }

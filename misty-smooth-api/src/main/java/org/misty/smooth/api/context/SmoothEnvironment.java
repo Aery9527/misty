@@ -1,6 +1,8 @@
 package org.misty.smooth.api.context;
 
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public interface SmoothEnvironment {
 
@@ -86,6 +88,12 @@ public interface SmoothEnvironment {
         } else {
             return equalsAnyValues(key, Arrays.asList(values));
         }
+    }
+
+    <Type> Type getValue(String key, Function<String, Type> transformer);
+
+    default String getValue(String key) {
+        return getValue(key, (v) -> v);
     }
 
     Set<String> getKeys();

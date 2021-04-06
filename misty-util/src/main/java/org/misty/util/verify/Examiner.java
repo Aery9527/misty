@@ -7,6 +7,7 @@ import org.misty.util.fi.FiConsumerThrow1;
 import org.misty.util.fi.FiRunnableThrow1;
 import org.misty.util.tool.StringTool;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 public class Examiner {
@@ -670,5 +671,22 @@ public class Examiner {
 
         return arg;
     }
+
+    // require number
+
+    public static BigDecimal requireNumber(String value) {
+        refuseNullAndEmpty("value", value);
+
+        BigDecimal number = new BigDecimal(value);
+
+        return number;
+    }
+
+//    public static int requireInteger(String value) {
+//        BigDecimal number = requireNumber(value);
+//
+//
+//    }
+
 
 }
