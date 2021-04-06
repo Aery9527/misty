@@ -1092,9 +1092,32 @@ class ExaminerTest {
     }
 
     @ParameterizedTest
+    @ValueSource(strings = {"a", "1.1.1"})
+    public void requireNumber$error(String value) {
+        Assertions.assertThatThrownBy(() -> Examiner.requireNumber(value))
+                .isInstanceOf(MistyException.class)
+                .hasMessageContaining(ExaminerMessage.requireNumber("value", value));
+    }
+
+    @ParameterizedTest
     @NullAndEmptySource
     public void requireNumber$error$NullAndEmpty(String value) {
-        Examiner.requireNumber(value);
+        Assertions.assertThatThrownBy(() -> Examiner.requireNumber(value))
+                .isInstanceOf(MistyException.class)
+                .hasMessageContaining(ExaminerMessage.refuseNullAndEmpty("value"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {Integer.MIN_VALUE, 0, Integer.MAX_VALUE})
+    public void requireInteger$normal(int value) {
+        Assertions.assertThat(Examiner.requireInteger(value + "")).isEqualTo(value);
+    }
+
+
+    @ParameterizedTest
+    @ValueSource(longs = {Long.MIN_VALUE, Long.MAX_VALUE})
+    public void requireInteger$Error(long value) {
+        Examiner.requireInteger(value + "");
     }
 
 

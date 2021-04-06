@@ -12,6 +12,8 @@ import java.util.Optional;
 
 public class Examiner {
 
+    public static final ExaminerOfNumberRange INTEGER_RANGE = new ExaminerOfNumberRange(Integer.MIN_VALUE, Integer.MAX_VALUE);
+
     // requireNullOrEmpty of Object
 
     public static void requireNullOrEmpty(String term, Object arg) throws MistyException {
@@ -677,16 +679,19 @@ public class Examiner {
     public static BigDecimal requireNumber(String value) {
         refuseNullAndEmpty("value", value);
 
-        BigDecimal number = new BigDecimal(value);
-
-        return number;
+        try {
+            return new BigDecimal(value);
+        } catch (NumberFormatException e) {
+            String description = ExaminerMessage.requireNumber("value", value);
+            throw MistyError.ARGUMENT_ERROR.thrown(description, e);
+        }
     }
 
-//    public static int requireInteger(String value) {
-//        BigDecimal number = requireNumber(value);
-//
-//
-//    }
+    public static int requireInteger(String value) {
+        BigDecimal bigDecimal = requireNumber(value);
+        INTEGER_RANGE.requireIncludeInclude("value", bigDecimal);
+        return bigDecimal.intValue();
+    }
 
 
 }

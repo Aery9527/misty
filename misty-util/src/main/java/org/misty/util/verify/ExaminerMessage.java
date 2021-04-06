@@ -18,6 +18,8 @@ public class ExaminerMessage {
 
     public static final String REQUIRE_LESS_EXCLUDE = "check error of \"%s\", the value is %s, require less exclude %s";
 
+    public static final String REQUIRE_NUMBER = "check error of \"%s\", the value is %s, require number.";
+
     public static String requireNullOrEmpty(String term, String arg) {
         return String.format(REQUIRE_NULL_OR_EMPTY, arg, term);
     }
@@ -260,6 +262,12 @@ public class ExaminerMessage {
 
     public static String requireLessExclude(String term, Number arg, Number ceiling) {
         return String.format(REQUIRE_LESS_EXCLUDE, term, arg, ceiling);
+    }
+
+    //
+
+    public static String requireNumber(String term, String value) {
+        return String.format(REQUIRE_NUMBER, term, value);
     }
 
 }
