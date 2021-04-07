@@ -3,8 +3,6 @@ package org.misty.util.verify;
 import org.misty.util.error.MistyError;
 import org.misty.util.error.MistyException;
 import org.misty.util.fi.FiBiConsumerThrow1;
-import org.misty.util.fi.FiConsumerThrow1;
-import org.misty.util.fi.FiRunnableThrow1;
 import org.misty.util.tool.StringTool;
 
 import java.math.BigDecimal;
@@ -12,7 +10,9 @@ import java.util.Optional;
 
 public class Examiner {
 
-    public static final ExaminerOfNumberRange INTEGER_RANGE = new ExaminerOfNumberRange(Integer.MIN_VALUE, Integer.MAX_VALUE);
+    public static final ExaminerOfNumberRange INTEGER_RANGE_EXAMINER = new ExaminerOfNumberRange(Integer.MIN_VALUE, Integer.MAX_VALUE);
+
+    public static final ExaminerOfNumberRange LONG_RANGE_EXAMINER = new ExaminerOfNumberRange(Long.MIN_VALUE, Long.MAX_VALUE);
 
     // requireNullOrEmpty of Object
 
@@ -689,9 +689,32 @@ public class Examiner {
 
     public static int requireInteger(String value) {
         BigDecimal bigDecimal = requireNumber(value);
-        INTEGER_RANGE.requireIncludeInclude("value", bigDecimal);
+        INTEGER_RANGE_EXAMINER.requireIncludeInclude(bigDecimal, (floor, ceiling) -> {
+            String description = ExaminerMessage.requireInteger("value", value);
+            throw MistyError.ARGUMENT_ERROR.thrown(description);
+        });
         return bigDecimal.intValue();
     }
 
+    public static long requireLong(String value) {
+        BigDecimal bigDecimal = requireNumber(value);
+        LONG_RANGE_EXAMINER.requireIncludeInclude(bigDecimal, (floor, ceiling) -> {
+            String description = ExaminerMessage.requireLong("value", value);
+            throw MistyError.ARGUMENT_ERROR.thrown(description);
+        });
+        return bigDecimal.longValue();
+    }
+
+    public static float requireFloat(String value) {
+        BigDecimal bigDecimal = requireNumber(value);
+        // XXX 由於浮點數的下限不定所以不曉得怎麼檢查, 就暫時先略過
+        return bigDecimal.floatValue();
+    }
+
+    public static double requireDouble(String value) {
+        BigDecimal bigDecimal = requireNumber(value);
+        // XXX 由於浮點數的下限不定所以不曉得怎麼檢查, 就暫時先略過
+        return bigDecimal.doubleValue();
+    }
 
 }

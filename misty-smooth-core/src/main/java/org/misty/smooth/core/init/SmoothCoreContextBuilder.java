@@ -1,5 +1,6 @@
 package org.misty.smooth.core.init;
 
+import org.misty.smooth.api.context.SmoothEnvironment;
 import org.misty.smooth.core.context.api.SmoothCoreContext;
 import org.misty.smooth.core.context.api.SmoothCoreEnvironment;
 import org.misty.smooth.core.context.impl.SmoothCoreContextPreset;
@@ -22,7 +23,7 @@ public class SmoothCoreContextBuilder {
 
     private SmoothCoreEnvironment coreEnvironment;
 
-    private Function<SmoothCoreEnvironment, ExecutorService> executorServiceBuilder = new SmoothCoreExecutorServiceBuilder();
+    private Function<SmoothEnvironment, ExecutorService> executorServiceBuilder = new SmoothCoreExecutorServiceBuilder();
 
     public SmoothCoreContextBuilder() {
         this.args = new String[]{};
@@ -72,11 +73,11 @@ public class SmoothCoreContextBuilder {
         this.coreEnvironment = coreEnvironment;
     }
 
-    public Function<SmoothCoreEnvironment, ExecutorService> getExecutorServiceBuilder() {
+    public Function<SmoothEnvironment, ExecutorService> getExecutorServiceBuilder() {
         return executorServiceBuilder;
     }
 
-    public void setExecutorServiceBuilder(Function<SmoothCoreEnvironment, ExecutorService> executorServiceBuilder) {
+    public void setExecutorServiceBuilder(Function<SmoothEnvironment, ExecutorService> executorServiceBuilder) {
         Examiner.refuseNullAndEmpty("executorServiceBuilder", executorServiceBuilder);
         this.executorServiceBuilder = executorServiceBuilder;
     }

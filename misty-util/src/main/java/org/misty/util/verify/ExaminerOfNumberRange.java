@@ -3,41 +3,20 @@ package org.misty.util.verify;
 import org.misty.util.error.MistyError;
 import org.misty.util.fi.FiBiConsumerThrow1;
 
+import java.math.BigDecimal;
+
 public class ExaminerOfNumberRange {
 
-    private static class Pack {
-        private final Number number;
-        private final double d;
+    private final BigDecimal floor;
 
-        public Pack(Number number) {
-            this.number = number;
-            this.d = number.doubleValue();
-        }
-
-        @Override
-        public String toString() {
-            return this.number.toString();
-        }
-
-        public Number getNumber() {
-            return number;
-        }
-
-        public double getDouble() {
-            return this.d;
-        }
-    }
-
-    private final Pack floor;
-
-    private final Pack ceiling;
+    private final BigDecimal ceiling;
 
     public ExaminerOfNumberRange(Number floor, Number ceiling) {
         Examiner.refuseNullAndEmpty("floor", floor);
         Examiner.refuseNullAndEmpty("ceiling", ceiling);
 
-        this.floor = new Pack(floor);
-        this.ceiling = new Pack(ceiling);
+        this.floor = floor instanceof BigDecimal ? (BigDecimal) floor : new BigDecimal(floor.toString());
+        this.ceiling = ceiling instanceof BigDecimal ? (BigDecimal) ceiling : new BigDecimal(ceiling.toString());
     }
 
     public Number requireIncludeInclude(String term, Number arg) {
@@ -51,10 +30,14 @@ public class ExaminerOfNumberRange {
         });
     }
 
-    public <ThrowableType extends Throwable> Number requireIncludeInclude(Number arg, FiBiConsumerThrow1<Number, Number, ThrowableType> thrownAction) throws ThrowableType {
-        double d_arg = arg.doubleValue();
-        if (!(d_arg >= this.floor.getDouble() && d_arg <= this.ceiling.getDouble())) {
-            thrownAction.acceptOrHandle(this.floor.getNumber(), this.ceiling.getNumber());
+    public <ThrowableType extends Throwable> Number requireIncludeInclude(Number arg, FiBiConsumerThrow1<BigDecimal, BigDecimal, ThrowableType> thrownAction) throws ThrowableType {
+        BigDecimal target = new BigDecimal(arg.toString());
+
+        int floorOffset = target.subtract(this.floor).compareTo(BigDecimal.ZERO);
+        int ceilingOffset = target.subtract(this.ceiling).compareTo(BigDecimal.ZERO);
+
+        if (!(floorOffset >= 0 && ceilingOffset <= 0)) {
+            thrownAction.acceptOrHandle(this.floor, this.ceiling);
         }
 
         return arg;
@@ -71,10 +54,14 @@ public class ExaminerOfNumberRange {
         });
     }
 
-    public <ThrowableType extends Throwable> Number requireIncludeExclude(Number arg, FiBiConsumerThrow1<Number, Number, ThrowableType> thrownAction) throws ThrowableType {
-        double d_arg = arg.doubleValue();
-        if (!(d_arg >= this.floor.getDouble() && d_arg < this.ceiling.getDouble())) {
-            thrownAction.acceptOrHandle(this.floor.getNumber(), this.ceiling.getNumber());
+    public <ThrowableType extends Throwable> Number requireIncludeExclude(Number arg, FiBiConsumerThrow1<BigDecimal, BigDecimal, ThrowableType> thrownAction) throws ThrowableType {
+        BigDecimal target = new BigDecimal(arg.toString());
+
+        int floorOffset = target.subtract(this.floor).compareTo(BigDecimal.ZERO);
+        int ceilingOffset = target.subtract(this.ceiling).compareTo(BigDecimal.ZERO);
+
+        if (!(floorOffset >= 0 && ceilingOffset < 0)) {
+            thrownAction.acceptOrHandle(this.floor, this.ceiling);
         }
 
         return arg;
@@ -91,10 +78,14 @@ public class ExaminerOfNumberRange {
         });
     }
 
-    public <ThrowableType extends Throwable> Number requireExcludeInclude(Number arg, FiBiConsumerThrow1<Number, Number, ThrowableType> thrownAction) throws ThrowableType {
-        double d_arg = arg.doubleValue();
-        if (!(d_arg > this.floor.getDouble() && d_arg <= this.ceiling.getDouble())) {
-            thrownAction.acceptOrHandle(this.floor.getNumber(), this.ceiling.getNumber());
+    public <ThrowableType extends Throwable> Number requireExcludeInclude(Number arg, FiBiConsumerThrow1<BigDecimal, BigDecimal, ThrowableType> thrownAction) throws ThrowableType {
+        BigDecimal target = new BigDecimal(arg.toString());
+
+        int floorOffset = target.subtract(this.floor).compareTo(BigDecimal.ZERO);
+        int ceilingOffset = target.subtract(this.ceiling).compareTo(BigDecimal.ZERO);
+
+        if (!(floorOffset > 0 && ceilingOffset <= 0)) {
+            thrownAction.acceptOrHandle(this.floor, this.ceiling);
         }
 
         return arg;
@@ -111,10 +102,14 @@ public class ExaminerOfNumberRange {
         });
     }
 
-    public <ThrowableType extends Throwable> Number requireExcludeExclude(Number arg, FiBiConsumerThrow1<Number, Number, ThrowableType> thrownAction) throws ThrowableType {
-        double d_arg = arg.doubleValue();
-        if (!(d_arg > this.floor.getDouble() && d_arg < this.ceiling.getDouble())) {
-            thrownAction.acceptOrHandle(this.floor.getNumber(), this.ceiling.getNumber());
+    public <ThrowableType extends Throwable> Number requireExcludeExclude(Number arg, FiBiConsumerThrow1<BigDecimal, BigDecimal, ThrowableType> thrownAction) throws ThrowableType {
+        BigDecimal target = new BigDecimal(arg.toString());
+
+        int floorOffset = target.subtract(this.floor).compareTo(BigDecimal.ZERO);
+        int ceilingOffset = target.subtract(this.ceiling).compareTo(BigDecimal.ZERO);
+
+        if (!(floorOffset > 0 && ceilingOffset < 0)) {
+            thrownAction.acceptOrHandle(this.floor, this.ceiling);
         }
 
         return arg;
@@ -131,10 +126,14 @@ public class ExaminerOfNumberRange {
         });
     }
 
-    public <ThrowableType extends Throwable> Number refuseIncludeInclude(Number arg, FiBiConsumerThrow1<Number, Number, ThrowableType> thrownAction) throws ThrowableType {
-        double d_arg = arg.doubleValue();
-        if (d_arg >= this.floor.getDouble() && d_arg <= this.ceiling.getDouble()) {
-            thrownAction.acceptOrHandle(this.floor.getNumber(), this.ceiling.getNumber());
+    public <ThrowableType extends Throwable> Number refuseIncludeInclude(Number arg, FiBiConsumerThrow1<BigDecimal, BigDecimal, ThrowableType> thrownAction) throws ThrowableType {
+        BigDecimal target = new BigDecimal(arg.toString());
+
+        int floorOffset = target.subtract(this.floor).compareTo(BigDecimal.ZERO);
+        int ceilingOffset = target.subtract(this.ceiling).compareTo(BigDecimal.ZERO);
+
+        if (floorOffset >= 0 && ceilingOffset <= 0) {
+            thrownAction.acceptOrHandle(this.floor, this.ceiling);
         }
 
         return arg;
@@ -151,10 +150,14 @@ public class ExaminerOfNumberRange {
         });
     }
 
-    public <ThrowableType extends Throwable> Number refuseIncludeExclude(Number arg, FiBiConsumerThrow1<Number, Number, ThrowableType> thrownAction) throws ThrowableType {
-        double d_arg = arg.doubleValue();
-        if (d_arg >= this.floor.getDouble() && d_arg < this.ceiling.getDouble()) {
-            thrownAction.acceptOrHandle(this.floor.getNumber(), this.ceiling.getNumber());
+    public <ThrowableType extends Throwable> Number refuseIncludeExclude(Number arg, FiBiConsumerThrow1<BigDecimal, BigDecimal, ThrowableType> thrownAction) throws ThrowableType {
+        BigDecimal target = new BigDecimal(arg.toString());
+
+        int floorOffset = target.subtract(this.floor).compareTo(BigDecimal.ZERO);
+        int ceilingOffset = target.subtract(this.ceiling).compareTo(BigDecimal.ZERO);
+
+        if (floorOffset >= 0 && ceilingOffset < 0) {
+            thrownAction.acceptOrHandle(this.floor, this.ceiling);
         }
 
         return arg;
@@ -171,10 +174,14 @@ public class ExaminerOfNumberRange {
         });
     }
 
-    public <ThrowableType extends Throwable> Number refuseExcludeInclude(Number arg, FiBiConsumerThrow1<Number, Number, ThrowableType> thrownAction) throws ThrowableType {
-        double d_arg = arg.doubleValue();
-        if (d_arg > this.floor.getDouble() && d_arg <= this.ceiling.getDouble()) {
-            thrownAction.acceptOrHandle(this.floor.getNumber(), this.ceiling.getNumber());
+    public <ThrowableType extends Throwable> Number refuseExcludeInclude(Number arg, FiBiConsumerThrow1<BigDecimal, BigDecimal, ThrowableType> thrownAction) throws ThrowableType {
+        BigDecimal target = new BigDecimal(arg.toString());
+
+        int floorOffset = target.subtract(this.floor).compareTo(BigDecimal.ZERO);
+        int ceilingOffset = target.subtract(this.ceiling).compareTo(BigDecimal.ZERO);
+
+        if (floorOffset > 0 && ceilingOffset <= 0) {
+            thrownAction.acceptOrHandle(this.floor, this.ceiling);
         }
 
         return arg;
@@ -191,10 +198,14 @@ public class ExaminerOfNumberRange {
         });
     }
 
-    public <ThrowableType extends Throwable> Number refuseExcludeExclude(Number arg, FiBiConsumerThrow1<Number, Number, ThrowableType> thrownAction) throws ThrowableType {
-        double d_arg = arg.doubleValue();
-        if (d_arg > this.floor.getDouble() && d_arg < this.ceiling.getDouble()) {
-            thrownAction.acceptOrHandle(this.floor.getNumber(), this.ceiling.getNumber());
+    public <ThrowableType extends Throwable> Number refuseExcludeExclude(Number arg, FiBiConsumerThrow1<BigDecimal, BigDecimal, ThrowableType> thrownAction) throws ThrowableType {
+        BigDecimal target = new BigDecimal(arg.toString());
+
+        int floorOffset = target.subtract(this.floor).compareTo(BigDecimal.ZERO);
+        int ceilingOffset = target.subtract(this.ceiling).compareTo(BigDecimal.ZERO);
+
+        if (floorOffset > 0 && ceilingOffset < 0) {
+            thrownAction.acceptOrHandle(this.floor, this.ceiling);
         }
 
         return arg;

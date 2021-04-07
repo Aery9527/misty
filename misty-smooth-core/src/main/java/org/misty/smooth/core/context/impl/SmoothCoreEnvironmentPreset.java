@@ -9,6 +9,7 @@ import org.misty.util.verify.Examiner;
 import org.misty.util.verify.Judge;
 
 import java.util.*;
+import java.util.function.Function;
 
 public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
 
@@ -148,6 +149,12 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
         }
 
         return false;
+    }
+
+    @Override
+    public <Type> Type getValue(String key, Function<String, Type> transformer) {
+        String value = this.arguments.get(key);
+        return transformer.apply(value);
     }
 
     @Override

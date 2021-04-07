@@ -1113,12 +1113,87 @@ class ExaminerTest {
         Assertions.assertThat(Examiner.requireInteger(value + "")).isEqualTo(value);
     }
 
+    @ParameterizedTest
+    @ValueSource(ints = {Integer.MIN_VALUE, Integer.MAX_VALUE})
+    public void requireInteger$Error(int value) {
+        String s = (value > 0 ? ((long) value + 1) : ((long) value - 1)) + "";
+        Assertions.assertThatThrownBy(() -> Examiner.requireInteger(s))
+                .isInstanceOf(MistyException.class)
+                .hasMessageContaining(ExaminerMessage.requireInteger("value", s));
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    public void requireInteger$error$NullAndEmpty(String value) {
+        Assertions.assertThatThrownBy(() -> Examiner.requireInteger(value))
+                .isInstanceOf(MistyException.class)
+                .hasMessageContaining(ExaminerMessage.refuseNullAndEmpty("value"));
+    }
 
     @ParameterizedTest
     @ValueSource(longs = {Long.MIN_VALUE, Long.MAX_VALUE})
-    public void requireInteger$Error(long value) {
-        Examiner.requireInteger(value + "");
+    public void requireLong$normal(long value) {
+        Assertions.assertThat(Examiner.requireLong(value + "")).isEqualTo(value);
     }
+
+    @ParameterizedTest
+    @ValueSource(longs = {Long.MIN_VALUE, Long.MAX_VALUE})
+    public void requireLong$Error(long value) {
+        BigDecimal one = new BigDecimal(1);
+        BigDecimal bigDecimal = value > 0 ? new BigDecimal(value).add(one) : new BigDecimal(value).subtract(one);
+        Assertions.assertThatThrownBy(() -> Examiner.requireLong(bigDecimal.toString()))
+                .isInstanceOf(MistyException.class)
+                .hasMessageContaining(ExaminerMessage.requireLong("value", bigDecimal.toString()));
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    public void requireLong$error$NullAndEmpty(String value) {
+        Assertions.assertThatThrownBy(() -> Examiner.requireLong(value))
+                .isInstanceOf(MistyException.class)
+                .hasMessageContaining(ExaminerMessage.refuseNullAndEmpty("value"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(floats = {Float.MIN_VALUE, Float.MAX_VALUE})
+    public void requireFloat$normal(float value) {
+        Assertions.assertThat(Examiner.requireFloat(value + "")).isEqualTo(value);
+    }
+
+    @ParameterizedTest
+    @ValueSource(floats = {Float.MIN_VALUE, Float.MAX_VALUE})
+    public void requireFloat$Error(float value) {
+        // XXX 暫時沒有上下限檢查
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    public void requireFloat$error$NullAndEmpty(String value) {
+        Assertions.assertThatThrownBy(() -> Examiner.requireFloat(value))
+                .isInstanceOf(MistyException.class)
+                .hasMessageContaining(ExaminerMessage.refuseNullAndEmpty("value"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(doubles = {Double.MIN_VALUE, Double.MAX_VALUE})
+    public void requireDouble$normal(double value) {
+        Assertions.assertThat(Examiner.requireDouble(value + "")).isEqualTo(value);
+    }
+
+    @ParameterizedTest
+    @ValueSource(doubles = {Double.MIN_VALUE, Double.MAX_VALUE})
+    public void requireDouble$Error(double value) {
+        // XXX 暫時沒有上下限檢查
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    public void requireDouble$error$NullAndEmpty(String value) {
+        Assertions.assertThatThrownBy(() -> Examiner.requireDouble(value))
+                .isInstanceOf(MistyException.class)
+                .hasMessageContaining(ExaminerMessage.refuseNullAndEmpty("value"));
+    }
+
 
 
 }
