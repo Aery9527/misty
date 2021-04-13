@@ -8,6 +8,7 @@ import org.misty.util.verify.Judge;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+import java.util.function.IntPredicate;
 import java.util.function.IntSupplier;
 
 public class SmoothCoreExecutorServiceBuilder implements Function<SmoothEnvironment, ExecutorService> {
@@ -65,19 +66,35 @@ public class SmoothCoreExecutorServiceBuilder implements Function<SmoothEnvironm
             }
         });
 
-        AtomicInteger count = new AtomicInteger(1);
+        String key = ThreadPoolArgument.Rotation.KEY;
+        int preset = ThreadPoolArgument.Rotation.PRESET;
+        int min = ThreadPoolArgument.Rotation.MIX;
+        int max = ThreadPoolArgument.Rotation.MAX;
+        EnvironmentIntegerValidator validator = new EnvironmentIntegerValidator(key, preset, min, max);
+        int rotation = smoothEnvironment.getValue(key, validator);
 
+        AtomicInteger count = new AtomicInteger(min);
         IntSupplier counter = () -> {
             int c = count.getAndIncrement();
-            if (c > 8192) {
-                count.set(1);
-                return 1;
-            } else {
+            if (c <= rotation) {
                 return c;
             }
+
+            synchronized (count) {
+                c = count.getAndIncrement();
+                if (c <= rotation) {
+                    return c;
+                }
+                count.set(min);
+            }
+
+            return count.getAndIncrement();
         };
 
-        return (runnable) -> new Thread(runnable, namePrefix + counter.getAsInt());
+        return (runnable) -> {
+            String name = namePrefix + String.format("%04d", counter.getAsInt());
+            return new Thread(runnable, name);
+        };
     }
 
     public RejectedExecutionHandler getHandler(SmoothEnvironment smoothEnvironment) {

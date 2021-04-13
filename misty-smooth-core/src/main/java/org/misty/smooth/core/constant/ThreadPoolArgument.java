@@ -21,7 +21,7 @@ public class ThreadPoolArgument {
 
         public static final int MIX = CoreSize.MAX;
 
-        public static final int MAX = PRESET * 4;
+        public static final int MAX = 4096;
     }
 
     public static class AliveSecond {
@@ -31,13 +31,23 @@ public class ThreadPoolArgument {
 
         public static final int MIX = PRESET;
 
-        public static final int MAX = PRESET * 60;
+        public static final int MAX = 3600;
     }
 
     public static class NamePrefix {
         public static final String KEY = PREFIX + ".name-prefix";
 
         public static final String PRESET = "smooth-core-";
+    }
+
+    public static class Rotation {
+        public static final String KEY = PREFIX + ".rotation";
+
+        public static final int PRESET = 999;
+
+        public static final int MIX = 1;
+
+        public static final int MAX = PRESET;
     }
 
 }
