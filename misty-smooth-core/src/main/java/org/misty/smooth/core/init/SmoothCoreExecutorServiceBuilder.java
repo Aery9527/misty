@@ -2,13 +2,12 @@ package org.misty.smooth.core.init;
 
 import org.misty.smooth.api.context.SmoothEnvironment;
 import org.misty.smooth.core.constant.ThreadPoolArgument;
-import org.misty.smooth.core.context.validator.EnvironmentIntegerValidator;
+import org.misty.smooth.core.context.validator.EnvironmentShortValidator;
 import org.misty.util.verify.Judge;
 
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
-import java.util.function.IntPredicate;
 import java.util.function.IntSupplier;
 
 public class SmoothCoreExecutorServiceBuilder implements Function<SmoothEnvironment, ExecutorService> {
@@ -28,28 +27,28 @@ public class SmoothCoreExecutorServiceBuilder implements Function<SmoothEnvironm
 
     public int getCorePoolSize(SmoothEnvironment smoothEnvironment) {
         String key = ThreadPoolArgument.CoreSize.KEY;
-        int preset = ThreadPoolArgument.CoreSize.PRESET;
-        int min = ThreadPoolArgument.CoreSize.MIX;
-        int max = ThreadPoolArgument.CoreSize.MAX;
-        EnvironmentIntegerValidator validator = new EnvironmentIntegerValidator(key, preset, min, max);
+        short preset = ThreadPoolArgument.CoreSize.PRESET;
+        short min = ThreadPoolArgument.CoreSize.MIX;
+        short max = ThreadPoolArgument.CoreSize.MAX;
+        EnvironmentShortValidator validator = new EnvironmentShortValidator(key, preset, min, max);
         return smoothEnvironment.getValue(key, validator);
     }
 
     public int getMaximumPoolSize(SmoothEnvironment smoothEnvironment) {
         String key = ThreadPoolArgument.MaxSize.KEY;
-        int preset = ThreadPoolArgument.MaxSize.PRESET;
-        int min = ThreadPoolArgument.MaxSize.MIX;
-        int max = ThreadPoolArgument.MaxSize.MAX;
-        EnvironmentIntegerValidator validator = new EnvironmentIntegerValidator(key, preset, min, max);
+        short preset = ThreadPoolArgument.MaxSize.PRESET;
+        short min = ThreadPoolArgument.MaxSize.MIX;
+        short max = ThreadPoolArgument.MaxSize.MAX;
+        EnvironmentShortValidator validator = new EnvironmentShortValidator(key, preset, min, max);
         return smoothEnvironment.getValue(key, validator);
     }
 
     public long getKeepAliveTime(SmoothEnvironment smoothEnvironment) {
         String key = ThreadPoolArgument.AliveSecond.KEY;
-        int preset = ThreadPoolArgument.AliveSecond.PRESET;
-        int min = ThreadPoolArgument.AliveSecond.MIX;
-        int max = ThreadPoolArgument.AliveSecond.MAX;
-        EnvironmentIntegerValidator validator = new EnvironmentIntegerValidator(key, preset, min, max);
+        short preset = ThreadPoolArgument.AliveSecond.PRESET;
+        short min = ThreadPoolArgument.AliveSecond.MIX;
+        short max = ThreadPoolArgument.AliveSecond.MAX;
+        EnvironmentShortValidator validator = new EnvironmentShortValidator(key, preset, min, max);
         return smoothEnvironment.getValue(key, validator);
     }
 
@@ -67,11 +66,11 @@ public class SmoothCoreExecutorServiceBuilder implements Function<SmoothEnvironm
         });
 
         String key = ThreadPoolArgument.Rotation.KEY;
-        int preset = ThreadPoolArgument.Rotation.PRESET;
-        int min = ThreadPoolArgument.Rotation.MIX;
-        int max = ThreadPoolArgument.Rotation.MAX;
-        EnvironmentIntegerValidator validator = new EnvironmentIntegerValidator(key, preset, min, max);
-        int rotation = smoothEnvironment.getValue(key, validator);
+        short preset = ThreadPoolArgument.Rotation.PRESET;
+        short min = ThreadPoolArgument.Rotation.MIX;
+        short max = ThreadPoolArgument.Rotation.MAX;
+        EnvironmentShortValidator validator = new EnvironmentShortValidator(key, preset, min, max);
+        short rotation = smoothEnvironment.getValue(key, validator);
 
         AtomicInteger count = new AtomicInteger(min);
         IntSupplier counter = () -> {

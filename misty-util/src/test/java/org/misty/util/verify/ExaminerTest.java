@@ -1108,6 +1108,29 @@ class ExaminerTest {
     }
 
     @ParameterizedTest
+    @ValueSource(shorts = {Short.MIN_VALUE, 0, Short.MAX_VALUE})
+    public void requireShort$normal(short value) {
+        Assertions.assertThat(Examiner.requireShort(value + "")).isEqualTo(value);
+    }
+
+    @ParameterizedTest
+    @ValueSource(shorts = {Short.MIN_VALUE, Short.MAX_VALUE})
+    public void requireShort$Error(short value) {
+        String s = (value > 0 ? ((int) value + 1) : ((int) value - 1)) + "";
+        Assertions.assertThatThrownBy(() -> Examiner.requireShort(s))
+                .isInstanceOf(MistyException.class)
+                .hasMessageContaining(ExaminerMessage.requireShort("value", s));
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    public void requireShort$error$NullAndEmpty(String value) {
+        Assertions.assertThatThrownBy(() -> Examiner.requireShort(value))
+                .isInstanceOf(MistyException.class)
+                .hasMessageContaining(ExaminerMessage.refuseNullAndEmpty("value"));
+    }
+
+    @ParameterizedTest
     @ValueSource(ints = {Integer.MIN_VALUE, 0, Integer.MAX_VALUE})
     public void requireInteger$normal(int value) {
         Assertions.assertThat(Examiner.requireInteger(value + "")).isEqualTo(value);

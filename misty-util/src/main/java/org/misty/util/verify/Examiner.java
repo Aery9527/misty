@@ -10,6 +10,8 @@ import java.util.Optional;
 
 public class Examiner {
 
+    public static final ExaminerOfNumberRange SHORT_RANGE_EXAMINER = new ExaminerOfNumberRange(Short.MIN_VALUE, Short.MAX_VALUE);
+
     public static final ExaminerOfNumberRange INTEGER_RANGE_EXAMINER = new ExaminerOfNumberRange(Integer.MIN_VALUE, Integer.MAX_VALUE);
 
     public static final ExaminerOfNumberRange LONG_RANGE_EXAMINER = new ExaminerOfNumberRange(Long.MIN_VALUE, Long.MAX_VALUE);
@@ -685,6 +687,15 @@ public class Examiner {
             String description = ExaminerMessage.requireNumber("value", value);
             throw MistyError.ARGUMENT_ERROR.thrown(description, e);
         }
+    }
+
+    public static short requireShort(String value) {
+        BigDecimal bigDecimal = requireNumber(value);
+        SHORT_RANGE_EXAMINER.requireIncludeInclude(bigDecimal, (floor, ceiling) -> {
+            String description = ExaminerMessage.requireShort("value", value);
+            throw MistyError.ARGUMENT_ERROR.thrown(description);
+        });
+        return bigDecimal.shortValue();
     }
 
     public static int requireInteger(String value) {

@@ -20,6 +20,8 @@ public class ExaminerMessage {
 
     public static final String REQUIRE_NUMBER = "check error of \"%s\", the value is %s, require number.";
 
+    public static final String REQUIRE_SHORT = "check error of \"%s\", the value is %s, require Short [%s(-2^15) ~ %s(2^15-1)].";
+
     public static final String REQUIRE_INTEGER = "check error of \"%s\", the value is %s, require Integer [%s(-2^31) ~ %s(2^31-1)].";
 
     public static final String REQUIRE_LONG = "check error of \"%s\", the value is %s, require Long [%s(-2^63) ~ %s(2^63-1)].";
@@ -272,6 +274,10 @@ public class ExaminerMessage {
 
     public static String requireNumber(String term, String value) {
         return String.format(REQUIRE_NUMBER, term, value);
+    }
+
+    public static String requireShort(String term, String value) {
+        return String.format(REQUIRE_SHORT, term, value, Short.MIN_VALUE, Short.MAX_VALUE);
     }
 
     public static String requireInteger(String term, String value) {
