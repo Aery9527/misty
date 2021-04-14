@@ -4,7 +4,7 @@ import org.misty.smooth.api.vo.SmoothModuleId;
 
 public final class SmoothServiceOrigin {
 
-    public static final String STRING_FORMAT = SmoothServiceOrigin.class.getSimpleName() + "[%s]";
+    public static final String STRING_FORMAT = SmoothServiceOrigin.class.getSimpleName() + "[from:%s]";
 
     private final SmoothModuleId invokedModule;
 

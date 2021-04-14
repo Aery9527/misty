@@ -1,6 +1,8 @@
 package org.misty.smooth.manager.error;
 
-public class SmoothLoadException extends RuntimeException {
+import org.misty.smooth.api.error.SmoothException;
+
+public class SmoothLoadException extends SmoothException {
 
     public SmoothLoadException() {
     }

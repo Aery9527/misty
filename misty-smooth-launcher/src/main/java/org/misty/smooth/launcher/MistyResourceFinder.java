@@ -10,7 +10,11 @@ public class MistyResourceFinder {
 
     public static final String NOT_FOUND_LIB_MSG_FORMAT = "can't find libs following %s in AppClassLoader classpath.";
 
-    public static final String[] DEFAULT_IMPLANT_LIBS = new String[]{"misty-description", "misty-smooth-api", "misty-smooth-manager"};
+    public static final String[] DEFAULT_IMPLANT_LIBS = new String[]{
+            "misty-description"
+            , "misty-smooth-api"
+            , "misty-smooth-manager"
+    };
 
     public List<URL> findDefaultImplantLibs() {
         return findFromAppClassLoader(true, DEFAULT_IMPLANT_LIBS);

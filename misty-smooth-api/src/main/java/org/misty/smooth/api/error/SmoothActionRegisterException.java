@@ -1,6 +1,6 @@
 package org.misty.smooth.api.error;
 
-public class SmoothActionRegisterException extends  RuntimeException {
+public class SmoothActionRegisterException extends SmoothException {
 
     public SmoothActionRegisterException() {
         super();

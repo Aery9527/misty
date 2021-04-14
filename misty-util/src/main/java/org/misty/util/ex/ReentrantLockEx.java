@@ -8,6 +8,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class ReentrantLockEx extends ReentrantLock {
 
     public ReentrantLockEx() {
+        this(true);
     }
 
     public ReentrantLockEx(boolean fair) {

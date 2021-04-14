@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 public class Module1Application implements SmoothModuleLifecycle {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass()); // slf4j
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
     public String getName() {

@@ -23,10 +23,6 @@ class SmoothServiceTransporter {
         this.body = body;
     }
 
-    public Map<String, List<String>> getHeader() {
-        return header;
-    }
-
     public boolean containsHeader(String key) {
         if (this.header == null) {
             return false;
@@ -50,6 +46,10 @@ class SmoothServiceTransporter {
         } else {
             return this.body.containsKey(key);
         }
+    }
+
+    public Map<String, List<String>> getHeader() {
+        return header;
     }
 
     public void setHeader(Map<String, List<String>> header) {

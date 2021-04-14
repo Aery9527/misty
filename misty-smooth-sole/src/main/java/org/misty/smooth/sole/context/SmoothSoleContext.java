@@ -15,6 +15,11 @@ import java.util.function.Consumer;
 public class SmoothSoleContext implements SmoothContext {
 
     @Override
+    public String identifier() {
+        return null;
+    }
+
+    @Override
     public Instant getLaunchInstant() {
         return null;
     }

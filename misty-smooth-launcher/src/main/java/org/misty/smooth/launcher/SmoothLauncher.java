@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 因為smooth對於classloader的規劃, 必須要在最上層的ClassLoader載入共用類別.
- * 所以會要求smooth-user在main裡優先操作{@link #start()}這個方法,
+ * 所以會要求使用者要在main裡優先操作{@link #start()}這個方法,
  * 而該方法會從AppClassLoader取出需要由ExtClassLoader載入的classpath(共類類別)植入.
  * 也因此在smooth-user的main與{@link SmoothLauncher}不可引用到其他smooth的class,
  * 因為若引用了會導致AppClassLoader提早載入該class, 而非在{@link #start()}進行ExtClassLoader植入後,

@@ -1,6 +1,6 @@
 package org.misty.smooth.api.error;
 
-public class SmoothCrossException extends RuntimeException {
+public class SmoothCrossException extends SmoothException {
 
     public SmoothCrossException() {
     }

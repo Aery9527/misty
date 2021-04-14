@@ -2,7 +2,7 @@ package org.misty.smooth.api.vo;
 
 import java.time.Instant;
 
-public final class SmoothModuleId {
+public final class SmoothModuleId implements Comparable<SmoothModuleId> {
 
     public static final String STRING_FORMAT = "SmoothModule(%s)(%s)";
 
@@ -42,6 +42,11 @@ public final class SmoothModuleId {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public int compareTo(SmoothModuleId smoothModuleId) {
+        return this.toString.compareTo(smoothModuleId.toString);
     }
 
     public String getModuleName() {

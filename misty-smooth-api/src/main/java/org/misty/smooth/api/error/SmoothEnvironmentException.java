@@ -1,6 +1,6 @@
 package org.misty.smooth.api.error;
 
-public class SmoothEnvironmentException extends RuntimeException {
+public class SmoothEnvironmentException extends SmoothException {
 
     public SmoothEnvironmentException() {
         super();

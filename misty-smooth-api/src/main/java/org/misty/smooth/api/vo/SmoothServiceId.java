@@ -1,6 +1,6 @@
 package org.misty.smooth.api.vo;
 
-public class SmoothServiceId {
+public class SmoothServiceId implements Comparable<SmoothServiceId> {
 
     public static final String STRING_FORMAT = "SmoothService(%s)(%s)";
 
@@ -33,6 +33,11 @@ public class SmoothServiceId {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public int compareTo(SmoothServiceId smoothServiceId) {
+        return this.toString.compareTo(smoothServiceId.toString);
     }
 
     public String getServiceKey() {

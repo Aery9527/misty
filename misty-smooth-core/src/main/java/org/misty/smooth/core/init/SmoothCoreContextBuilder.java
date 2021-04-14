@@ -1,69 +1,132 @@
 package org.misty.smooth.core.init;
 
 import org.misty.smooth.api.context.SmoothEnvironment;
+import org.misty.smooth.core.MistyDescription$SmoothCore;
 import org.misty.smooth.core.context.api.SmoothCoreContext;
 import org.misty.smooth.core.context.api.SmoothCoreEnvironment;
 import org.misty.smooth.core.context.impl.SmoothCoreContextPreset;
+import org.misty.smooth.core.context.impl.SmoothCoreEnvironmentPreset;
+import org.misty.smooth.core.space.api.SmoothSpaceCamp;
+import org.misty.smooth.core.space.impl.SmoothSpaceCampPreset;
 import org.misty.util.verify.Examiner;
-import org.misty.util.verify.Judge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class SmoothCoreContextBuilder {
+
+    private static class ContextSetter {
+        private final SmoothCoreEnvironment environment;
+
+        private final ExecutorService executorService;
+
+        public ContextSetter(SmoothCoreEnvironment environment, ExecutorService executorService) {
+            this.environment = environment;
+            this.executorService = executorService;
+        }
+
+        private <TargetType> void set(String term, BiFunction<SmoothEnvironment, ExecutorService, TargetType> factory,
+                                      Supplier<TargetType> presetSupplier, Consumer<TargetType> setter) {
+            TargetType target = factory == null ? presetSupplier.get() : factory.apply(this.environment, this.executorService);
+            Examiner.refuseNullAndEmpty(term, target);
+            setter.accept(target);
+        }
+    }
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final String[] args;
 
+    private String name;
+
+    private String version;
+
     private SmoothCoreEnvironment coreEnvironment;
 
-    private Function<SmoothEnvironment, ExecutorService> executorServiceBuilder = new SmoothCoreExecutorServiceBuilder();
+    private Function<SmoothEnvironment, ExecutorService> executorServiceFactory = new SmoothCoreExecutorServiceFactory();
+
+    private BiFunction<SmoothEnvironment, ExecutorService, SmoothSpaceCamp> spaceCampFactory;
 
     public SmoothCoreContextBuilder() {
-        this.args = new String[]{};
+        this(new String[]{});
     }
 
     public SmoothCoreContextBuilder(String[] args) {
         this.args = args;
+
+        MistyDescription$SmoothCore smoothCoreDescription = new MistyDescription$SmoothCore();
+        this.name = smoothCoreDescription.getName();
+        this.version = smoothCoreDescription.getVersion();
     }
 
     public SmoothCoreContext build() {
-        SmoothCoreContextPreset smoothCoreContextPreset = new SmoothCoreContextPreset();
+        Examiner.refuseNullAndEmpty("name", this.name);
+        Examiner.refuseNullAndEmpty("version", this.version);
 
-        setup(this.coreEnvironment, smoothCoreContextPreset::setEnvironment);
+        SmoothCoreContextPreset context = new SmoothCoreContextPreset(this.name, this.version);
 
-        SmoothCoreEnvironment usedEnvironment = smoothCoreContextPreset.getEnvironment();
-        usedEnvironment.parseArgument(this.args);
-        showEnvironment(usedEnvironment);
+        SmoothCoreEnvironment environment = setupEnvironment(context);
+        ExecutorService executorService = setupExecutorService(context, environment);
 
-        ExecutorService executorService = this.executorServiceBuilder.apply(usedEnvironment);
-        Examiner.refuseNullAndEmpty("executorService", executorService);
-        smoothCoreContextPreset.setExecutorService(executorService);
+        ContextSetter contextSetter = new ContextSetter(environment, executorService);
+        contextSetter.set("smoothSpaceCamp", this.spaceCampFactory, SmoothSpaceCampPreset::new, context::setSpaceCamp);
 
-        return smoothCoreContextPreset;
-    }
-
-    public <FieldType> void setup(FieldType field, Consumer<FieldType> setter) {
-        if (Judge.notNullAndEmpty(field)) {
-            setter.accept(field);
-        }
-    }
-
-    public void showEnvironment(SmoothCoreEnvironment environment) {
-        Set<String> flags = environment.getFlags();
-        Map<String, String> arguments = environment.getArguments();
-
-        this.logger.info("SmoothEnvironment flags : " + flags);
-        this.logger.info("SmoothEnvironment arguments : " + arguments);
+        return context;
     }
 
     //
+
+    protected SmoothCoreEnvironment setupEnvironment(SmoothCoreContextPreset context) {
+        SmoothCoreEnvironment usedEnvironment = this.coreEnvironment;
+        if (usedEnvironment == null) {
+            usedEnvironment = new SmoothCoreEnvironmentPreset();
+        }
+
+        usedEnvironment.parseArgument(this.args);
+        context.setEnvironment(usedEnvironment);
+
+        showEnvironment(usedEnvironment);
+
+        return usedEnvironment;
+    }
+
+    protected void showEnvironment(SmoothCoreEnvironment environment) {
+        String prefix = SmoothEnvironment.class.getSimpleName();
+        this.logger.info(prefix + " flags : " + environment.getFlags());
+        this.logger.info(prefix + " arguments : " + environment.getArguments());
+    }
+
+    protected ExecutorService setupExecutorService(SmoothCoreContextPreset context, SmoothCoreEnvironment environment) {
+        ExecutorService executorService = this.executorServiceFactory.apply(environment);
+        Examiner.refuseNullAndEmpty("executorService", executorService);
+        context.setExecutorService(executorService);
+        return executorService;
+    }
+
+    //
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
 
     public SmoothCoreEnvironment getCoreEnvironment() {
         return coreEnvironment;
@@ -73,13 +136,20 @@ public class SmoothCoreContextBuilder {
         this.coreEnvironment = coreEnvironment;
     }
 
-    public Function<SmoothEnvironment, ExecutorService> getExecutorServiceBuilder() {
-        return executorServiceBuilder;
+    public Function<SmoothEnvironment, ExecutorService> getExecutorServiceFactory() {
+        return executorServiceFactory;
     }
 
-    public void setExecutorServiceBuilder(Function<SmoothEnvironment, ExecutorService> executorServiceBuilder) {
-        Examiner.refuseNullAndEmpty("executorServiceBuilder", executorServiceBuilder);
-        this.executorServiceBuilder = executorServiceBuilder;
+    public void setExecutorServiceFactory(Function<SmoothEnvironment, ExecutorService> executorServiceFactory) {
+        Examiner.refuseNullAndEmpty("executorServiceBuilder", executorServiceFactory);
+        this.executorServiceFactory = executorServiceFactory;
     }
 
+    public BiFunction<SmoothEnvironment, ExecutorService, SmoothSpaceCamp> getSpaceCampFactory() {
+        return spaceCampFactory;
+    }
+
+    public void setSpaceCampFactory(BiFunction<SmoothEnvironment, ExecutorService, SmoothSpaceCamp> spaceCampFactory) {
+        this.spaceCampFactory = spaceCampFactory;
+    }
 }
