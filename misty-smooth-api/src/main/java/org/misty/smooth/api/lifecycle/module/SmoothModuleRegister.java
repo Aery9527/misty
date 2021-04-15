@@ -16,6 +16,6 @@ public interface SmoothModuleRegister extends SmoothRegister {
 
     void registerService(Collection<SmoothService> services) throws SmoothActionRegisterException;
 
-    void registerServiceResultProcessErrorHandler(Consumer<Throwable> errorHandler) throws SmoothActionRegisterException;
+    void registerResponseResultProcessErrorHandler(Consumer<Throwable> errorHandler) throws SmoothActionRegisterException;
 
 }

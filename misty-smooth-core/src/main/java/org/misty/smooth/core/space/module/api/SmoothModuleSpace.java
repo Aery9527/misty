@@ -18,7 +18,7 @@ public interface SmoothModuleSpace {
             throws SmoothServiceNotFoundException;
 
     void invokeService(String serviceKey, SmoothServiceRequestOrigin requestOrigin
-            , Consumer<SmoothServiceResponseResult> resultProcessor, ExecutorService invokeExecutorService)
+            , ExecutorService invokeExecutorService, Consumer<SmoothServiceResponseResult> resultProcessor)
             throws SmoothServiceNotFoundException;
 
     void close();

@@ -79,7 +79,7 @@ public class SmoothCoreContextPreset implements SmoothCoreContext {
             throws SmoothModuleNotFoundException, SmoothServiceNotFoundException {
         SmoothModuleSpace moduleSpace = this.spaceCamp.getModuleSpace(moduleName);
         SmoothServiceRequestOrigin requestOrigin = new SmoothServiceRequestOrigin(this.coreModuleId, serviceRequest);
-        moduleSpace.invokeService(serviceKey, requestOrigin, resultProcessor, this.executorService);
+        moduleSpace.invokeService(serviceKey, requestOrigin, this.executorService, resultProcessor);
     }
 
     @Override

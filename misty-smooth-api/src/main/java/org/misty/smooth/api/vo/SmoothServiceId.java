@@ -1,6 +1,6 @@
 package org.misty.smooth.api.vo;
 
-public class SmoothServiceId implements Comparable<SmoothServiceId> {
+public final class SmoothServiceId implements Comparable<SmoothServiceId> {
 
     public static final String STRING_FORMAT = "SmoothService(%s)(%s)";
 

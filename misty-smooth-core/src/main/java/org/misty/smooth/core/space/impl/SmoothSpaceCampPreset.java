@@ -5,6 +5,7 @@ import org.misty.smooth.api.vo.SmoothModuleId;
 import org.misty.smooth.api.vo.SmoothServiceId;
 import org.misty.smooth.core.space.api.SmoothSpaceCamp;
 import org.misty.smooth.core.space.module.api.SmoothModuleSpace;
+import org.misty.smooth.core.tool.SmoothIdGearingMap;
 import org.misty.util.ex.ReentrantLockEx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,43 +16,39 @@ public class SmoothSpaceCampPreset implements SmoothSpaceCamp {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final ReentrantLockEx moduleMaintainLock = new ReentrantLockEx();
-
-    private Map<String, SmoothModuleId> moduleNameMapId = new TreeMap<>();
-
-    private Map<SmoothModuleId, SmoothModuleSpace> moduleIdMapSpace = new TreeMap<>();
+    private final SmoothIdGearingMap<SmoothModuleId, SmoothModuleSpace> moduleGearingMap = new SmoothIdGearingMap<>();
 
     @Override
     public Set<SmoothModuleId> listModuleWithSet() {
-        return Collections.unmodifiableSet(this.moduleIdMapSpace.keySet());
+        return this.moduleGearingMap.listKey2();
     }
 
     @Override
     public Optional<Set<SmoothServiceId>> listServiceWithSet(String moduleName) {
-        SmoothModuleId moduleId = this.moduleNameMapId.get(moduleName);
+        SmoothModuleId moduleId = this.moduleGearingMap.getKey2(moduleName);
         if (moduleId == null) {
             return Optional.empty();
         }
 
-        SmoothModuleSpace moduleSpace = this.moduleIdMapSpace.get(moduleId);
+        SmoothModuleSpace moduleSpace = this.moduleGearingMap.getValue(moduleId);
         Set<SmoothServiceId> serviceIds = moduleSpace.listServices();
         return Optional.of(serviceIds);
     }
 
     @Override
     public SmoothModuleSpace getModuleSpace(String moduleName) throws SmoothModuleNotFoundException {
-        SmoothModuleId moduleId = this.moduleNameMapId.get(moduleName);
+        SmoothModuleId moduleId = this.moduleGearingMap.getKey2(moduleName);
         if (moduleId == null) {
             throw new SmoothModuleNotFoundException(moduleName);
         }
 
-        return this.moduleIdMapSpace.get(moduleId);
+        return this.moduleGearingMap.getValue(moduleId);
     }
 
     @Override
     public void close() {
-        this.moduleMaintainLock.use(() -> {
-            this.moduleIdMapSpace.forEach((moduleId, moduleSpace) -> {
+        this.moduleGearingMap.lock(() -> {
+            this.moduleGearingMap.foreach((moduleId, moduleSpace) -> {
                 try {
                     moduleSpace.close();
                 } catch (Throwable t) {
@@ -59,8 +56,7 @@ public class SmoothSpaceCampPreset implements SmoothSpaceCamp {
                 }
             });
 
-            this.moduleNameMapId = null;
-            this.moduleIdMapSpace = null;
+            this.moduleGearingMap.close();
         });
     }
 

@@ -20,7 +20,7 @@ public class SmoothSoleRegister implements SmoothModuleRegister {
     }
 
     @Override
-    public void registerServiceResultProcessErrorHandler(Consumer<Throwable> errorHandler) {
+    public void registerResponseResultProcessErrorHandler(Consumer<Throwable> errorHandler) {
 
     }
 }
