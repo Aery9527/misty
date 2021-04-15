@@ -1,9 +1,8 @@
 package org.misty.smooth.core.space.module.api;
 
 import org.misty.smooth.api.error.SmoothServiceNotFoundException;
-import org.misty.smooth.api.service.vo.SmoothServiceOrigin;
-import org.misty.smooth.api.service.vo.SmoothServiceRequest;
-import org.misty.smooth.api.service.vo.SmoothServiceResult;
+import org.misty.smooth.api.service.vo.SmoothServiceRequestOrigin;
+import org.misty.smooth.api.service.vo.SmoothServiceResponseResult;
 import org.misty.smooth.api.vo.SmoothServiceId;
 
 import java.util.Set;
@@ -15,11 +14,11 @@ public interface SmoothModuleSpace {
 
     Set<SmoothServiceId> listServices();
 
-    Future<SmoothServiceResult> invokeService(String serviceKey, SmoothServiceOrigin serviceOrigin)
+    Future<SmoothServiceResponseResult> invokeService(String serviceKey, SmoothServiceRequestOrigin requestOrigin)
             throws SmoothServiceNotFoundException;
 
-    void invokeService(String serviceKey, SmoothServiceOrigin serviceOrigin
-            , Consumer<SmoothServiceResult> resultProcessor, ExecutorService invokeExecutorService)
+    void invokeService(String serviceKey, SmoothServiceRequestOrigin requestOrigin
+            , Consumer<SmoothServiceResponseResult> resultProcessor, ExecutorService invokeExecutorService)
             throws SmoothServiceNotFoundException;
 
     void close();

@@ -2,7 +2,7 @@ package org.misty.smooth.api.service;
 
 import org.misty.smooth.api.context.SmoothContext;
 import org.misty.smooth.api.service.vo.SmoothServiceRequest;
-import org.misty.smooth.api.service.vo.SmoothServiceResult;
+import org.misty.smooth.api.service.vo.SmoothServiceResponseResult;
 
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
@@ -26,11 +26,11 @@ public class SmoothServiceInvoker {
         this.toString = String.format(STRING_FORMAT, moduleName, serviceKey);
     }
 
-    public Future<SmoothServiceResult> invoke(SmoothServiceRequest serviceRequest) {
+    public Future<SmoothServiceResponseResult> invoke(SmoothServiceRequest serviceRequest) {
         return this.smoothContext.invokeService(this.moduleName, this.serviceKey, serviceRequest);
     }
 
-    public void invoke(SmoothServiceRequest serviceRequest, Consumer<SmoothServiceResult> resultProcessor) {
+    public void invoke(SmoothServiceRequest serviceRequest, Consumer<SmoothServiceResponseResult> resultProcessor) {
         this.smoothContext.invokeService(this.moduleName, this.serviceKey, serviceRequest, resultProcessor);
     }
 

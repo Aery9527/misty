@@ -3,9 +3,9 @@ package org.misty.smooth.api.service.vo;
 import org.misty.smooth.api.vo.SmoothModuleId;
 import org.misty.smooth.api.vo.SmoothServiceId;
 
-public final class SmoothServiceResult {
+public final class SmoothServiceResponseResult {
 
-    public static final String STRING_FORMAT = SmoothServiceResult.class.getSimpleName() + "[by:%s:%s]";
+    public static final String STRING_FORMAT = SmoothServiceResponseResult.class.getSimpleName() + "[by:%s:%s]";
 
     private final SmoothModuleId serviceModule;
 
@@ -15,7 +15,7 @@ public final class SmoothServiceResult {
 
     private final String toString;
 
-    public SmoothServiceResult(SmoothModuleId moduleId, SmoothServiceId serviceId, SmoothServiceResponse response) {
+    public SmoothServiceResponseResult(SmoothModuleId moduleId, SmoothServiceId serviceId, SmoothServiceResponse response) {
         this.serviceModule = moduleId;
         this.serviceId = serviceId;
         this.response = response;

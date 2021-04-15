@@ -1,7 +1,6 @@
 package org.misty.smooth.api.service;
 
-import org.misty.smooth.api.service.vo.SmoothServiceOrigin;
-import org.misty.smooth.api.service.vo.SmoothServiceRequest;
+import org.misty.smooth.api.service.vo.SmoothServiceRequestOrigin;
 import org.misty.smooth.api.service.vo.SmoothServiceResponse;
 
 public interface SmoothService {
@@ -10,6 +9,6 @@ public interface SmoothService {
 
     String getServiceName();
 
-    SmoothServiceResponse serve(SmoothServiceOrigin serviceOrigin);
+    SmoothServiceResponse serve(SmoothServiceRequestOrigin requestOrigin);
 
 }

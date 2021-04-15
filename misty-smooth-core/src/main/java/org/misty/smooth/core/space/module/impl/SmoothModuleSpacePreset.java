@@ -3,20 +3,16 @@ package org.misty.smooth.core.space.module.impl;
 import org.misty.smooth.api.error.SmoothServiceNotFoundException;
 import org.misty.smooth.api.lifecycle.SmoothLifecycle;
 import org.misty.smooth.api.service.SmoothService;
-import org.misty.smooth.api.service.vo.SmoothServiceOrigin;
-import org.misty.smooth.api.service.vo.SmoothServiceRequest;
+import org.misty.smooth.api.service.vo.SmoothServiceRequestOrigin;
 import org.misty.smooth.api.service.vo.SmoothServiceResponse;
-import org.misty.smooth.api.service.vo.SmoothServiceResult;
+import org.misty.smooth.api.service.vo.SmoothServiceResponseResult;
 import org.misty.smooth.api.vo.SmoothModuleId;
 import org.misty.smooth.api.vo.SmoothServiceId;
 import org.misty.smooth.core.space.module.api.SmoothModuleSpace;
-import org.misty.util.ex.ReentrantLockEx;
 
-import java.net.URLClassLoader;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
@@ -41,7 +37,7 @@ public class SmoothModuleSpacePreset implements SmoothModuleSpace {
     }
 
     @Override
-    public Future<SmoothServiceResult> invokeService(String serviceKey, SmoothServiceOrigin serviceOrigin)
+    public Future<SmoothServiceResponseResult> invokeService(String serviceKey, SmoothServiceRequestOrigin requestOrigin)
             throws SmoothServiceNotFoundException {
         SmoothServiceId serviceId = this.serviceKeyMapId.get(serviceKey);
         if (serviceId == null) {
@@ -51,14 +47,14 @@ public class SmoothModuleSpacePreset implements SmoothModuleSpace {
         SmoothService smoothService = this.serviceIdMapService.get(serviceId);
 
         return this.moduleExecutorService.submit(() -> {
-            SmoothServiceResponse response = smoothService.serve(serviceOrigin);
-            return new SmoothServiceResult(this.moduleId, serviceId, response);
+            SmoothServiceResponse response = smoothService.serve(requestOrigin);
+            return new SmoothServiceResponseResult(this.moduleId, serviceId, response);
         });
     }
 
     @Override
-    public void invokeService(String serviceKey, SmoothServiceOrigin serviceOrigin
-            , Consumer<SmoothServiceResult> resultProcessor, ExecutorService invokeExecutorService)
+    public void invokeService(String serviceKey, SmoothServiceRequestOrigin requestOrigin
+            , Consumer<SmoothServiceResponseResult> resultProcessor, ExecutorService invokeExecutorService)
             throws SmoothServiceNotFoundException {
         SmoothServiceId serviceId = this.serviceKeyMapId.get(serviceKey);
         if (serviceId == null) {
@@ -68,10 +64,10 @@ public class SmoothModuleSpacePreset implements SmoothModuleSpace {
         SmoothService smoothService = this.serviceIdMapService.get(serviceId);
 
         this.moduleExecutorService.execute(() -> {
-            SmoothServiceResponse response = smoothService.serve(serviceOrigin);
+            SmoothServiceResponse response = smoothService.serve(requestOrigin);
 
             invokeExecutorService.execute(() -> {
-                SmoothServiceResult result = new SmoothServiceResult(this.moduleId, serviceId, response);
+                SmoothServiceResponseResult result = new SmoothServiceResponseResult(this.moduleId, serviceId, response);
                 resultProcessor.accept(result);
             });
         });

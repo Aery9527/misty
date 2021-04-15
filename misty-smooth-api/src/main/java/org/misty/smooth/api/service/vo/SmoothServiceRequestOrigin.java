@@ -2,9 +2,9 @@ package org.misty.smooth.api.service.vo;
 
 import org.misty.smooth.api.vo.SmoothModuleId;
 
-public final class SmoothServiceOrigin {
+public final class SmoothServiceRequestOrigin {
 
-    public static final String STRING_FORMAT = SmoothServiceOrigin.class.getSimpleName() + "[from:%s]";
+    public static final String STRING_FORMAT = SmoothServiceRequestOrigin.class.getSimpleName() + "[from:%s]";
 
     private final SmoothModuleId invokedModule;
 
@@ -12,7 +12,7 @@ public final class SmoothServiceOrigin {
 
     private final String toString;
 
-    public SmoothServiceOrigin(SmoothModuleId invokedModule, SmoothServiceRequest request) {
+    public SmoothServiceRequestOrigin(SmoothModuleId invokedModule, SmoothServiceRequest request) {
         this.invokedModule = invokedModule;
         this.request = request;
         this.toString = String.format(STRING_FORMAT, this.invokedModule.toString());
