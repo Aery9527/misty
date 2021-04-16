@@ -32,7 +32,7 @@ public class Examiner {
         requireNullOrEmpty(term, arg, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> void requireNullOrEmpty(
+    public static <ThrowableType extends Throwable> void requireNullOrEmpty(
             String term, Object arg, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         requireNullOrEmpty(term, arg, (t, r) -> {
@@ -57,7 +57,7 @@ public class Examiner {
     }
 
     @SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "OptionalGetWithoutIsPresent"})
-    public static <ThrowableType extends MistyException> void requireNullOrEmpty(
+    public static <ThrowableType extends Throwable> void requireNullOrEmpty(
             String term, Optional<Object> arg, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         requireNullOrEmpty(term, arg, (t, a) -> {
@@ -81,7 +81,7 @@ public class Examiner {
         return refuseNullAndEmpty(term, arg, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ArgType, ThrowableType extends MistyException> ArgType refuseNullAndEmpty(
+    public static <ArgType, ThrowableType extends Throwable> ArgType refuseNullAndEmpty(
             String term, ArgType arg, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         return refuseNullAndEmpty(term, arg, (t, a) -> {
@@ -107,7 +107,7 @@ public class Examiner {
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    public static <ArgType, ThrowableType extends MistyException> ArgType refuseNullAndEmpty(
+    public static <ArgType, ThrowableType extends Throwable> ArgType refuseNullAndEmpty(
             String term, Optional<ArgType> arg, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         return refuseNullAndEmpty(term, arg, (t, a) -> {
@@ -166,7 +166,7 @@ public class Examiner {
         return requireMoreInclude(term, arg, border, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> short requireMoreInclude(
+    public static <ThrowableType extends Throwable> short requireMoreInclude(
             String term, short arg, short border, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("term", term);
@@ -193,7 +193,7 @@ public class Examiner {
         return requireMoreInclude(term, arg, border, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> int requireMoreInclude(
+    public static <ThrowableType extends Throwable> int requireMoreInclude(
             String term, int arg, int border, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("term", term);
@@ -220,7 +220,7 @@ public class Examiner {
         return requireMoreInclude(term, arg, border, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> long requireMoreInclude(
+    public static <ThrowableType extends Throwable> long requireMoreInclude(
             String term, long arg, long border, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("term", term);
@@ -247,7 +247,7 @@ public class Examiner {
         return requireMoreInclude(term, arg, border, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> float requireMoreInclude(
+    public static <ThrowableType extends Throwable> float requireMoreInclude(
             String term, float arg, float border, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("term", term);
@@ -274,7 +274,7 @@ public class Examiner {
         return requireMoreInclude(term, arg, border, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> double requireMoreInclude(
+    public static <ThrowableType extends Throwable> double requireMoreInclude(
             String term, double arg, double border, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("term", term);
@@ -301,7 +301,7 @@ public class Examiner {
         return requireMoreInclude(term, arg, border, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> char requireMoreInclude(
+    public static <ThrowableType extends Throwable> char requireMoreInclude(
             String term, char arg, char border, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("term", term);
@@ -328,7 +328,7 @@ public class Examiner {
         return requireMoreInclude(term, arg, border, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> byte requireMoreInclude(
+    public static <ThrowableType extends Throwable> byte requireMoreInclude(
             String term, byte arg, byte border, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("term", term);
@@ -355,7 +355,7 @@ public class Examiner {
         return requireMoreInclude(term, arg, border, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ArgType extends Number, ThrowableType extends MistyException> ArgType requireMoreInclude(
+    public static <ArgType extends Number, ThrowableType extends Throwable> ArgType requireMoreInclude(
             String term, ArgType arg, ArgType border, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("term", term);
@@ -391,7 +391,7 @@ public class Examiner {
         return requireMoreExclude(term, arg, border, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> short requireMoreExclude(
+    public static <ThrowableType extends Throwable> short requireMoreExclude(
             String term, short arg, short border, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("term", term);
@@ -418,7 +418,7 @@ public class Examiner {
         return requireMoreExclude(term, arg, border, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> int requireMoreExclude(
+    public static <ThrowableType extends Throwable> int requireMoreExclude(
             String term, int arg, int border, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("term", term);
@@ -445,7 +445,7 @@ public class Examiner {
         return requireMoreExclude(term, arg, border, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> long requireMoreExclude(
+    public static <ThrowableType extends Throwable> long requireMoreExclude(
             String term, long arg, long border, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("term", term);
@@ -472,7 +472,7 @@ public class Examiner {
         return requireMoreExclude(term, arg, border, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> float requireMoreExclude(
+    public static <ThrowableType extends Throwable> float requireMoreExclude(
             String term, float arg, float border, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("term", term);
@@ -499,7 +499,7 @@ public class Examiner {
         return requireMoreExclude(term, arg, border, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> double requireMoreExclude(
+    public static <ThrowableType extends Throwable> double requireMoreExclude(
             String term, double arg, double border, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("term", term);
@@ -526,7 +526,7 @@ public class Examiner {
         return requireMoreExclude(term, arg, border, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> char requireMoreExclude(
+    public static <ThrowableType extends Throwable> char requireMoreExclude(
             String term, char arg, char border, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("term", term);
@@ -553,7 +553,7 @@ public class Examiner {
         return requireMoreExclude(term, arg, border, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> byte requireMoreExclude(
+    public static <ThrowableType extends Throwable> byte requireMoreExclude(
             String term, byte arg, byte border, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("term", term);
@@ -580,7 +580,7 @@ public class Examiner {
         return requireMoreExclude(term, arg, border, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ArgType extends Number, ThrowableType extends MistyException> ArgType requireMoreExclude(
+    public static <ArgType extends Number, ThrowableType extends Throwable> ArgType requireMoreExclude(
             String term, ArgType arg, ArgType border, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("term", term);
@@ -616,7 +616,7 @@ public class Examiner {
         return requireLessInclude(term, arg, border, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> short requireLessInclude(
+    public static <ThrowableType extends Throwable> short requireLessInclude(
             String term, short arg, short border, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("term", term);
@@ -643,7 +643,7 @@ public class Examiner {
         return requireLessInclude(term, arg, border, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> int requireLessInclude(
+    public static <ThrowableType extends Throwable> int requireLessInclude(
             String term, int arg, int border, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("term", term);
@@ -670,7 +670,7 @@ public class Examiner {
         return requireLessInclude(term, arg, border, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> long requireLessInclude(
+    public static <ThrowableType extends Throwable> long requireLessInclude(
             String term, long arg, long border, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("term", term);
@@ -697,7 +697,7 @@ public class Examiner {
         return requireLessInclude(term, arg, border, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> float requireLessInclude(
+    public static <ThrowableType extends Throwable> float requireLessInclude(
             String term, float arg, float border, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("term", term);
@@ -724,7 +724,7 @@ public class Examiner {
         return requireLessInclude(term, arg, border, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> double requireLessInclude(
+    public static <ThrowableType extends Throwable> double requireLessInclude(
             String term, double arg, double border, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("term", term);
@@ -751,7 +751,7 @@ public class Examiner {
         return requireLessInclude(term, arg, border, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> char requireLessInclude(
+    public static <ThrowableType extends Throwable> char requireLessInclude(
             String term, char arg, char border, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("term", term);
@@ -778,7 +778,7 @@ public class Examiner {
         return requireLessInclude(term, arg, border, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> byte requireLessInclude(
+    public static <ThrowableType extends Throwable> byte requireLessInclude(
             String term, byte arg, byte border, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("term", term);
@@ -805,7 +805,7 @@ public class Examiner {
         return requireLessInclude(term, arg, border, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ArgType extends Number, ThrowableType extends MistyException> ArgType requireLessInclude(
+    public static <ArgType extends Number, ThrowableType extends Throwable> ArgType requireLessInclude(
             String term, ArgType arg, ArgType border, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("term", term);
@@ -841,7 +841,7 @@ public class Examiner {
         return requireLessExclude(term, arg, border, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> short requireLessExclude(
+    public static <ThrowableType extends Throwable> short requireLessExclude(
             String term, short arg, short border, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("term", term);
@@ -868,7 +868,7 @@ public class Examiner {
         return requireLessExclude(term, arg, border, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> int requireLessExclude(
+    public static <ThrowableType extends Throwable> int requireLessExclude(
             String term, int arg, int border, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("term", term);
@@ -895,7 +895,7 @@ public class Examiner {
         return requireLessExclude(term, arg, border, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> long requireLessExclude(
+    public static <ThrowableType extends Throwable> long requireLessExclude(
             String term, long arg, long border, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("term", term);
@@ -922,7 +922,7 @@ public class Examiner {
         return requireLessExclude(term, arg, border, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> float requireLessExclude(
+    public static <ThrowableType extends Throwable> float requireLessExclude(
             String term, float arg, float border, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("term", term);
@@ -949,7 +949,7 @@ public class Examiner {
         return requireLessExclude(term, arg, border, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> double requireLessExclude(
+    public static <ThrowableType extends Throwable> double requireLessExclude(
             String term, double arg, double border, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("term", term);
@@ -976,7 +976,7 @@ public class Examiner {
         return requireLessExclude(term, arg, border, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> char requireLessExclude(
+    public static <ThrowableType extends Throwable> char requireLessExclude(
             String term, char arg, char border, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("term", term);
@@ -1003,7 +1003,7 @@ public class Examiner {
         return requireLessExclude(term, arg, border, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> byte requireLessExclude(
+    public static <ThrowableType extends Throwable> byte requireLessExclude(
             String term, byte arg, byte border, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("term", term);
@@ -1030,7 +1030,7 @@ public class Examiner {
         return requireLessExclude(term, arg, border, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ArgType extends Number, ThrowableType extends MistyException> ArgType requireLessExclude(
+    public static <ArgType extends Number, ThrowableType extends Throwable> ArgType requireLessExclude(
             String term, ArgType arg, ArgType border, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("term", term);
@@ -1066,7 +1066,7 @@ public class Examiner {
         return requireNumber(value, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> BigDecimal requireNumber(
+    public static <ThrowableType extends Throwable> BigDecimal requireNumber(
             String value, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("errorDefinition", errorDefinition);
@@ -1095,7 +1095,7 @@ public class Examiner {
         return requireShort(value, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> short requireShort(
+    public static <ThrowableType extends Throwable> short requireShort(
             String value, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("errorDefinition", errorDefinition);
@@ -1110,9 +1110,6 @@ public class Examiner {
     public static <ThrowableType extends Throwable> short requireShort(
             String value, FiConsumerThrow1<String, ThrowableType> thrownAction
     ) throws ThrowableType {
-        refuseNullAndEmpty("value", value);
-        refuseNullAndEmpty("thrownAction", thrownAction);
-
         BigDecimal bigDecimal = requireNumber(value, thrownAction);
         SHORT_RANGE_EXAMINER.requireIncludeInclude(bigDecimal, (floor, ceiling) -> thrownAction.acceptOrHandle(value));
         return bigDecimal.shortValue();
@@ -1122,7 +1119,7 @@ public class Examiner {
         return requireInteger(value, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> int requireInteger(
+    public static <ThrowableType extends Throwable> int requireInteger(
             String value, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("errorDefinition", errorDefinition);
@@ -1137,9 +1134,6 @@ public class Examiner {
     public static <ThrowableType extends Throwable> int requireInteger(
             String value, FiConsumerThrow1<String, ThrowableType> thrownAction
     ) throws ThrowableType {
-        refuseNullAndEmpty("value", value);
-        refuseNullAndEmpty("thrownAction", thrownAction);
-
         BigDecimal bigDecimal = requireNumber(value, thrownAction);
         INTEGER_RANGE_EXAMINER.requireIncludeInclude(bigDecimal, (floor, ceiling) -> thrownAction.acceptOrHandle(value));
         return bigDecimal.intValue();
@@ -1149,7 +1143,7 @@ public class Examiner {
         return requireLong(value, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> long requireLong(
+    public static <ThrowableType extends Throwable> long requireLong(
             String value, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("errorDefinition", errorDefinition);
@@ -1164,9 +1158,6 @@ public class Examiner {
     public static <ThrowableType extends Throwable> long requireLong(
             String value, FiConsumerThrow1<String, ThrowableType> thrownAction
     ) throws ThrowableType {
-        refuseNullAndEmpty("value", value);
-        refuseNullAndEmpty("thrownAction", thrownAction);
-
         BigDecimal bigDecimal = requireNumber(value, thrownAction);
         LONG_RANGE_EXAMINER.requireIncludeInclude(bigDecimal, (floor, ceiling) -> thrownAction.acceptOrHandle(value));
         return bigDecimal.intValue();
@@ -1176,7 +1167,7 @@ public class Examiner {
         return requireFloat(value, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> float requireFloat(
+    public static <ThrowableType extends Throwable> float requireFloat(
             String value, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("errorDefinition", errorDefinition);
@@ -1191,9 +1182,6 @@ public class Examiner {
     public static <ThrowableType extends Throwable> float requireFloat(
             String value, FiConsumerThrow1<String, ThrowableType> thrownAction
     ) throws ThrowableType {
-        refuseNullAndEmpty("value", value);
-        refuseNullAndEmpty("thrownAction", thrownAction);
-
         BigDecimal bigDecimal = requireNumber(value, thrownAction);
         // XXX 由於浮點數的下限不定所以不曉得怎麼檢查, 就暫時先略過
         return bigDecimal.floatValue();
@@ -1203,7 +1191,7 @@ public class Examiner {
         return requireDouble(value, MistyError.ARGUMENT_ERROR);
     }
 
-    public static <ThrowableType extends MistyException> double requireDouble(
+    public static <ThrowableType extends Throwable> double requireDouble(
             String value, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         refuseNullAndEmpty("errorDefinition", errorDefinition);
@@ -1218,9 +1206,6 @@ public class Examiner {
     public static <ThrowableType extends Throwable> double requireDouble(
             String value, FiConsumerThrow1<String, ThrowableType> thrownAction
     ) throws ThrowableType {
-        refuseNullAndEmpty("value", value);
-        refuseNullAndEmpty("thrownAction", thrownAction);
-
         BigDecimal bigDecimal = requireNumber(value, thrownAction);
         // XXX 由於浮點數的下限不定所以不曉得怎麼檢查, 就暫時先略過
         return bigDecimal.doubleValue();

@@ -1,14 +1,12 @@
 package org.misty.util.error;
 
-public interface MistyErrorDefinition<ThrowableType extends MistyException> {
+public interface MistyErrorDefinition<ThrowableType extends Throwable> {
 
     String TYPE_CODE_FORMAT = "%s(%s)";
 
     String DESCRIPTION_FORMAT = TYPE_CODE_FORMAT + ":%s";
 
-    default String getType() {
-        return getClass().getSimpleName();
-    }
+    String getType();
 
     String getCode();
 
@@ -48,19 +46,11 @@ public interface MistyErrorDefinition<ThrowableType extends MistyException> {
                 getType().equals(med.getType());
     }
 
-    default ThrowableType thrown() throws ThrowableType {
-        throw new MistyException(this);
-    }
+    ThrowableType thrown() throws ThrowableType;
 
-    default ThrowableType thrown(String msg) throws ThrowableType {
-        throw new MistyException(this, msg);
-    }
+    ThrowableType thrown(String msg) throws ThrowableType;
 
-    default ThrowableType thrown(Throwable cause) throws ThrowableType {
-        throw new MistyException(this, cause);
-    }
+    ThrowableType thrown(Throwable cause) throws ThrowableType;
 
-    default ThrowableType thrown(String msg, Throwable cause) throws ThrowableType {
-        throw new MistyException(this, msg, cause);
-    }
+    ThrowableType thrown(String msg, Throwable cause) throws ThrowableType;
 }
