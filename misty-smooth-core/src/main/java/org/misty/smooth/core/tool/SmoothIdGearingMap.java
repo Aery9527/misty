@@ -45,6 +45,14 @@ public class SmoothIdGearingMap<Key2 extends Comparable<Key2>, Value> {
         Examiner.refuseNullAndEmpty("value", value);
 
         return this.lock.use(() -> {
+            boolean key1Exists = this.map1.containsKey(key1);
+            boolean key2Exists = this.map2.containsKey(key2);
+
+            boolean notGearing = key1Exists ^ key2Exists;
+            if (notGearing) {
+                // FIXME throw exception
+            }
+
             Key2 oldKey = this.map1.put(key1, key2);
             Value oldValue = this.map2.put(key2, value);
 

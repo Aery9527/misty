@@ -4,7 +4,7 @@ public interface MistyErrorDefinition {
 
     String TYPE_CODE_FORMAT = "%s(%s)";
 
-    String DESCRIPTION_FORMAT = "%s(%s-%s)";
+    String DESCRIPTION_FORMAT = TYPE_CODE_FORMAT + ":%s";
 
     String getType();
 

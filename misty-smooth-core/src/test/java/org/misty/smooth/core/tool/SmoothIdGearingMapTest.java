@@ -49,17 +49,22 @@ class SmoothIdGearingMapTest {
 
     @Test
     public void put$error() {
-        SmoothModuleId moduleId = new SmoothModuleId("a", "b", Instant.now());
+        SmoothModuleId moduleId1 = new SmoothModuleId("a", "v1", Instant.now());
+        SmoothModuleId moduleId2 = new SmoothModuleId("b", "v2", Instant.now());
+        SmoothModuleId moduleId3 = new SmoothModuleId("c", "v3", Instant.now());
 
-        Assertions.assertThatThrownBy(() -> this.gearingMap.put(null, moduleId, "9527"))
+        Assertions.assertThatThrownBy(() -> this.gearingMap.put(null, moduleId1, "9527"))
                 .isInstanceOf(MistyException.class)
                 .hasMessageContaining(ExaminerMessage.refuseNullAndEmpty("key1"));
-        Assertions.assertThatThrownBy(() -> this.gearingMap.put(moduleId.getModuleName(), null, "9527"))
+        Assertions.assertThatThrownBy(() -> this.gearingMap.put(moduleId1.getModuleName(), null, "9527"))
                 .isInstanceOf(MistyException.class)
                 .hasMessageContaining(ExaminerMessage.refuseNullAndEmpty("key2"));
-        Assertions.assertThatThrownBy(() -> this.gearingMap.put(moduleId.getModuleName(), moduleId, null))
+        Assertions.assertThatThrownBy(() -> this.gearingMap.put(moduleId1.getModuleName(), moduleId1, null))
                 .isInstanceOf(MistyException.class)
                 .hasMessageContaining(ExaminerMessage.refuseNullAndEmpty("value"));
+
+        this.gearingMap.put(moduleId1.getModuleName(), moduleId1, "123");
+        this.gearingMap.put(moduleId2.getModuleName(), moduleId1, "321");
 
         // TODO
     }

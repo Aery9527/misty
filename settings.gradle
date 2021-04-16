@@ -10,5 +10,5 @@ include 'misty-smooth-sole'
 include 'misty-smooth-user'
 include 'misty-smooth-user-module1'
 include 'misty-smooth-user-module2'
-include 'misty-ut-common'
+include 'misty-ut-common' // Util Test
 
