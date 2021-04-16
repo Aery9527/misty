@@ -10,8 +10,6 @@ public enum SmoothCoreError implements MistyErrorDefinition {
 
     ;
 
-    private final String type = getClass().getSimpleName();
-
     private final String code;
 
     SmoothCoreError(String code) {
@@ -19,12 +17,8 @@ public enum SmoothCoreError implements MistyErrorDefinition {
     }
 
     @Override
-    public String getType() {
-        return this.type;
-    }
-
-    @Override
     public String getCode() {
         return this.code;
     }
+
 }

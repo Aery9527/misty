@@ -97,6 +97,7 @@ public class Judge {
         return a == null || a.length == 0;
     }
 
+    @SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "OptionalAssignedToNull"})
     public static boolean isNullOrEmpty(Optional<?> o) {
         if (o == null) {
             return true;
@@ -162,6 +163,7 @@ public class Judge {
         return !isNullOrEmpty(a);
     }
 
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public static boolean notNullAndEmpty(Optional<?> o) {
         return !isNullOrEmpty(o);
     }

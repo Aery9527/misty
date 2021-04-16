@@ -1,21 +1,23 @@
 package org.misty.util.error;
 
-public interface MistyErrorDefinition {
+public interface MistyErrorDefinition<ThrowableType extends MistyException> {
 
     String TYPE_CODE_FORMAT = "%s(%s)";
 
     String DESCRIPTION_FORMAT = TYPE_CODE_FORMAT + ":%s";
 
-    String getType();
+    default String getType() {
+        return getClass().getSimpleName();
+    }
 
     String getCode();
 
-    default String getDescription() {
-        return String.format(DESCRIPTION_FORMAT, getType(), getCode(), toString());
-    }
-
     default String getTypeCode() {
         return String.format(TYPE_CODE_FORMAT, getType(), getCode());
+    }
+
+    default String getDescription() {
+        return String.format(DESCRIPTION_FORMAT, getType(), getCode(), toString());
     }
 
     default boolean isSame(Throwable t) {
@@ -23,13 +25,13 @@ public interface MistyErrorDefinition {
     }
 
     default boolean isSame(MistyException me) {
-        MistyErrorDefinition med = me.getErrorDefinition();
+        MistyErrorDefinition<?> med = me.getErrorDefinition();
         return isSame(med);
     }
 
-    default boolean isSame(MistyErrorDefinition med) {
+    default boolean isSame(MistyErrorDefinition<?> med) {
         return getClass().equals(med.getClass()) &&
-                getDescription().equals(med.getDescription());
+                getTypeCode().equals(med.getTypeCode());
     }
 
     default boolean isSameType(Throwable t) {
@@ -37,28 +39,28 @@ public interface MistyErrorDefinition {
     }
 
     default boolean isSameType(MistyException me) {
-        MistyErrorDefinition med = me.getErrorDefinition();
+        MistyErrorDefinition<?> med = me.getErrorDefinition();
         return isSameType(med);
     }
 
-    default boolean isSameType(MistyErrorDefinition med) {
+    default boolean isSameType(MistyErrorDefinition<?> med) {
         return getClass().equals(med.getClass()) &&
                 getType().equals(med.getType());
     }
 
-    default MistyException thrown() throws MistyException {
+    default ThrowableType thrown() throws ThrowableType {
         throw new MistyException(this);
     }
 
-    default MistyException thrown(String msg) throws MistyException {
+    default ThrowableType thrown(String msg) throws ThrowableType {
         throw new MistyException(this, msg);
     }
 
-    default MistyException thrown(Throwable cause) throws MistyException {
+    default ThrowableType thrown(Throwable cause) throws ThrowableType {
         throw new MistyException(this, cause);
     }
 
-    default MistyException thrown(String msg, Throwable cause) throws MistyException {
+    default ThrowableType thrown(String msg, Throwable cause) throws ThrowableType {
         throw new MistyException(this, msg, cause);
     }
 }
