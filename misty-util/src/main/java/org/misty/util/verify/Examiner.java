@@ -1,6 +1,6 @@
 package org.misty.util.verify;
 
-import org.misty.util.error.MistyError;
+import org.misty.util.error.MistyUtilError;
 import org.misty.util.error.MistyException;
 import org.misty.util.fi.FiBiConsumerThrow1;
 import org.misty.util.tool.StringTool;
@@ -21,7 +21,7 @@ public class Examiner {
     public static void requireNullOrEmpty(String term, Object arg) throws MistyException {
         requireNullOrEmpty(term, arg, (t, r) -> {
             String description = ExaminerMessage.requireNullOrEmpty(term, StringTool.toString(arg));
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -39,7 +39,7 @@ public class Examiner {
     public static void requireNullOrEmpty(String term, Optional<Object> arg) throws MistyException {
         requireNullOrEmpty(term, arg, (t, a) -> {
             String description = ExaminerMessage.requireNullOrEmpty(term, StringTool.toString(arg.get()));
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -57,7 +57,7 @@ public class Examiner {
     public static <ArgType> ArgType refuseNullAndEmpty(String term, ArgType arg) throws MistyException {
         return refuseNullAndEmpty(term, arg, (t, a) -> {
             String description = ExaminerMessage.refuseNullAndEmpty(term);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -76,7 +76,7 @@ public class Examiner {
     public static <ArgType> ArgType refuseNullAndEmpty(String term, Optional<ArgType> arg) throws MistyException {
         return refuseNullAndEmpty(term, arg, (t, a) -> {
             String description = ExaminerMessage.refuseNullAndEmpty(term);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -131,7 +131,7 @@ public class Examiner {
 
         return requireMoreInclude(arg, ceiling, (FiBiConsumerThrow1<Short, Short, MistyException>) (a, c) -> {
             String description = ExaminerMessage.requireMoreInclude(term, arg, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -147,7 +147,7 @@ public class Examiner {
 
         return requireMoreInclude(arg, ceiling, (FiBiConsumerThrow1<Integer, Integer, MistyException>) (a, c) -> {
             String description = ExaminerMessage.requireMoreInclude(term, arg, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -163,7 +163,7 @@ public class Examiner {
 
         return requireMoreInclude(arg, ceiling, (FiBiConsumerThrow1<Long, Long, MistyException>) (a, c) -> {
             String description = ExaminerMessage.requireMoreInclude(term, arg, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -179,7 +179,7 @@ public class Examiner {
 
         return requireMoreInclude(arg, ceiling, (FiBiConsumerThrow1<Float, Float, MistyException>) (a, c) -> {
             String description = ExaminerMessage.requireMoreInclude(term, arg, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -195,7 +195,7 @@ public class Examiner {
 
         return requireMoreInclude(arg, ceiling, (a, c) -> {
             String description = ExaminerMessage.requireMoreInclude(term, arg, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -211,7 +211,7 @@ public class Examiner {
 
         return requireMoreInclude(arg, ceiling, (FiBiConsumerThrow1<Character, Character, MistyException>) (a, c) -> {
             String description = ExaminerMessage.requireMoreInclude(term, arg, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -227,7 +227,7 @@ public class Examiner {
 
         return requireMoreInclude(arg, ceiling, (FiBiConsumerThrow1<Byte, Byte, MistyException>) (a, c) -> {
             String description = ExaminerMessage.requireMoreInclude(term, arg, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -243,7 +243,7 @@ public class Examiner {
 
         return requireMoreInclude(arg, ceiling, (a, c) -> {
             String description = ExaminerMessage.requireMoreInclude(term, arg, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -269,7 +269,7 @@ public class Examiner {
 
         return requireMoreExclude(arg, ceiling, (FiBiConsumerThrow1<Short, Short, MistyException>) (a, c) -> {
             String description = ExaminerMessage.requireMoreExclude(term, arg, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -285,7 +285,7 @@ public class Examiner {
 
         return requireMoreExclude(arg, ceiling, (FiBiConsumerThrow1<Integer, Integer, MistyException>) (a, c) -> {
             String description = ExaminerMessage.requireMoreExclude(term, arg, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -301,7 +301,7 @@ public class Examiner {
 
         return requireMoreExclude(arg, ceiling, (FiBiConsumerThrow1<Long, Long, MistyException>) (a, c) -> {
             String description = ExaminerMessage.requireMoreExclude(term, arg, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -317,7 +317,7 @@ public class Examiner {
 
         return requireMoreExclude(arg, ceiling, (FiBiConsumerThrow1<Float, Float, MistyException>) (a, c) -> {
             String description = ExaminerMessage.requireMoreExclude(term, arg, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -333,7 +333,7 @@ public class Examiner {
 
         return requireMoreExclude(arg, ceiling, (a, c) -> {
             String description = ExaminerMessage.requireMoreExclude(term, arg, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -349,7 +349,7 @@ public class Examiner {
 
         return requireMoreExclude(arg, ceiling, (FiBiConsumerThrow1<Character, Character, MistyException>) (a, c) -> {
             String description = ExaminerMessage.requireMoreExclude(term, arg, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -365,7 +365,7 @@ public class Examiner {
 
         return requireMoreExclude(arg, ceiling, (FiBiConsumerThrow1<Byte, Byte, MistyException>) (a, c) -> {
             String description = ExaminerMessage.requireMoreExclude(term, arg, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -381,7 +381,7 @@ public class Examiner {
 
         return requireMoreExclude(arg, ceiling, (a, c) -> {
             String description = ExaminerMessage.requireMoreExclude(term, arg, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -407,7 +407,7 @@ public class Examiner {
 
         return requireLessInclude(arg, ceiling, (FiBiConsumerThrow1<Short, Short, MistyException>) (a, c) -> {
             String description = ExaminerMessage.requireLessInclude(term, arg, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -423,7 +423,7 @@ public class Examiner {
 
         return requireLessInclude(arg, ceiling, (FiBiConsumerThrow1<Integer, Integer, MistyException>) (a, c) -> {
             String description = ExaminerMessage.requireLessInclude(term, arg, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -439,7 +439,7 @@ public class Examiner {
 
         return requireLessInclude(arg, ceiling, (FiBiConsumerThrow1<Long, Long, MistyException>) (a, c) -> {
             String description = ExaminerMessage.requireLessInclude(term, arg, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -455,7 +455,7 @@ public class Examiner {
 
         return requireLessInclude(arg, ceiling, (FiBiConsumerThrow1<Float, Float, MistyException>) (a, c) -> {
             String description = ExaminerMessage.requireLessInclude(term, arg, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -471,7 +471,7 @@ public class Examiner {
 
         return requireLessInclude(arg, ceiling, (a, c) -> {
             String description = ExaminerMessage.requireLessInclude(term, arg, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -487,7 +487,7 @@ public class Examiner {
 
         return requireLessInclude(arg, ceiling, (FiBiConsumerThrow1<Character, Character, MistyException>) (a, c) -> {
             String description = ExaminerMessage.requireLessInclude(term, arg, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -503,7 +503,7 @@ public class Examiner {
 
         return requireLessInclude(arg, ceiling, (FiBiConsumerThrow1<Byte, Byte, MistyException>) (a, c) -> {
             String description = ExaminerMessage.requireLessInclude(term, arg, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -519,7 +519,7 @@ public class Examiner {
 
         return requireLessInclude(arg, ceiling, (a, c) -> {
             String description = ExaminerMessage.requireLessInclude(term, arg, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -545,7 +545,7 @@ public class Examiner {
 
         return requireLessExclude(arg, ceiling, (FiBiConsumerThrow1<Short, Short, MistyException>) (a, c) -> {
             String description = ExaminerMessage.requireLessExclude(term, arg, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -561,7 +561,7 @@ public class Examiner {
 
         return requireLessExclude(arg, ceiling, (FiBiConsumerThrow1<Integer, Integer, MistyException>) (a, c) -> {
             String description = ExaminerMessage.requireLessExclude(term, arg, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -577,7 +577,7 @@ public class Examiner {
 
         return requireLessExclude(arg, ceiling, (FiBiConsumerThrow1<Long, Long, MistyException>) (a, c) -> {
             String description = ExaminerMessage.requireLessExclude(term, arg, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -593,7 +593,7 @@ public class Examiner {
 
         return requireLessExclude(arg, ceiling, (FiBiConsumerThrow1<Float, Float, MistyException>) (a, c) -> {
             String description = ExaminerMessage.requireLessExclude(term, arg, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -609,7 +609,7 @@ public class Examiner {
 
         return requireLessExclude(arg, ceiling, (a, c) -> {
             String description = ExaminerMessage.requireLessExclude(term, arg, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -625,7 +625,7 @@ public class Examiner {
 
         return requireLessExclude(arg, ceiling, (FiBiConsumerThrow1<Character, Character, MistyException>) (a, c) -> {
             String description = ExaminerMessage.requireLessExclude(term, arg, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -641,7 +641,7 @@ public class Examiner {
 
         return requireLessExclude(arg, ceiling, (FiBiConsumerThrow1<Byte, Byte, MistyException>) (a, c) -> {
             String description = ExaminerMessage.requireLessExclude(term, arg, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -657,7 +657,7 @@ public class Examiner {
 
         return requireLessExclude(arg, ceiling, (a, c) -> {
             String description = ExaminerMessage.requireLessExclude(term, arg, ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -685,7 +685,7 @@ public class Examiner {
             return new BigDecimal(value);
         } catch (NumberFormatException e) {
             String description = ExaminerMessage.requireNumber("value", value);
-            throw MistyError.ARGUMENT_ERROR.thrown(description, e);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description, e);
         }
     }
 
@@ -693,7 +693,7 @@ public class Examiner {
         BigDecimal bigDecimal = requireNumber(value);
         SHORT_RANGE_EXAMINER.requireIncludeInclude(bigDecimal, (floor, ceiling) -> {
             String description = ExaminerMessage.requireShort("value", value);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
         return bigDecimal.shortValue();
     }
@@ -702,7 +702,7 @@ public class Examiner {
         BigDecimal bigDecimal = requireNumber(value);
         INTEGER_RANGE_EXAMINER.requireIncludeInclude(bigDecimal, (floor, ceiling) -> {
             String description = ExaminerMessage.requireInteger("value", value);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
         return bigDecimal.intValue();
     }
@@ -711,7 +711,7 @@ public class Examiner {
         BigDecimal bigDecimal = requireNumber(value);
         LONG_RANGE_EXAMINER.requireIncludeInclude(bigDecimal, (floor, ceiling) -> {
             String description = ExaminerMessage.requireLong("value", value);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
         return bigDecimal.longValue();
     }

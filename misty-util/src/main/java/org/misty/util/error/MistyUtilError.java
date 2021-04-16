@@ -1,6 +1,6 @@
 package org.misty.util.error;
 
-public enum MistyError implements MistyErrorDefinition {
+public enum MistyUtilError implements MistyErrorDefinition {
     UNKNOWN,
     UNHANDLED,
     ARGUMENT_ERROR;

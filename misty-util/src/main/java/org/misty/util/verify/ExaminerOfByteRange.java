@@ -1,6 +1,6 @@
 package org.misty.util.verify;
 
-import org.misty.util.error.MistyError;
+import org.misty.util.error.MistyUtilError;
 import org.misty.util.fi.FiBiConsumerThrow1;
 
 public class ExaminerOfByteRange {
@@ -21,7 +21,7 @@ public class ExaminerOfByteRange {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -39,7 +39,7 @@ public class ExaminerOfByteRange {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -57,7 +57,7 @@ public class ExaminerOfByteRange {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -75,7 +75,7 @@ public class ExaminerOfByteRange {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -94,7 +94,7 @@ public class ExaminerOfByteRange {
             String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -113,7 +113,7 @@ public class ExaminerOfByteRange {
             String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -132,7 +132,7 @@ public class ExaminerOfByteRange {
             String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -151,7 +151,7 @@ public class ExaminerOfByteRange {
             String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
         });
     }
 

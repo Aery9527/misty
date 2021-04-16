@@ -1,6 +1,6 @@
 package org.misty.util.tool;
 
-import org.misty.util.error.MistyError;
+import org.misty.util.error.MistyUtilError;
 import org.misty.util.verify.Examiner;
 
 import java.util.*;
@@ -203,7 +203,7 @@ public class ArgumentParser {
         Examiner.refuseNullAndEmpty("keyValuePairSeparator", keyValuePairSeparator);
 
         if ("-".equals(keyValuePairSeparator)) {
-            throw MistyError.ARGUMENT_ERROR.thrown(KEY_VALUE_PAIR_SEPARATOR_ERROR_MSG);
+            throw MistyUtilError.ARGUMENT_ERROR.thrown(KEY_VALUE_PAIR_SEPARATOR_ERROR_MSG);
         }
 
         this.keyValuePairSeparator = keyValuePairSeparator;

@@ -6,25 +6,20 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.misty.util.error.MistyError;
+import org.misty.util.error.MistyUtilError;
 import org.misty.util.error.MistyException;
 import org.misty.util.fi.FiBiConsumerThrow1;
-import org.misty.util.fi.FiConsumerThrow1;
 
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
-import java.util.function.BooleanSupplier;
-import java.util.function.Supplier;
-import java.util.stream.IntStream;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 class ExaminerTest {
 
-    public static final Condition<Throwable> CONDITION = new Condition<>(MistyError.ARGUMENT_ERROR::isSame,
-            "MistyErrorDefinition must be MistyError." + MistyError.ARGUMENT_ERROR);
+    public static final Condition<Throwable> CONDITION = new Condition<>(MistyUtilError.ARGUMENT_ERROR::isSame,
+            "MistyErrorDefinition must be MistyError." + MistyUtilError.ARGUMENT_ERROR);
 
     public static final ExamineIntervals.Floor FI = ExamineIntervals.Floor.INCLUDE; // fi = floor include
 
