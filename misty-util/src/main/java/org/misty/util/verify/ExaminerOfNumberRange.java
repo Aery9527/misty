@@ -1,6 +1,6 @@
 package org.misty.util.verify;
 
-import org.misty.util.error.MistyUtilError;
+import org.misty.util.error.MistyError;
 import org.misty.util.fi.FiBiConsumerThrow1;
 
 import java.math.BigDecimal;
@@ -26,7 +26,7 @@ public class ExaminerOfNumberRange {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
-            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
+            throw MistyError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -50,7 +50,7 @@ public class ExaminerOfNumberRange {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
-            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
+            throw MistyError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -74,7 +74,7 @@ public class ExaminerOfNumberRange {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
-            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
+            throw MistyError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -98,7 +98,7 @@ public class ExaminerOfNumberRange {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
-            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
+            throw MistyError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -122,7 +122,7 @@ public class ExaminerOfNumberRange {
             String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
-            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
+            throw MistyError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -146,7 +146,7 @@ public class ExaminerOfNumberRange {
             String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
-            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
+            throw MistyError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -170,7 +170,7 @@ public class ExaminerOfNumberRange {
             String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
-            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
+            throw MistyError.ARGUMENT_ERROR.thrown(description);
         });
     }
 
@@ -194,7 +194,7 @@ public class ExaminerOfNumberRange {
             String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
-            throw MistyUtilError.ARGUMENT_ERROR.thrown(description);
+            throw MistyError.ARGUMENT_ERROR.thrown(description);
         });
     }
 

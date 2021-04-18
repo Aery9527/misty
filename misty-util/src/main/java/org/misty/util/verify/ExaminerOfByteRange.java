@@ -20,7 +20,7 @@ public class ExaminerOfByteRange {
         return requireIncludeInclude(term, arg, MistyError.ARGUMENT_ERROR);
     }
 
-    public <ThrowableType extends Throwable> byte requireIncludeInclude(
+    public <ThrowableType extends Exception> byte requireIncludeInclude(
             String term, byte arg, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         Examiner.refuseNullAndEmpty("term", term);
@@ -51,7 +51,7 @@ public class ExaminerOfByteRange {
         return requireIncludeExclude(term, arg, MistyError.ARGUMENT_ERROR);
     }
 
-    public <ThrowableType extends Throwable> byte requireIncludeExclude(
+    public <ThrowableType extends Exception> byte requireIncludeExclude(
             String term, byte arg, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         Examiner.refuseNullAndEmpty("term", term);
@@ -82,7 +82,7 @@ public class ExaminerOfByteRange {
         return requireExcludeInclude(term, arg, MistyError.ARGUMENT_ERROR);
     }
 
-    public <ThrowableType extends Throwable> byte requireExcludeInclude(
+    public <ThrowableType extends Exception> byte requireExcludeInclude(
             String term, byte arg, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         Examiner.refuseNullAndEmpty("term", term);
@@ -113,7 +113,7 @@ public class ExaminerOfByteRange {
         return requireExcludeExclude(term, arg, MistyError.ARGUMENT_ERROR);
     }
 
-    public <ThrowableType extends Throwable> byte requireExcludeExclude(
+    public <ThrowableType extends Exception> byte requireExcludeExclude(
             String term, byte arg, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         Examiner.refuseNullAndEmpty("term", term);
@@ -145,7 +145,7 @@ public class ExaminerOfByteRange {
         return refuseIncludeInclude(term, arg, MistyError.ARGUMENT_ERROR);
     }
 
-    public <ThrowableType extends Throwable> byte refuseIncludeInclude(
+    public <ThrowableType extends Exception> byte refuseIncludeInclude(
             String term, byte arg, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         Examiner.refuseNullAndEmpty("term", term);
@@ -177,7 +177,7 @@ public class ExaminerOfByteRange {
         return refuseIncludeExclude(term, arg, MistyError.ARGUMENT_ERROR);
     }
 
-    public <ThrowableType extends Throwable> byte refuseIncludeExclude(
+    public <ThrowableType extends Exception> byte refuseIncludeExclude(
             String term, byte arg, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         Examiner.refuseNullAndEmpty("term", term);
@@ -209,7 +209,7 @@ public class ExaminerOfByteRange {
         return refuseExcludeInclude(term, arg, MistyError.ARGUMENT_ERROR);
     }
 
-    public <ThrowableType extends Throwable> byte refuseExcludeInclude(
+    public <ThrowableType extends Exception> byte refuseExcludeInclude(
             String term, byte arg, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         Examiner.refuseNullAndEmpty("term", term);
@@ -241,7 +241,7 @@ public class ExaminerOfByteRange {
         return refuseExcludeExclude(term, arg, MistyError.ARGUMENT_ERROR);
     }
 
-    public <ThrowableType extends Throwable> byte refuseExcludeExclude(
+    public <ThrowableType extends Exception> byte refuseExcludeExclude(
             String term, byte arg, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         Examiner.refuseNullAndEmpty("term", term);

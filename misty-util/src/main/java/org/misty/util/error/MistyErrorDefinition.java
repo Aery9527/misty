@@ -1,6 +1,6 @@
 package org.misty.util.error;
 
-public interface MistyErrorDefinition<ThrowableType extends Throwable> {
+public interface MistyErrorDefinition<ThrowableType extends Exception> {
 
     String TYPE_CODE_FORMAT = "%s(%s)";
 

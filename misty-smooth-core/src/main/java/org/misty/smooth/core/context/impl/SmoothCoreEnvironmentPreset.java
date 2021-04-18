@@ -1,7 +1,7 @@
 package org.misty.smooth.core.context.impl;
 
 import org.misty.smooth.core.context.api.SmoothCoreEnvironment;
-import org.misty.util.error.MistyUtilError;
+import org.misty.util.error.MistyError;
 import org.misty.util.error.MistyException;
 import org.misty.util.fi.FiBiConsumerThrow1;
 import org.misty.util.tool.ArgumentParser;

@@ -3,7 +3,7 @@ package org.misty.util.fi;
 @FunctionalInterface
 public interface FiConsumerThrow1<ArgType, T1 extends Throwable> extends FI {
 
-    void acceptOrThrow(ArgType arg) throws Exception, Throwable;
+    void acceptOrThrow(ArgType arg) throws Exception;
 
     default void acceptOrHandle(ArgType arg) throws T1 {
         FI.wrap(() -> acceptOrThrow(arg));
