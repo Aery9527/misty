@@ -22,7 +22,7 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
     private final Map<String, String> arguments = new HashMap<>();
 
     private final FiBiConsumerThrow1<String, Collection<String>, MistyException> elementErrorThrowAction = (term, arg) -> {
-        throw MistyUtilError.ARGUMENT_ERROR.thrown(String.format(ELEMENT_ERROR_THROW_ACTION_FORMAT, term, arg));
+        throw MistyError.ARGUMENT_ERROR.thrown(String.format(ELEMENT_ERROR_THROW_ACTION_FORMAT, term, arg));
     };
 
     @Override
@@ -222,7 +222,7 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
 
         args.forEach((k, v) -> {
             if (Judge.isNullOrEmpty(k) || Judge.isNullOrEmpty(v)) {
-                throw MistyUtilError.ARGUMENT_ERROR.thrown(String.format(ADD_ARGUMENTS_ERROR_THROW_ACTION_FORMAT, k, v));
+                throw MistyError.ARGUMENT_ERROR.thrown(String.format(ADD_ARGUMENTS_ERROR_THROW_ACTION_FORMAT, k, v));
             } else {
                 Optional<String> oldValue = addArgument(k, v);
                 oldValues.put(k, oldValue);

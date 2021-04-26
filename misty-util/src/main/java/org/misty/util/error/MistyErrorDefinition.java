@@ -1,21 +1,23 @@
 package org.misty.util.error;
 
-public interface MistyErrorDefinition<ThrowableType extends Exception> {
+public interface MistyErrorDefinition<ExceptionType extends Exception> {
 
-    String TYPE_CODE_FORMAT = "%s(%s)";
+    class Format {
+        public static String TYPE_CODE = "%s(%s)";
 
-    String DESCRIPTION_FORMAT = TYPE_CODE_FORMAT + "(%s)";
+        public static String DESCRIPTION = TYPE_CODE + "(%s)";
+    }
 
     String getType();
 
     String getCode();
 
     default String getTypeCode() {
-        return String.format(TYPE_CODE_FORMAT, getType(), getCode());
+        return String.format(Format.TYPE_CODE, getType(), getCode());
     }
 
     default String getDescription() {
-        return String.format(DESCRIPTION_FORMAT, getType(), getCode(), toString());
+        return String.format(Format.DESCRIPTION, getType(), getCode(), this);
     }
 
     default boolean isSame(Throwable t) {
@@ -46,11 +48,11 @@ public interface MistyErrorDefinition<ThrowableType extends Exception> {
                 getType().equals(med.getType());
     }
 
-    ThrowableType thrown() throws ThrowableType;
+    ExceptionType thrown() throws ExceptionType;
 
-    ThrowableType thrown(String msg) throws ThrowableType;
+    ExceptionType thrown(String msg) throws ExceptionType;
 
-    ThrowableType thrown(Throwable cause) throws ThrowableType;
+    ExceptionType thrown(Throwable cause) throws ExceptionType;
 
-    ThrowableType thrown(String msg, Throwable cause) throws ThrowableType;
+    ExceptionType thrown(String msg, Throwable cause) throws ExceptionType;
 }

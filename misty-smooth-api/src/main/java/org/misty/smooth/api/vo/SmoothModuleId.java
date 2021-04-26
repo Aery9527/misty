@@ -2,9 +2,12 @@ package org.misty.smooth.api.vo;
 
 import java.time.Instant;
 
-public final class SmoothModuleId implements Comparable<SmoothModuleId> {
+public final class SmoothModuleId implements SmoothId<SmoothModuleId> {
 
-    public static final String STRING_FORMAT = "SmoothModule(%s)(%s)";
+    public static class Format {
+        public static final String DESCRIPTION = "SmoothModule(%s)(%s)";
+        public static final String DESCRIPTION_WITH_LAUNCH_TIME = DESCRIPTION + "(%s)";
+    }
 
     private final String moduleName;
 
@@ -12,33 +15,36 @@ public final class SmoothModuleId implements Comparable<SmoothModuleId> {
 
     private final Instant launchTime;
 
-    private final String toString;
+    private final String description;
+
+    private String descriptionWithLaunchTime;
 
     public SmoothModuleId(String moduleName, String moduleVersion, Instant launchTime) {
         this.moduleName = moduleName;
         this.moduleVersion = moduleVersion;
         this.launchTime = launchTime;
-        this.toString = String.format(STRING_FORMAT, this.moduleName, this.moduleVersion);
+        this.description = String.format(Format.DESCRIPTION, this.moduleName, this.moduleVersion);
     }
 
-    public String toStringWithLaunchTime() {
-        return this.toString + "(" + this.launchTime + ")";
+    @Override
+    public String getTypeKey() {
+        return this.moduleName;
     }
 
     @Override
     public String toString() {
-        return this.toString;
+        return this.description;
     }
 
     @Override
     public int hashCode() {
-        return this.toString.hashCode();
+        return this.description.hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof SmoothModuleId) {
-            return ((SmoothModuleId) obj).toString.equals(this.toString);
+            return ((SmoothModuleId) obj).description.equals(this.description);
         } else {
             return false;
         }
@@ -46,7 +52,18 @@ public final class SmoothModuleId implements Comparable<SmoothModuleId> {
 
     @Override
     public int compareTo(SmoothModuleId smoothModuleId) {
-        return this.toString.compareTo(smoothModuleId.toString);
+        String self = toString();
+        String comer = smoothModuleId.toString();
+        return self.compareTo(comer);
+    }
+
+    public String toStringWithLaunchTime() {
+        if (this.descriptionWithLaunchTime == null) {
+            this.descriptionWithLaunchTime = String.format(Format.DESCRIPTION_WITH_LAUNCH_TIME,
+                    this.moduleName, this.moduleVersion, this.launchTime);
+        }
+
+        return this.descriptionWithLaunchTime;
     }
 
     public String getModuleName() {

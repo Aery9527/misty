@@ -12,8 +12,6 @@ import org.misty.util.verify.Examiner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -70,7 +68,7 @@ public class SmoothCoreContextBuilder {
         Examiner.refuseNullAndEmpty("name", this.name);
         Examiner.refuseNullAndEmpty("version", this.version);
 
-        SmoothCoreContextPreset context = new SmoothCoreContextPreset(this.name, this.version);
+        SmoothCoreContextPreset context = supplySmoothCoreContextPreset();
 
         SmoothCoreEnvironment environment = setupEnvironment(context);
         ExecutorService executorService = setupExecutorService(context, environment);
@@ -82,6 +80,10 @@ public class SmoothCoreContextBuilder {
     }
 
     //
+
+    protected SmoothCoreContextPreset supplySmoothCoreContextPreset() {
+        return new SmoothCoreContextPreset(this.name, this.version);
+    }
 
     protected SmoothCoreEnvironment setupEnvironment(SmoothCoreContextPreset context) {
         SmoothCoreEnvironment usedEnvironment = this.coreEnvironment;

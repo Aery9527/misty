@@ -9,10 +9,9 @@ import org.misty.smooth.api.service.vo.SmoothServiceResponseResult;
 import org.misty.smooth.api.vo.SmoothModuleId;
 import org.misty.smooth.api.vo.SmoothServiceId;
 import org.misty.smooth.core.space.module.api.SmoothModuleSpace;
-import org.misty.smooth.core.tool.SmoothIdGearingMap;
+import org.misty.smooth.core.tool.SmoothIdLinkageMap;
 
 import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -28,11 +27,11 @@ public class SmoothModuleSpacePreset implements SmoothModuleSpace {
 
     private ExecutorService moduleExecutorService;
 
-    private SmoothIdGearingMap<SmoothServiceId, SmoothService> serviceGearingMap;
+    private SmoothIdLinkageMap<SmoothServiceId, SmoothService> serviceGearingMap;
 
     @Override
     public Set<SmoothServiceId> listServices() {
-        return Collections.unmodifiableSet(this.serviceGearingMap.listKey2());
+        return Collections.unmodifiableSet(this.serviceGearingMap.listKey());
     }
 
     @Override
@@ -70,7 +69,7 @@ public class SmoothModuleSpacePreset implements SmoothModuleSpace {
     }
 
     public SmoothServiceId getServiceId(String serviceKey) {
-        SmoothServiceId serviceId = this.serviceGearingMap.getKey2(serviceKey);
+        SmoothServiceId serviceId = this.serviceGearingMap.getKey(serviceKey);
         if (serviceId == null) {
             throw new SmoothServiceNotFoundException(this.moduleId + ":" + serviceKey);
         } else {
