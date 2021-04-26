@@ -20,13 +20,14 @@ public class ExaminerOfByteRange {
         return requireIncludeInclude(term, arg, MistyError.ARGUMENT_ERROR);
     }
 
+    @SuppressWarnings("DuplicatedCode")
     public <ThrowableType extends Exception> byte requireIncludeInclude(
             String term, byte arg, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         Examiner.refuseNullAndEmpty("term", term);
         Examiner.refuseNullAndEmpty("errorDefinition", errorDefinition);
 
-        return requireIncludeInclude(arg, (floor, ceiling) -> {
+        return requireIncludeInclude(arg, (FiBiConsumerThrow1<Byte, Byte, ThrowableType>) (floor, ceiling) -> {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
@@ -51,13 +52,14 @@ public class ExaminerOfByteRange {
         return requireIncludeExclude(term, arg, MistyError.ARGUMENT_ERROR);
     }
 
+    @SuppressWarnings("DuplicatedCode")
     public <ThrowableType extends Exception> byte requireIncludeExclude(
             String term, byte arg, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         Examiner.refuseNullAndEmpty("term", term);
         Examiner.refuseNullAndEmpty("errorDefinition", errorDefinition);
 
-        return requireIncludeExclude(arg, (floor, ceiling) -> {
+        return requireIncludeExclude(arg, (FiBiConsumerThrow1<Byte, Byte, ThrowableType>) (floor, ceiling) -> {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
@@ -78,17 +80,18 @@ public class ExaminerOfByteRange {
 
     //
 
-    public byte requireExcludeInclude(String term, byte arg) {
+    public byte requireExcludeInclude(String term, byte arg) throws MistyException {
         return requireExcludeInclude(term, arg, MistyError.ARGUMENT_ERROR);
     }
 
+    @SuppressWarnings("DuplicatedCode")
     public <ThrowableType extends Exception> byte requireExcludeInclude(
             String term, byte arg, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         Examiner.refuseNullAndEmpty("term", term);
         Examiner.refuseNullAndEmpty("errorDefinition", errorDefinition);
 
-        return requireExcludeInclude(arg, (floor, ceiling) -> {
+        return requireExcludeInclude(arg, (FiBiConsumerThrow1<Byte, Byte, ThrowableType>) (floor, ceiling) -> {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
@@ -109,17 +112,18 @@ public class ExaminerOfByteRange {
 
     //
 
-    public byte requireExcludeExclude(String term, byte arg) {
+    public byte requireExcludeExclude(String term, byte arg) throws MistyException {
         return requireExcludeExclude(term, arg, MistyError.ARGUMENT_ERROR);
     }
 
+    @SuppressWarnings("DuplicatedCode")
     public <ThrowableType extends Exception> byte requireExcludeExclude(
             String term, byte arg, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         Examiner.refuseNullAndEmpty("term", term);
         Examiner.refuseNullAndEmpty("errorDefinition", errorDefinition);
 
-        return requireExcludeExclude(arg, (floor, ceiling) -> {
+        return requireExcludeExclude(arg, (FiBiConsumerThrow1<Byte, Byte, ThrowableType>) (floor, ceiling) -> {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
@@ -141,17 +145,18 @@ public class ExaminerOfByteRange {
 
     //
 
-    public byte refuseIncludeInclude(String term, byte arg) {
+    public byte refuseIncludeInclude(String term, byte arg) throws MistyException {
         return refuseIncludeInclude(term, arg, MistyError.ARGUMENT_ERROR);
     }
 
+    @SuppressWarnings("DuplicatedCode")
     public <ThrowableType extends Exception> byte refuseIncludeInclude(
             String term, byte arg, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         Examiner.refuseNullAndEmpty("term", term);
         Examiner.refuseNullAndEmpty("errorDefinition", errorDefinition);
 
-        return refuseIncludeInclude(arg, (floor, ceiling) -> {
+        return refuseIncludeInclude(arg, (FiBiConsumerThrow1<Byte, Byte, ThrowableType>) (floor, ceiling) -> {
             String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
@@ -173,17 +178,18 @@ public class ExaminerOfByteRange {
 
     //
 
-    public byte refuseIncludeExclude(String term, byte arg) {
+    public byte refuseIncludeExclude(String term, byte arg) throws MistyException {
         return refuseIncludeExclude(term, arg, MistyError.ARGUMENT_ERROR);
     }
 
+    @SuppressWarnings("DuplicatedCode")
     public <ThrowableType extends Exception> byte refuseIncludeExclude(
             String term, byte arg, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         Examiner.refuseNullAndEmpty("term", term);
         Examiner.refuseNullAndEmpty("errorDefinition", errorDefinition);
 
-        return refuseIncludeExclude(arg, (floor, ceiling) -> {
+        return refuseIncludeExclude(arg, (FiBiConsumerThrow1<Byte, Byte, ThrowableType>) (floor, ceiling) -> {
             String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
@@ -205,17 +211,18 @@ public class ExaminerOfByteRange {
 
     //
 
-    public byte refuseExcludeInclude(String term, byte arg) {
+    public byte refuseExcludeInclude(String term, byte arg) throws MistyException {
         return refuseExcludeInclude(term, arg, MistyError.ARGUMENT_ERROR);
     }
 
+    @SuppressWarnings("DuplicatedCode")
     public <ThrowableType extends Exception> byte refuseExcludeInclude(
             String term, byte arg, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         Examiner.refuseNullAndEmpty("term", term);
         Examiner.refuseNullAndEmpty("errorDefinition", errorDefinition);
 
-        return refuseExcludeInclude(arg, (floor, ceiling) -> {
+        return refuseExcludeInclude(arg, (FiBiConsumerThrow1<Byte, Byte, ThrowableType>) (floor, ceiling) -> {
             String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
@@ -237,17 +244,18 @@ public class ExaminerOfByteRange {
 
     //
 
-    public byte refuseExcludeExclude(String term, byte arg) {
+    public byte refuseExcludeExclude(String term, byte arg) throws MistyException {
         return refuseExcludeExclude(term, arg, MistyError.ARGUMENT_ERROR);
     }
 
+    @SuppressWarnings("DuplicatedCode")
     public <ThrowableType extends Exception> byte refuseExcludeExclude(
             String term, byte arg, MistyErrorDefinition<ThrowableType> errorDefinition
     ) throws ThrowableType {
         Examiner.refuseNullAndEmpty("term", term);
         Examiner.refuseNullAndEmpty("errorDefinition", errorDefinition);
 
-        return refuseExcludeExclude(arg, (floor, ceiling) -> {
+        return refuseExcludeExclude(arg, (FiBiConsumerThrow1<Byte, Byte, ThrowableType>) (floor, ceiling) -> {
             String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);

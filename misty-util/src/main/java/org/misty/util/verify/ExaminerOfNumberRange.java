@@ -1,6 +1,7 @@
 package org.misty.util.verify;
 
 import org.misty.util.error.MistyError;
+import org.misty.util.error.MistyErrorDefinition;
 import org.misty.util.fi.FiBiConsumerThrow1;
 
 import java.math.BigDecimal;
@@ -15,22 +16,32 @@ public class ExaminerOfNumberRange {
         Examiner.refuseNullAndEmpty("floor", floor);
         Examiner.refuseNullAndEmpty("ceiling", ceiling);
 
-        this.floor = floor instanceof BigDecimal ? (BigDecimal) floor : new BigDecimal(floor.toString());
-        this.ceiling = ceiling instanceof BigDecimal ? (BigDecimal) ceiling : new BigDecimal(ceiling.toString());
+        this.floor = Examiner.toBigDecimal(floor);
+        this.ceiling = Examiner.toBigDecimal(ceiling);
     }
 
-    public Number requireIncludeInclude(String term, Number arg) {
-        Examiner.refuseNullAndEmpty("term", term);
+    public <TargetType extends Number> TargetType requireIncludeInclude(String term, TargetType arg) {
+        return requireIncludeInclude(term, arg, MistyError.ARGUMENT_ERROR);
+    }
 
-        return requireIncludeInclude(arg, (floor, ceiling) -> {
+    @SuppressWarnings("DuplicatedCode")
+    public <TargetType extends Number, ThrowableType extends Exception> TargetType requireIncludeInclude(
+            String term, TargetType arg, MistyErrorDefinition<ThrowableType> errorDefinition
+    ) throws ThrowableType {
+        Examiner.refuseNullAndEmpty("term", term);
+        Examiner.refuseNullAndEmpty("errorDefinition", errorDefinition);
+
+        return requireIncludeInclude(arg, (FiBiConsumerThrow1<BigDecimal, BigDecimal, ThrowableType>) (floor, ceiling) -> {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            errorDefinition.thrown(description);
         });
     }
 
-    public <ThrowableType extends Throwable> Number requireIncludeInclude(Number arg, FiBiConsumerThrow1<BigDecimal, BigDecimal, ThrowableType> thrownAction) throws ThrowableType {
+    public <TargetType extends Number, ThrowableType extends Throwable> TargetType requireIncludeInclude(
+            TargetType arg, FiBiConsumerThrow1<BigDecimal, BigDecimal, ThrowableType> thrownAction
+    ) throws ThrowableType {
         BigDecimal target = new BigDecimal(arg.toString());
 
         int floorOffset = target.subtract(this.floor).compareTo(BigDecimal.ZERO);
@@ -43,18 +54,30 @@ public class ExaminerOfNumberRange {
         return arg;
     }
 
-    public Number requireIncludeExclude(String term, Number arg) {
-        Examiner.refuseNullAndEmpty("term", term);
+    //
 
-        return requireIncludeExclude(arg, (floor, ceiling) -> {
+    public <TargetType extends Number> TargetType requireIncludeExclude(String term, TargetType arg) {
+        return requireIncludeExclude(term, arg, MistyError.ARGUMENT_ERROR);
+    }
+
+    @SuppressWarnings("DuplicatedCode")
+    public <TargetType extends Number, ThrowableType extends Exception> TargetType requireIncludeExclude(
+            String term, TargetType arg, MistyErrorDefinition<ThrowableType> errorDefinition
+    ) throws ThrowableType {
+        Examiner.refuseNullAndEmpty("term", term);
+        Examiner.refuseNullAndEmpty("errorDefinition", errorDefinition);
+
+        return requireIncludeExclude(arg, (FiBiConsumerThrow1<BigDecimal, BigDecimal, ThrowableType>) (floor, ceiling) -> {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw errorDefinition.thrown(description);
         });
     }
 
-    public <ThrowableType extends Throwable> Number requireIncludeExclude(Number arg, FiBiConsumerThrow1<BigDecimal, BigDecimal, ThrowableType> thrownAction) throws ThrowableType {
+    public <TargetType extends Number, ThrowableType extends Throwable> TargetType requireIncludeExclude(
+            TargetType arg, FiBiConsumerThrow1<BigDecimal, BigDecimal, ThrowableType> thrownAction
+    ) throws ThrowableType {
         BigDecimal target = new BigDecimal(arg.toString());
 
         int floorOffset = target.subtract(this.floor).compareTo(BigDecimal.ZERO);
@@ -67,18 +90,30 @@ public class ExaminerOfNumberRange {
         return arg;
     }
 
-    public Number requireExcludeInclude(String term, Number arg) {
-        Examiner.refuseNullAndEmpty("term", term);
+    //
 
-        return requireExcludeInclude(arg, (floor, ceiling) -> {
+    public <TargetType extends Number> TargetType requireExcludeInclude(String term, TargetType arg) {
+        return requireExcludeInclude(term, arg, MistyError.ARGUMENT_ERROR);
+    }
+
+    @SuppressWarnings("DuplicatedCode")
+    public <TargetType extends Number, ThrowableType extends Exception> TargetType requireExcludeInclude(
+            String term, TargetType arg, MistyErrorDefinition<ThrowableType> errorDefinition
+    ) throws ThrowableType {
+        Examiner.refuseNullAndEmpty("term", term);
+        Examiner.refuseNullAndEmpty("errorDefinition", errorDefinition);
+
+        return requireExcludeInclude(arg, (FiBiConsumerThrow1<BigDecimal, BigDecimal, ThrowableType>) (floor, ceiling) -> {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw errorDefinition.thrown(description);
         });
     }
 
-    public <ThrowableType extends Throwable> Number requireExcludeInclude(Number arg, FiBiConsumerThrow1<BigDecimal, BigDecimal, ThrowableType> thrownAction) throws ThrowableType {
+    public <TargetType extends Number, ThrowableType extends Throwable> TargetType requireExcludeInclude(
+            TargetType arg, FiBiConsumerThrow1<BigDecimal, BigDecimal, ThrowableType> thrownAction
+    ) throws ThrowableType {
         BigDecimal target = new BigDecimal(arg.toString());
 
         int floorOffset = target.subtract(this.floor).compareTo(BigDecimal.ZERO);
@@ -91,18 +126,30 @@ public class ExaminerOfNumberRange {
         return arg;
     }
 
-    public Number requireExcludeExclude(String term, Number arg) {
-        Examiner.refuseNullAndEmpty("term", term);
+    //
 
-        return requireExcludeExclude(arg, (floor, ceiling) -> {
+    public <TargetType extends Number> TargetType requireExcludeExclude(String term, TargetType arg) {
+        return requireExcludeExclude(term, arg, MistyError.ARGUMENT_ERROR);
+    }
+
+    @SuppressWarnings("DuplicatedCode")
+    public <TargetType extends Number, ThrowableType extends Exception> TargetType requireExcludeExclude(
+            String term, TargetType arg, MistyErrorDefinition<ThrowableType> errorDefinition
+    ) throws ThrowableType {
+        Examiner.refuseNullAndEmpty("term", term);
+        Examiner.refuseNullAndEmpty("errorDefinition", errorDefinition);
+
+        return requireExcludeExclude(arg, (FiBiConsumerThrow1<BigDecimal, BigDecimal, ThrowableType>) (floor, ceiling) -> {
             String description = ExaminerMessage.requireInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw errorDefinition.thrown(description);
         });
     }
 
-    public <ThrowableType extends Throwable> Number requireExcludeExclude(Number arg, FiBiConsumerThrow1<BigDecimal, BigDecimal, ThrowableType> thrownAction) throws ThrowableType {
+    public <TargetType extends Number, ThrowableType extends Throwable> TargetType requireExcludeExclude(
+            TargetType arg, FiBiConsumerThrow1<BigDecimal, BigDecimal, ThrowableType> thrownAction
+    ) throws ThrowableType {
         BigDecimal target = new BigDecimal(arg.toString());
 
         int floorOffset = target.subtract(this.floor).compareTo(BigDecimal.ZERO);
@@ -115,18 +162,30 @@ public class ExaminerOfNumberRange {
         return arg;
     }
 
-    public Number refuseIncludeInclude(String term, Number arg) {
-        Examiner.refuseNullAndEmpty("term", term);
+    //
 
-        return refuseIncludeInclude(arg, (floor, ceiling) -> {
+    public <TargetType extends Number> TargetType refuseIncludeInclude(String term, TargetType arg) {
+        return refuseIncludeInclude(term, arg, MistyError.ARGUMENT_ERROR);
+    }
+
+    @SuppressWarnings("DuplicatedCode")
+    public <TargetType extends Number, ThrowableType extends Exception> TargetType refuseIncludeInclude(
+            String term, TargetType arg, MistyErrorDefinition<ThrowableType> errorDefinition
+    ) throws ThrowableType {
+        Examiner.refuseNullAndEmpty("term", term);
+        Examiner.refuseNullAndEmpty("errorDefinition", errorDefinition);
+
+        return refuseIncludeInclude(arg, (FiBiConsumerThrow1<BigDecimal, BigDecimal, ThrowableType>) (floor, ceiling) -> {
             String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw errorDefinition.thrown(description);
         });
     }
 
-    public <ThrowableType extends Throwable> Number refuseIncludeInclude(Number arg, FiBiConsumerThrow1<BigDecimal, BigDecimal, ThrowableType> thrownAction) throws ThrowableType {
+    public <TargetType extends Number, ThrowableType extends Throwable> TargetType refuseIncludeInclude(
+            TargetType arg, FiBiConsumerThrow1<BigDecimal, BigDecimal, ThrowableType> thrownAction
+    ) throws ThrowableType {
         BigDecimal target = new BigDecimal(arg.toString());
 
         int floorOffset = target.subtract(this.floor).compareTo(BigDecimal.ZERO);
@@ -139,18 +198,30 @@ public class ExaminerOfNumberRange {
         return arg;
     }
 
-    public Number refuseIncludeExclude(String term, Number arg) {
-        Examiner.refuseNullAndEmpty("term", term);
+    //
 
-        return refuseIncludeExclude(arg, (floor, ceiling) -> {
+    public <TargetType extends Number> TargetType refuseIncludeExclude(String term, TargetType arg) {
+        return refuseIncludeExclude(term, arg, MistyError.ARGUMENT_ERROR);
+    }
+
+    @SuppressWarnings("DuplicatedCode")
+    public <TargetType extends Number, ThrowableType extends Exception> TargetType refuseIncludeExclude(
+            String term, TargetType arg, MistyErrorDefinition<ThrowableType> errorDefinition
+    ) throws ThrowableType {
+        Examiner.refuseNullAndEmpty("term", term);
+        Examiner.refuseNullAndEmpty("errorDefinition", errorDefinition);
+
+        return refuseIncludeExclude(arg, (FiBiConsumerThrow1<BigDecimal, BigDecimal, ThrowableType>) (floor, ceiling) -> {
             String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.INCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw errorDefinition.thrown(description);
         });
     }
 
-    public <ThrowableType extends Throwable> Number refuseIncludeExclude(Number arg, FiBiConsumerThrow1<BigDecimal, BigDecimal, ThrowableType> thrownAction) throws ThrowableType {
+    public <TargetType extends Number, ThrowableType extends Throwable> TargetType refuseIncludeExclude(
+            TargetType arg, FiBiConsumerThrow1<BigDecimal, BigDecimal, ThrowableType> thrownAction
+    ) throws ThrowableType {
         BigDecimal target = new BigDecimal(arg.toString());
 
         int floorOffset = target.subtract(this.floor).compareTo(BigDecimal.ZERO);
@@ -163,18 +234,30 @@ public class ExaminerOfNumberRange {
         return arg;
     }
 
-    public Number refuseExcludeInclude(String term, Number arg) {
-        Examiner.refuseNullAndEmpty("term", term);
+    //
 
-        return refuseExcludeInclude(arg, (floor, ceiling) -> {
+    public <TargetType extends Number> TargetType refuseExcludeInclude(String term, TargetType arg) {
+        return refuseExcludeInclude(term, arg, MistyError.ARGUMENT_ERROR);
+    }
+
+    @SuppressWarnings("DuplicatedCode")
+    public <TargetType extends Number, ThrowableType extends Exception> TargetType refuseExcludeInclude(
+            String term, TargetType arg, MistyErrorDefinition<ThrowableType> errorDefinition
+    ) throws ThrowableType {
+        Examiner.refuseNullAndEmpty("term", term);
+        Examiner.refuseNullAndEmpty("errorDefinition", errorDefinition);
+
+        return refuseExcludeInclude(arg, (FiBiConsumerThrow1<BigDecimal, BigDecimal, ThrowableType>) (floor, ceiling) -> {
             String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.INCLUDE, this.ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw errorDefinition.thrown(description);
         });
     }
 
-    public <ThrowableType extends Throwable> Number refuseExcludeInclude(Number arg, FiBiConsumerThrow1<BigDecimal, BigDecimal, ThrowableType> thrownAction) throws ThrowableType {
+    public <TargetType extends Number, ThrowableType extends Throwable> TargetType refuseExcludeInclude(
+            TargetType arg, FiBiConsumerThrow1<BigDecimal, BigDecimal, ThrowableType> thrownAction
+    ) throws ThrowableType {
         BigDecimal target = new BigDecimal(arg.toString());
 
         int floorOffset = target.subtract(this.floor).compareTo(BigDecimal.ZERO);
@@ -187,18 +270,30 @@ public class ExaminerOfNumberRange {
         return arg;
     }
 
-    public Number refuseExcludeExclude(String term, Number arg) {
-        Examiner.refuseNullAndEmpty("term", term);
+    //
 
-        return refuseExcludeExclude(arg, (floor, ceiling) -> {
+    public <TargetType extends Number> TargetType refuseExcludeExclude(String term, TargetType arg) {
+        return refuseExcludeExclude(term, arg, MistyError.ARGUMENT_ERROR);
+    }
+
+    @SuppressWarnings("DuplicatedCode")
+    public <TargetType extends Number, ThrowableType extends Exception> TargetType refuseExcludeExclude(
+            String term, TargetType arg, MistyErrorDefinition<ThrowableType> errorDefinition
+    ) throws ThrowableType {
+        Examiner.refuseNullAndEmpty("term", term);
+        Examiner.refuseNullAndEmpty("errorDefinition", errorDefinition);
+
+        return refuseExcludeExclude(arg, (FiBiConsumerThrow1<BigDecimal, BigDecimal, ThrowableType>) (floor, ceiling) -> {
             String description = ExaminerMessage.refuseInRange(term, arg,
                     ExamineIntervals.Floor.EXCLUDE, this.floor,
                     ExamineIntervals.Ceiling.EXCLUDE, this.ceiling);
-            throw MistyError.ARGUMENT_ERROR.thrown(description);
+            throw errorDefinition.thrown(description);
         });
     }
 
-    public <ThrowableType extends Throwable> Number refuseExcludeExclude(Number arg, FiBiConsumerThrow1<BigDecimal, BigDecimal, ThrowableType> thrownAction) throws ThrowableType {
+    public <TargetType extends Number, ThrowableType extends Throwable> TargetType refuseExcludeExclude(
+            TargetType arg, FiBiConsumerThrow1<BigDecimal, BigDecimal, ThrowableType> thrownAction
+    ) throws ThrowableType {
         BigDecimal target = new BigDecimal(arg.toString());
 
         int floorOffset = target.subtract(this.floor).compareTo(BigDecimal.ZERO);

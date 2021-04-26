@@ -19,11 +19,7 @@ public class Examiner {
     public static final ExaminerOfNumberRange LONG_RANGE_EXAMINER = new ExaminerOfNumberRange(Long.MIN_VALUE, Long.MAX_VALUE);
 
     public static BigDecimal toBigDecimal(Number number) {
-        if (number instanceof BigDecimal) {
-            return (BigDecimal) number;
-        } else {
-            return new BigDecimal(number.toString());
-        }
+        return number instanceof BigDecimal ? (BigDecimal) number : new BigDecimal(number.toString());
     }
 
     // requireNullOrEmpty of Object
@@ -34,12 +30,12 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> void requireNullOrEmpty(
             String term, Object arg, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         if (Judge.isNullOrEmpty(errorDefinition)) {
             MistyError.ARGUMENT_ERROR.thrown(ExaminerMessage.refuseNullAndEmpty("errorDefinition"));
         }
 
-        requireNullOrEmpty(term, arg, (t, r) -> {
+        requireNullOrEmpty(term, arg, (FiBiConsumerThrow1<String, Object, ThrowableType>) (t, r) -> {
             String description = ExaminerMessage.requireNullOrEmpty(term, StringTool.toString(arg));
             errorDefinition.thrown(description);
         });
@@ -48,7 +44,7 @@ public class Examiner {
     @SuppressWarnings("DuplicatedCode")
     public static <ArgType, ThrowableType extends Throwable> void requireNullOrEmpty(
             String term, ArgType arg, FiBiConsumerThrow1<String, ArgType, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         if (Judge.isNullOrEmpty(term)) {
             MistyError.ARGUMENT_ERROR.thrown(ExaminerMessage.refuseNullAndEmpty("term"));
         }
@@ -71,12 +67,12 @@ public class Examiner {
     @SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "OptionalGetWithoutIsPresent"})
     public static <ArgType, ThrowableType extends Exception> void requireNullOrEmpty(
             String term, Optional<ArgType> arg, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         if (Judge.isNullOrEmpty(errorDefinition)) {
             MistyError.ARGUMENT_ERROR.thrown(ExaminerMessage.refuseNullAndEmpty("errorDefinition"));
         }
 
-        requireNullOrEmpty(term, arg, (t, a) -> {
+        requireNullOrEmpty(term, arg, (FiBiConsumerThrow1<String, Optional<ArgType>, ThrowableType>) (t, a) -> {
             String description = ExaminerMessage.requireNullOrEmpty(term, StringTool.toString(arg.get()));
             errorDefinition.thrown(description);
         });
@@ -85,7 +81,7 @@ public class Examiner {
     @SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "DuplicatedCode"})
     public static <ArgType, ThrowableType extends Throwable> void requireNullOrEmpty(
             String term, Optional<ArgType> arg, FiBiConsumerThrow1<String, Optional<ArgType>, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         if (Judge.isNullOrEmpty(term)) {
             MistyError.ARGUMENT_ERROR.thrown(ExaminerMessage.refuseNullAndEmpty("term"));
         }
@@ -106,12 +102,12 @@ public class Examiner {
 
     public static <ArgType, ThrowableType extends Exception> ArgType refuseNullAndEmpty(
             String term, ArgType arg, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         if (Judge.isNullOrEmpty(errorDefinition)) {
             MistyError.ARGUMENT_ERROR.thrown(ExaminerMessage.refuseNullAndEmpty("errorDefinition"));
         }
 
-        return refuseNullAndEmpty(term, arg, (t, a) -> {
+        return refuseNullAndEmpty(term, arg, (FiBiConsumerThrow1<String, ArgType, ThrowableType>) (t, a) -> {
             String description = ExaminerMessage.refuseNullAndEmpty(term);
             errorDefinition.thrown(description);
         });
@@ -120,7 +116,7 @@ public class Examiner {
     @SuppressWarnings("DuplicatedCode")
     public static <ArgType, ThrowableType extends Throwable> ArgType refuseNullAndEmpty(
             String term, ArgType arg, FiBiConsumerThrow1<String, ArgType, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         if (Judge.isNullOrEmpty(term)) {
             MistyError.ARGUMENT_ERROR.thrown(ExaminerMessage.refuseNullAndEmpty("term"));
         }
@@ -144,12 +140,12 @@ public class Examiner {
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public static <ArgType, ThrowableType extends Exception> ArgType refuseNullAndEmpty(
             String term, Optional<ArgType> arg, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         if (Judge.isNullOrEmpty(errorDefinition)) {
             MistyError.ARGUMENT_ERROR.thrown(ExaminerMessage.refuseNullAndEmpty("errorDefinition"));
         }
 
-        return refuseNullAndEmpty(term, arg, (t, a) -> {
+        return refuseNullAndEmpty(term, arg, (FiBiConsumerThrow1<String, Optional<ArgType>, ThrowableType>) (t, a) -> {
             String description = ExaminerMessage.refuseNullAndEmpty(term);
             errorDefinition.thrown(description);
         });
@@ -158,7 +154,7 @@ public class Examiner {
     @SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "OptionalGetWithoutIsPresent", "DuplicatedCode"})
     public static <ArgType, ThrowableType extends Throwable> ArgType refuseNullAndEmpty(
             String term, Optional<ArgType> arg, FiBiConsumerThrow1<String, Optional<ArgType>, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         if (Judge.isNullOrEmpty(term)) {
             MistyError.ARGUMENT_ERROR.thrown(ExaminerMessage.refuseNullAndEmpty("term"));
         }
@@ -214,7 +210,7 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> short requireMoreInclude(
             String term, short arg, short border, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("term", term);
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
@@ -226,7 +222,7 @@ public class Examiner {
 
     public static <ThrowableType extends Throwable> short requireMoreInclude(
             short arg, short border, FiBiConsumerThrow1<Short, Short, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("thrownAction", thrownAction);
 
         if (!(arg >= border)) {
@@ -241,7 +237,7 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> int requireMoreInclude(
             String term, int arg, int border, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("term", term);
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
@@ -253,7 +249,7 @@ public class Examiner {
 
     public static <ThrowableType extends Throwable> int requireMoreInclude(
             int arg, int border, FiBiConsumerThrow1<Integer, Integer, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("thrownAction", thrownAction);
 
         if (!(arg >= border)) {
@@ -268,7 +264,7 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> long requireMoreInclude(
             String term, long arg, long border, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("term", term);
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
@@ -280,7 +276,7 @@ public class Examiner {
 
     public static <ThrowableType extends Throwable> long requireMoreInclude(
             long arg, long border, FiBiConsumerThrow1<Long, Long, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("thrownAction", thrownAction);
 
         if (!(arg >= border)) {
@@ -295,7 +291,7 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> float requireMoreInclude(
             String term, float arg, float border, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("term", term);
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
@@ -307,7 +303,7 @@ public class Examiner {
 
     public static <ThrowableType extends Throwable> float requireMoreInclude(
             float arg, float border, FiBiConsumerThrow1<Float, Float, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("thrownAction", thrownAction);
 
         if (!(arg >= border)) {
@@ -322,11 +318,11 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> double requireMoreInclude(
             String term, double arg, double border, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("term", term);
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
-        return requireMoreInclude(arg, border, (a, c) -> {
+        return requireMoreInclude(arg, border, (FiBiConsumerThrow1<Double, Double, ThrowableType>) (a, c) -> {
             String description = ExaminerMessage.requireMoreInclude(term, arg, border);
             errorDefinition.thrown(description);
         });
@@ -334,7 +330,7 @@ public class Examiner {
 
     public static <ThrowableType extends Throwable> double requireMoreInclude(
             double arg, double border, FiBiConsumerThrow1<Double, Double, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("thrownAction", thrownAction);
 
         if (!(arg >= border)) {
@@ -349,7 +345,7 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> char requireMoreInclude(
             String term, char arg, char border, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("term", term);
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
@@ -361,7 +357,7 @@ public class Examiner {
 
     public static <ThrowableType extends Throwable> char requireMoreInclude(
             char arg, char border, FiBiConsumerThrow1<Character, Character, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("thrownAction", thrownAction);
 
         if (!(arg >= border)) {
@@ -376,7 +372,7 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> byte requireMoreInclude(
             String term, byte arg, byte border, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("term", term);
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
@@ -388,7 +384,7 @@ public class Examiner {
 
     public static <ThrowableType extends Throwable> byte requireMoreInclude(
             byte arg, byte border, FiBiConsumerThrow1<Byte, Byte, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("thrownAction", thrownAction);
 
         if (!(arg >= border)) {
@@ -403,19 +399,19 @@ public class Examiner {
 
     public static <ArgType extends Number, ThrowableType extends Exception> ArgType requireMoreInclude(
             String term, ArgType arg, ArgType border, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("term", term);
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
-        return requireMoreInclude(arg, border, (a, c) -> {
+        return requireMoreInclude(arg, border, (FiBiConsumerThrow1<ArgType, ArgType, ThrowableType>) (a, c) -> {
             String description = ExaminerMessage.requireMoreInclude(term, arg, border);
             errorDefinition.thrown(description);
         });
     }
 
     public static <ArgType extends Number, ThrowableType extends Throwable> ArgType requireMoreInclude(
-            ArgType arg, ArgType border, FiBiConsumerThrow1<Number, Number, ThrowableType> thrownAction
-    ) throws ThrowableType {
+            ArgType arg, ArgType border, FiBiConsumerThrow1<ArgType, ArgType, ThrowableType> thrownAction
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("arg", arg);
         refuseNullAndEmpty("border", border);
         refuseNullAndEmpty("thrownAction", thrownAction);
@@ -439,7 +435,7 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> short requireMoreExclude(
             String term, short arg, short border, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("term", term);
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
@@ -451,7 +447,7 @@ public class Examiner {
 
     public static <ThrowableType extends Throwable> short requireMoreExclude(
             short arg, short border, FiBiConsumerThrow1<Short, Short, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("thrownAction", thrownAction);
 
         if (!(arg > border)) {
@@ -466,7 +462,7 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> int requireMoreExclude(
             String term, int arg, int border, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("term", term);
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
@@ -478,7 +474,7 @@ public class Examiner {
 
     public static <ThrowableType extends Throwable> int requireMoreExclude(
             int arg, int border, FiBiConsumerThrow1<Integer, Integer, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("thrownAction", thrownAction);
 
         if (!(arg > border)) {
@@ -493,7 +489,7 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> long requireMoreExclude(
             String term, long arg, long border, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("term", term);
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
@@ -505,7 +501,7 @@ public class Examiner {
 
     public static <ThrowableType extends Throwable> long requireMoreExclude(
             long arg, long border, FiBiConsumerThrow1<Long, Long, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("thrownAction", thrownAction);
 
         if (!(arg > border)) {
@@ -520,7 +516,7 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> float requireMoreExclude(
             String term, float arg, float border, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("term", term);
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
@@ -532,7 +528,7 @@ public class Examiner {
 
     public static <ThrowableType extends Throwable> float requireMoreExclude(
             float arg, float border, FiBiConsumerThrow1<Float, Float, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("thrownAction", thrownAction);
 
         if (!(arg > border)) {
@@ -547,11 +543,11 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> double requireMoreExclude(
             String term, double arg, double border, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("term", term);
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
-        return requireMoreExclude(arg, border, (a, c) -> {
+        return requireMoreExclude(arg, border, (FiBiConsumerThrow1<Double, Double, ThrowableType>) (a, c) -> {
             String description = ExaminerMessage.requireMoreExclude(term, arg, border);
             errorDefinition.thrown(description);
         });
@@ -559,7 +555,7 @@ public class Examiner {
 
     public static <ThrowableType extends Throwable> double requireMoreExclude(
             double arg, double border, FiBiConsumerThrow1<Double, Double, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("thrownAction", thrownAction);
 
         if (!(arg > border)) {
@@ -574,7 +570,7 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> char requireMoreExclude(
             String term, char arg, char border, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("term", term);
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
@@ -586,7 +582,7 @@ public class Examiner {
 
     public static <ThrowableType extends Throwable> char requireMoreExclude(
             char arg, char border, FiBiConsumerThrow1<Character, Character, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("thrownAction", thrownAction);
 
         if (!(arg > border)) {
@@ -601,7 +597,7 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> byte requireMoreExclude(
             String term, byte arg, byte border, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("term", term);
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
@@ -613,7 +609,7 @@ public class Examiner {
 
     public static <ThrowableType extends Throwable> byte requireMoreExclude(
             byte arg, byte border, FiBiConsumerThrow1<Byte, Byte, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("thrownAction", thrownAction);
 
         if (!(arg > border)) {
@@ -628,19 +624,19 @@ public class Examiner {
 
     public static <ArgType extends Number, ThrowableType extends Exception> ArgType requireMoreExclude(
             String term, ArgType arg, ArgType border, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("term", term);
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
-        return requireMoreExclude(arg, border, (a, c) -> {
+        return requireMoreExclude(arg, border, (FiBiConsumerThrow1<ArgType, ArgType, ThrowableType>) (a, c) -> {
             String description = ExaminerMessage.requireMoreExclude(term, arg, border);
             errorDefinition.thrown(description);
         });
     }
 
     public static <ArgType extends Number, ThrowableType extends Throwable> ArgType requireMoreExclude(
-            ArgType arg, ArgType border, FiBiConsumerThrow1<Number, Number, ThrowableType> thrownAction
-    ) throws ThrowableType {
+            ArgType arg, ArgType border, FiBiConsumerThrow1<ArgType, ArgType, ThrowableType> thrownAction
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("arg", arg);
         refuseNullAndEmpty("border", border);
         refuseNullAndEmpty("thrownAction", thrownAction);
@@ -664,7 +660,7 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> short requireLessInclude(
             String term, short arg, short border, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("term", term);
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
@@ -676,7 +672,7 @@ public class Examiner {
 
     public static <ThrowableType extends Throwable> short requireLessInclude(
             short arg, short border, FiBiConsumerThrow1<Short, Short, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("thrownAction", thrownAction);
 
         if (!(arg <= border)) {
@@ -691,7 +687,7 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> int requireLessInclude(
             String term, int arg, int border, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("term", term);
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
@@ -703,7 +699,7 @@ public class Examiner {
 
     public static <ThrowableType extends Throwable> int requireLessInclude(
             int arg, int border, FiBiConsumerThrow1<Integer, Integer, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("thrownAction", thrownAction);
 
         if (!(arg <= border)) {
@@ -718,7 +714,7 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> long requireLessInclude(
             String term, long arg, long border, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("term", term);
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
@@ -730,7 +726,7 @@ public class Examiner {
 
     public static <ThrowableType extends Throwable> long requireLessInclude(
             long arg, long border, FiBiConsumerThrow1<Long, Long, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("thrownAction", thrownAction);
 
         if (!(arg <= border)) {
@@ -745,7 +741,7 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> float requireLessInclude(
             String term, float arg, float border, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("term", term);
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
@@ -757,7 +753,7 @@ public class Examiner {
 
     public static <ThrowableType extends Throwable> float requireLessInclude(
             float arg, float border, FiBiConsumerThrow1<Float, Float, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("thrownAction", thrownAction);
 
         if (!(arg <= border)) {
@@ -772,11 +768,11 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> double requireLessInclude(
             String term, double arg, double border, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("term", term);
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
-        return requireLessInclude(arg, border, (a, c) -> {
+        return requireLessInclude(arg, border, (FiBiConsumerThrow1<Double, Double, ThrowableType>) (a, c) -> {
             String description = ExaminerMessage.requireLessInclude(term, arg, border);
             errorDefinition.thrown(description);
         });
@@ -784,7 +780,7 @@ public class Examiner {
 
     public static <ThrowableType extends Throwable> double requireLessInclude(
             double arg, double border, FiBiConsumerThrow1<Double, Double, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("thrownAction", thrownAction);
 
         if (!(arg <= border)) {
@@ -799,7 +795,7 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> char requireLessInclude(
             String term, char arg, char border, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("term", term);
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
@@ -811,7 +807,7 @@ public class Examiner {
 
     public static <ThrowableType extends Throwable> char requireLessInclude(
             char arg, char border, FiBiConsumerThrow1<Character, Character, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("thrownAction", thrownAction);
 
         if (!(arg <= border)) {
@@ -826,7 +822,7 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> byte requireLessInclude(
             String term, byte arg, byte border, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("term", term);
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
@@ -838,7 +834,7 @@ public class Examiner {
 
     public static <ThrowableType extends Throwable> byte requireLessInclude(
             byte arg, byte border, FiBiConsumerThrow1<Byte, Byte, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("thrownAction", thrownAction);
 
         if (!(arg <= border)) {
@@ -853,19 +849,19 @@ public class Examiner {
 
     public static <ArgType extends Number, ThrowableType extends Exception> ArgType requireLessInclude(
             String term, ArgType arg, ArgType border, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("term", term);
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
-        return requireLessInclude(arg, border, (a, c) -> {
+        return requireLessInclude(arg, border, (FiBiConsumerThrow1<ArgType, ArgType, ThrowableType>) (a, c) -> {
             String description = ExaminerMessage.requireLessInclude(term, arg, border);
             errorDefinition.thrown(description);
         });
     }
 
     public static <ArgType extends Number, ThrowableType extends Throwable> ArgType requireLessInclude(
-            ArgType arg, ArgType border, FiBiConsumerThrow1<Number, Number, ThrowableType> thrownAction
-    ) throws ThrowableType {
+            ArgType arg, ArgType border, FiBiConsumerThrow1<ArgType, ArgType, ThrowableType> thrownAction
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("arg", arg);
         refuseNullAndEmpty("border", border);
         refuseNullAndEmpty("thrownAction", thrownAction);
@@ -889,7 +885,7 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> short requireLessExclude(
             String term, short arg, short border, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("term", term);
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
@@ -901,7 +897,7 @@ public class Examiner {
 
     public static <ThrowableType extends Throwable> short requireLessExclude(
             short arg, short border, FiBiConsumerThrow1<Short, Short, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("thrownAction", thrownAction);
 
         if (!(arg < border)) {
@@ -916,7 +912,7 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> int requireLessExclude(
             String term, int arg, int border, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("term", term);
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
@@ -928,7 +924,7 @@ public class Examiner {
 
     public static <ThrowableType extends Throwable> int requireLessExclude(
             int arg, int border, FiBiConsumerThrow1<Integer, Integer, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("thrownAction", thrownAction);
 
         if (!(arg < border)) {
@@ -943,7 +939,7 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> long requireLessExclude(
             String term, long arg, long border, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("term", term);
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
@@ -955,7 +951,7 @@ public class Examiner {
 
     public static <ThrowableType extends Throwable> long requireLessExclude(
             long arg, long border, FiBiConsumerThrow1<Long, Long, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("thrownAction", thrownAction);
 
         if (!(arg < border)) {
@@ -970,7 +966,7 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> float requireLessExclude(
             String term, float arg, float border, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("term", term);
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
@@ -982,7 +978,7 @@ public class Examiner {
 
     public static <ThrowableType extends Throwable> float requireLessExclude(
             float arg, float border, FiBiConsumerThrow1<Float, Float, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("thrownAction", thrownAction);
 
         if (!(arg < border)) {
@@ -997,11 +993,11 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> double requireLessExclude(
             String term, double arg, double border, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("term", term);
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
-        return requireLessExclude(arg, border, (a, c) -> {
+        return requireLessExclude(arg, border, (FiBiConsumerThrow1<Double, Double, ThrowableType>) (a, c) -> {
             String description = ExaminerMessage.requireLessExclude(term, arg, border);
             errorDefinition.thrown(description);
         });
@@ -1009,7 +1005,7 @@ public class Examiner {
 
     public static <ThrowableType extends Throwable> double requireLessExclude(
             double arg, double border, FiBiConsumerThrow1<Double, Double, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("thrownAction", thrownAction);
 
         if (!(arg < border)) {
@@ -1024,7 +1020,7 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> char requireLessExclude(
             String term, char arg, char border, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("term", term);
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
@@ -1036,7 +1032,7 @@ public class Examiner {
 
     public static <ThrowableType extends Throwable> char requireLessExclude(
             char arg, char border, FiBiConsumerThrow1<Character, Character, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("thrownAction", thrownAction);
 
         if (!(arg < border)) {
@@ -1051,7 +1047,7 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> byte requireLessExclude(
             String term, byte arg, byte border, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("term", term);
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
@@ -1063,7 +1059,7 @@ public class Examiner {
 
     public static <ThrowableType extends Throwable> byte requireLessExclude(
             byte arg, byte border, FiBiConsumerThrow1<Byte, Byte, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("thrownAction", thrownAction);
 
         if (!(arg < border)) {
@@ -1078,19 +1074,19 @@ public class Examiner {
 
     public static <ArgType extends Number, ThrowableType extends Exception> ArgType requireLessExclude(
             String term, ArgType arg, ArgType border, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("term", term);
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
-        return requireLessExclude(arg, border, (a, c) -> {
+        return requireLessExclude(arg, border, (FiBiConsumerThrow1<ArgType, ArgType, ThrowableType>) (a, c) -> {
             String description = ExaminerMessage.requireLessExclude(term, arg, border);
             errorDefinition.thrown(description);
         });
     }
 
     public static <ArgType extends Number, ThrowableType extends Throwable> ArgType requireLessExclude(
-            ArgType arg, ArgType border, FiBiConsumerThrow1<Number, Number, ThrowableType> thrownAction
-    ) throws ThrowableType {
+            ArgType arg, ArgType border, FiBiConsumerThrow1<ArgType, ArgType, ThrowableType> thrownAction
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("arg", arg);
         refuseNullAndEmpty("border", border);
         refuseNullAndEmpty("thrownAction", thrownAction);
@@ -1114,10 +1110,10 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> BigDecimal requireNumber(
             String value, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
-        return requireNumber(value, (v) -> {
+        return requireNumber(value, (FiConsumerThrow1<String, ThrowableType>) (v) -> {
             String description = ExaminerMessage.requireNumber("value", value);
             throw errorDefinition.thrown(description);
         });
@@ -1125,7 +1121,7 @@ public class Examiner {
 
     public static <ThrowableType extends Throwable> BigDecimal requireNumber(
             String value, FiConsumerThrow1<String, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("value", value);
         refuseNullAndEmpty("thrownAction", thrownAction);
 
@@ -1143,10 +1139,10 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> short requireShort(
             String value, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
-        return requireShort(value, (v) -> {
+        return requireShort(value, (FiConsumerThrow1<String, ThrowableType>) (v) -> {
             String description = ExaminerMessage.requireShort("value", value);
             throw errorDefinition.thrown(description);
         });
@@ -1155,7 +1151,7 @@ public class Examiner {
     @SuppressWarnings("ConstantConditions")
     public static <ThrowableType extends Exception> short requireShort(
             String value, FiConsumerThrow1<String, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         BigDecimal bigDecimal = requireNumber(value, thrownAction);
         SHORT_RANGE_EXAMINER.requireIncludeInclude(bigDecimal, (floor, ceiling) -> thrownAction.acceptOrHandle(value));
         return bigDecimal.shortValue();
@@ -1167,10 +1163,10 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> int requireInteger(
             String value, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
-        return requireInteger(value, (v) -> {
+        return requireInteger(value, (FiConsumerThrow1<String, ThrowableType>) (v) -> {
             String description = ExaminerMessage.requireInteger("value", value);
             throw errorDefinition.thrown(description);
         });
@@ -1179,7 +1175,7 @@ public class Examiner {
     @SuppressWarnings("ConstantConditions")
     public static <ThrowableType extends Exception> int requireInteger(
             String value, FiConsumerThrow1<String, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         BigDecimal bigDecimal = requireNumber(value, thrownAction);
         INTEGER_RANGE_EXAMINER.requireIncludeInclude(bigDecimal, (floor, ceiling) -> thrownAction.acceptOrHandle(value));
         return bigDecimal.intValue();
@@ -1191,10 +1187,10 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> long requireLong(
             String value, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
-        return requireLong(value, (v) -> {
+        return requireLong(value, (FiConsumerThrow1<String, ThrowableType>) (v) -> {
             String description = ExaminerMessage.requireLong("value", value);
             throw errorDefinition.thrown(description);
         });
@@ -1203,10 +1199,10 @@ public class Examiner {
     @SuppressWarnings("ConstantConditions")
     public static <ThrowableType extends Exception> long requireLong(
             String value, FiConsumerThrow1<String, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         BigDecimal bigDecimal = requireNumber(value, thrownAction);
         LONG_RANGE_EXAMINER.requireIncludeInclude(bigDecimal, (floor, ceiling) -> thrownAction.acceptOrHandle(value));
-        return bigDecimal.intValue();
+        return bigDecimal.longValue();
     }
 
     public static float requireFloat(String value) throws MistyException {
@@ -1215,10 +1211,10 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> float requireFloat(
             String value, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
-        return requireFloat(value, (v) -> {
+        return requireFloat(value, (FiConsumerThrow1<String, ThrowableType>) (v) -> {
             String description = ExaminerMessage.requireFloat("value", value);
             throw errorDefinition.thrown(description);
         });
@@ -1227,7 +1223,7 @@ public class Examiner {
     @SuppressWarnings("ConstantConditions")
     public static <ThrowableType extends Throwable> float requireFloat(
             String value, FiConsumerThrow1<String, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         BigDecimal bigDecimal = requireNumber(value, thrownAction);
         // XXX 由於浮點數的下限不定所以不曉得怎麼檢查, 就暫時先略過
         return bigDecimal.floatValue();
@@ -1239,10 +1235,10 @@ public class Examiner {
 
     public static <ThrowableType extends Exception> double requireDouble(
             String value, MistyErrorDefinition<ThrowableType> errorDefinition
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         refuseNullAndEmpty("errorDefinition", errorDefinition);
 
-        return requireDouble(value, (v) -> {
+        return requireDouble(value, (FiConsumerThrow1<String, ThrowableType>) (v) -> {
             String description = ExaminerMessage.requireDouble("value", value);
             throw errorDefinition.thrown(description);
         });
@@ -1251,7 +1247,7 @@ public class Examiner {
     @SuppressWarnings("ConstantConditions")
     public static <ThrowableType extends Throwable> double requireDouble(
             String value, FiConsumerThrow1<String, ThrowableType> thrownAction
-    ) throws ThrowableType {
+    ) throws MistyException, ThrowableType {
         BigDecimal bigDecimal = requireNumber(value, thrownAction);
         // XXX 由於浮點數的下限不定所以不曉得怎麼檢查, 就暫時先略過
         return bigDecimal.doubleValue();
