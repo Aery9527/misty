@@ -31,11 +31,7 @@ public class SmoothCrossObject {
             try {
                 return action.get();
             } catch (Exception t) {
-                if (t instanceof RuntimeException) {
-                    throw (RuntimeException) t;
-                } else {
-                    throw new SmoothCrossException(t);
-                }
+                throw new SmoothCrossException(t);
             }
         };
 

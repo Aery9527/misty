@@ -9,7 +9,9 @@ import java.util.function.Consumer;
 
 public class SmoothServiceInvoker {
 
-    public static final String STRING_FORMAT = SmoothServiceInvoker.class.getSimpleName() + "(%s)(%s)";
+    public static class Format {
+        public static final String DESCRIPTION = SmoothServiceInvoker.class.getSimpleName() + "(%s)(%s)";
+    }
 
     private final String moduleName;
 
@@ -17,13 +19,13 @@ public class SmoothServiceInvoker {
 
     private final SmoothContext smoothContext;
 
-    private final String toString;
+    private final String description;
 
     public SmoothServiceInvoker(String moduleName, String serviceKey, SmoothContext smoothContext) {
         this.moduleName = moduleName;
         this.serviceKey = serviceKey;
         this.smoothContext = smoothContext;
-        this.toString = String.format(STRING_FORMAT, moduleName, serviceKey);
+        this.description = String.format(Format.DESCRIPTION, moduleName, serviceKey);
     }
 
     public Future<SmoothServiceResponseResult> invoke(SmoothServiceRequest serviceRequest) {
@@ -36,18 +38,18 @@ public class SmoothServiceInvoker {
 
     @Override
     public String toString() {
-        return this.toString;
+        return this.description;
     }
 
     @Override
     public int hashCode() {
-        return this.toString.hashCode();
+        return this.description.hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof SmoothServiceInvoker) {
-            return ((SmoothServiceInvoker) obj).toString.equals(this.toString);
+            return ((SmoothServiceInvoker) obj).description.equals(this.description);
         } else {
             return false;
         }

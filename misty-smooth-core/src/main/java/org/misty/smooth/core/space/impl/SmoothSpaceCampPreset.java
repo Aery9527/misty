@@ -5,59 +5,80 @@ import org.misty.smooth.api.vo.SmoothModuleId;
 import org.misty.smooth.api.vo.SmoothServiceId;
 import org.misty.smooth.core.space.api.SmoothSpaceCamp;
 import org.misty.smooth.core.space.module.api.SmoothModuleSpace;
-import org.misty.smooth.core.tool.SmoothIdLinkageMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collector;
 
 public class SmoothSpaceCampPreset implements SmoothSpaceCamp {
 
+    private static class Tuple {
+        final SmoothModuleId moduleId;
+        final SmoothModuleSpace moduleSpace;
+
+        public Tuple(SmoothModuleId moduleId, SmoothModuleSpace moduleSpace) {
+            this.moduleId = moduleId;
+            this.moduleSpace = moduleSpace;
+        }
+    }
+
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final SmoothIdLinkageMap<SmoothModuleId, SmoothModuleSpace> moduleLinkageMap = new SmoothIdLinkageMap<>();
+    private Map<String, Tuple> map = new ConcurrentHashMap<>(8);
 
     @Override
     public Set<SmoothModuleId> listModuleWithSet() {
-        return this.moduleLinkageMap.listKey();
+        return this.map.values().stream()
+                .map((tuple) -> tuple.moduleId)
+                .collect(Collector.of(
+                        TreeSet::new, Set::add,
+                        (left, right) -> {
+                            left.addAll(right);
+                            return left;
+                        }
+                ));
     }
 
     @Override
     public Optional<Set<SmoothServiceId>> listServiceWithSet(String moduleName) {
-        SmoothModuleId moduleId = this.moduleLinkageMap.getKey(moduleName);
-        if (moduleId == null) {
+        Tuple tuple = this.map.get(moduleName);
+        if (tuple == null) {
             return Optional.empty();
         }
 
-        SmoothModuleSpace moduleSpace = this.moduleLinkageMap.getValue(moduleId);
-        Set<SmoothServiceId> serviceIds = moduleSpace.listServices();
+        Set<SmoothServiceId> serviceIds = tuple.moduleSpace.listServices();
         return Optional.of(serviceIds);
     }
 
     @Override
     public SmoothModuleSpace getModuleSpace(String moduleName) throws SmoothModuleNotFoundException {
-        SmoothModuleId moduleId = this.moduleLinkageMap.getKey(moduleName);
-        if (moduleId == null) {
+        Tuple tuple = this.map.get(moduleName);
+        if (tuple == null) {
             throw new SmoothModuleNotFoundException(moduleName);
         }
 
-        return this.moduleLinkageMap.getValue(moduleId);
+        return tuple.moduleSpace;
     }
 
     @Override
     public void close() {
-        this.moduleLinkageMap.atomic(() -> {
-            this.moduleLinkageMap.foreach((moduleId, moduleSpace) -> {
-                try {
-                    moduleSpace.close();
-                } catch (Throwable t) {
-                    this.logger.error(moduleId + " close error.", t);
-                }
-            });
+        Iterator<Map.Entry<String, Tuple>> iterator = this.map.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, Tuple> entry = iterator.next();
+            Tuple tuple = entry.getValue();
 
-            this.moduleLinkageMap.close();
-        });
+            try {
+                tuple.moduleSpace.close();
+            } catch (Throwable t) {
+                this.logger.error(tuple.moduleId + " close error.", t);
+            } finally {
+                iterator.remove();
+            }
+        }
+
+        this.map = Collections.emptyMap();
     }
 
 }

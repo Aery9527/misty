@@ -17,4 +17,5 @@ public class SmoothCrossWrapper<WrappedTarget> extends SmoothCrossObject {
     public WrappedTarget getWrappedTarget() {
         return wrappedTarget;
     }
+
 }

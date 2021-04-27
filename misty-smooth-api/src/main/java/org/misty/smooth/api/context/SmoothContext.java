@@ -25,7 +25,7 @@ public interface SmoothContext {
 
     default Map<String, String> listModuleWithMap() {
         Set<SmoothModuleId> set = listModuleWithSet();
-        return set.stream().reduce(new HashMap<>(), (map, moduleId) -> {
+        return set.stream().reduce(new TreeMap<>(), (map, moduleId) -> {
             map.put(moduleId.getModuleName(), moduleId.getModuleVersion());
             return map;
         }, (m1, m2) -> {

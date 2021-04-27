@@ -2,8 +2,8 @@ package org.misty.smooth.core.context.impl;
 
 import org.misty.smooth.api.error.SmoothModuleNotFoundException;
 import org.misty.smooth.api.error.SmoothServiceNotFoundException;
-import org.misty.smooth.api.service.vo.SmoothServiceRequestOrigin;
 import org.misty.smooth.api.service.vo.SmoothServiceRequest;
+import org.misty.smooth.api.service.vo.SmoothServiceRequestOrigin;
 import org.misty.smooth.api.service.vo.SmoothServiceResponseResult;
 import org.misty.smooth.api.vo.SmoothModuleId;
 import org.misty.smooth.api.vo.SmoothServiceId;
@@ -18,7 +18,9 @@ import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.time.Instant;
-import java.util.*;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.function.BiConsumer;
@@ -40,6 +42,11 @@ public class SmoothCoreContextPreset implements SmoothCoreContext {
 
     public SmoothCoreContextPreset(String name, String version) {
         this.coreModuleId = new SmoothModuleId(name, version, this.launchInstant);
+    }
+
+    @Override
+    public String toString() {
+        return identifier();
     }
 
     @Override
@@ -68,15 +75,17 @@ public class SmoothCoreContextPreset implements SmoothCoreContext {
     }
 
     @Override
-    public Future<SmoothServiceResponseResult> invokeService(String moduleName, String serviceKey, SmoothServiceRequest serviceRequest)
-            throws SmoothModuleNotFoundException, SmoothServiceNotFoundException {
+    public Future<SmoothServiceResponseResult> invokeService(
+            String moduleName, String serviceKey, SmoothServiceRequest serviceRequest
+    ) throws SmoothModuleNotFoundException, SmoothServiceNotFoundException {
         SmoothModuleSpace moduleSpace = this.spaceCamp.getModuleSpace(moduleName);
         return moduleSpace.invokeService(serviceKey, new SmoothServiceRequestOrigin(this.coreModuleId, serviceRequest));
     }
 
     @Override
-    public void invokeService(String moduleName, String serviceKey, SmoothServiceRequest serviceRequest, Consumer<SmoothServiceResponseResult> resultProcessor)
-            throws SmoothModuleNotFoundException, SmoothServiceNotFoundException {
+    public void invokeService(
+            String moduleName, String serviceKey, SmoothServiceRequest serviceRequest, Consumer<SmoothServiceResponseResult> resultProcessor
+    ) throws SmoothModuleNotFoundException, SmoothServiceNotFoundException {
         SmoothModuleSpace moduleSpace = this.spaceCamp.getModuleSpace(moduleName);
         SmoothServiceRequestOrigin requestOrigin = new SmoothServiceRequestOrigin(this.coreModuleId, serviceRequest);
         moduleSpace.invokeService(serviceKey, requestOrigin, this.executorService, resultProcessor);
