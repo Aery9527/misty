@@ -4,7 +4,7 @@ import org.misty.smooth.manager.context.SmoothManagerContext;
 import org.misty.smooth.manager.lifecycle.SmoothManagerLifecycle;
 import org.misty.smooth.manager.lifecycle.SmoothManagerRegister;
 
-public class SmoothManagerUser implements SmoothManagerLifecycle {
+public class SmoothUserManager implements SmoothManagerLifecycle {
 
     @Override
     public String getName() {

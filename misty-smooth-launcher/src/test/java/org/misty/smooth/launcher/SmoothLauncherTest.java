@@ -8,7 +8,7 @@ import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -17,9 +17,10 @@ class SmoothLauncherTest {
     @Test
     public void test() throws NoSuchFieldException, IllegalAccessException {
         // test normal
+        printClasspath("before");
         SmoothLauncher.start();
-        List<URL> implantedLibs = SmoothLauncher.getImplantedLibs();
-        implantedLibs.forEach(System.out::println);
+        printImplantedLibs();
+        printClasspath("after");
 
         // test lack lib
         List<String> removedLibs = new ArrayList<>();
@@ -76,5 +77,33 @@ class SmoothLauncherTest {
         }
     }
 
+    private static void printClasspath(String action) {
+        System.out.println();
+        System.out.println("===== " + action + " =====");
+
+        printClasspath(SmoothLauncherTest.class.getClassLoader());
+    }
+
+    private static void printClasspath(ClassLoader classLoader) {
+        if (classLoader == null) {
+            return;
+        }
+
+        printClasspath(classLoader.getParent());
+
+        URLClassLoader ucl = (URLClassLoader) classLoader;
+        URL[] classpath = ucl.getURLs();
+
+        System.out.println("[" + classLoader + "] (" + classLoader.getClass() + ")");
+        Arrays.asList(classpath).forEach(System.out::println);
+    }
+
+    private void printImplantedLibs() {
+        System.out.println();
+        System.out.println("===== ImplantedLibs =====");
+
+        List<URL> implantedLibs = SmoothLauncher.getImplantedLibs();
+        implantedLibs.forEach(System.out::println);
+    }
 
 }
