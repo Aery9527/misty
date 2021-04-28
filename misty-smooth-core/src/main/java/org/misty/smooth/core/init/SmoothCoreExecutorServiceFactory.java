@@ -16,7 +16,7 @@ public class SmoothCoreExecutorServiceFactory implements Function<SmoothEnvironm
     private final ClassLoader executeClassLoader;
 
     public SmoothCoreExecutorServiceFactory() {
-        this.executeClassLoader = Thread.currentThread().getContextClassLoader();
+        this(Thread.currentThread().getContextClassLoader());
     }
 
     public SmoothCoreExecutorServiceFactory(ClassLoader executeClassLoader) {
@@ -80,7 +80,8 @@ public class SmoothCoreExecutorServiceFactory implements Function<SmoothEnvironm
         short max = ThreadPoolArgument.Rotation.MAX;
         int rotation = smoothEnvironment.getValue(key, new EnvironmentShortValidator(key, preset, min, max));
 
-        AtomicInteger count = new AtomicInteger(min);
+        short first = 1;
+        AtomicInteger count = new AtomicInteger(first);
         IntSupplier counter = () -> {
             int c = count.getAndIncrement();
             if (c <= rotation) {
@@ -92,7 +93,7 @@ public class SmoothCoreExecutorServiceFactory implements Function<SmoothEnvironm
                 if (c <= rotation) {
                     return c;
                 }
-                count.set(min);
+                count.set(first);
             }
 
             return count.getAndIncrement();

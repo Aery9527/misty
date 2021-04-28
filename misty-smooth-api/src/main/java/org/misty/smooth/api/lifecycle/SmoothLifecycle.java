@@ -1,7 +1,7 @@
 package org.misty.smooth.api.lifecycle;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 
 public interface SmoothLifecycle {
 
@@ -12,8 +12,8 @@ public interface SmoothLifecycle {
     /**
      * module attached message
      */
-    default List<String> getAttachment() {
-        return Collections.emptyList();
+    default Set<String> getAttachment() {
+        return Collections.emptySet();
     }
 
     default void online() {

@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 
 public interface SmoothContext {
 
-    String identifier();
+    String getIdentifier();
 
     Instant getLaunchInstant();
 

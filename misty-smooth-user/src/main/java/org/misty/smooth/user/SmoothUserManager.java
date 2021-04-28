@@ -21,4 +21,13 @@ public class SmoothUserManager implements SmoothManagerLifecycle {
 
     }
 
+    @Override
+    public void online() {
+
+    }
+
+    @Override
+    public void destroy() {
+
+    }
 }

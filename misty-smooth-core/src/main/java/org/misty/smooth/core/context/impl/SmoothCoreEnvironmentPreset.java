@@ -17,9 +17,9 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
 
     public static final String ADD_ARGUMENTS_ERROR_THROW_ACTION_FORMAT = "addArguments key(%s) or value(%s) can't be null or empty";
 
-    private final Set<String> flags = new HashSet<>();
+    private final Set<String> flags = new TreeSet<>();
 
-    private final Map<String, String> arguments = new HashMap<>();
+    private final Map<String, String> arguments = new TreeMap<>();
 
     private final FiBiConsumerThrow1<String, Collection<String>, MistyException> elementErrorThrowAction = (term, arg) -> {
         throw MistyError.ARGUMENT_ERROR.thrown(String.format(ELEMENT_ERROR_THROW_ACTION_FORMAT, term, arg));
@@ -73,7 +73,7 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
 
     @Override
     public Set<String> getFlags() {
-        return new HashSet<>(this.flags);
+        return new TreeSet<>(this.flags);
     }
 
     @Override
@@ -159,12 +159,12 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
 
     @Override
     public Set<String> getKeys() {
-        return new HashSet<>(this.arguments.keySet());
+        return new TreeSet<>(this.arguments.keySet());
     }
 
     @Override
     public Map<String, String> getArguments() {
-        return new HashMap<>(this.arguments);
+        return new TreeMap<>(this.arguments);
     }
 
     @Override
@@ -218,7 +218,7 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
     public Map<String, Optional<String>> addArguments(Map<String, String> args) {
         Examiner.refuseNullAndEmpty("args", args);
 
-        Map<String, Optional<String>> oldValues = new HashMap<>();
+        Map<String, Optional<String>> oldValues = new TreeMap<>();
 
         args.forEach((k, v) -> {
             if (Judge.isNullOrEmpty(k) || Judge.isNullOrEmpty(v)) {

@@ -45,7 +45,7 @@ public class ThreadPoolArgument {
 
         public static final short PRESET = 999;
 
-        public static final short MIX = 1;
+        public static final short MIX = 100;
 
         public static final short MAX = PRESET;
     }

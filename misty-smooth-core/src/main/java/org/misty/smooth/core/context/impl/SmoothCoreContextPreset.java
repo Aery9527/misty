@@ -12,6 +12,8 @@ import org.misty.smooth.core.context.api.SmoothCoreEnvironment;
 import org.misty.smooth.core.space.api.SmoothSpaceCamp;
 import org.misty.smooth.core.space.module.api.SmoothModuleSpace;
 import org.misty.smooth.manager.error.SmoothLoadException;
+import org.misty.smooth.manager.loader.SmoothManagerLoader;
+import org.misty.smooth.manager.loader.SmoothModuleLoader;
 import org.misty.util.fi.FiRunnable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,11 +48,11 @@ public class SmoothCoreContextPreset implements SmoothCoreContext {
 
     @Override
     public String toString() {
-        return identifier();
+        return getIdentifier();
     }
 
     @Override
-    public String identifier() {
+    public String getIdentifier() {
         return this.coreModuleId.toString();
     }
 
@@ -92,13 +94,15 @@ public class SmoothCoreContextPreset implements SmoothCoreContext {
     }
 
     @Override
-    public void loadSmoothManager(Collection<URL> sources) throws SmoothLoadException {
-        // FIXME
+    public SmoothManagerLoader loadSmoothManager(Collection<URL> sources) throws SmoothLoadException {
+        // TODO
+        return null;
     }
 
     @Override
-    public void loadSmoothModule(Collection<URL> sources) throws SmoothLoadException {
-        // FIXME
+    public SmoothModuleLoader loadSmoothModule(Collection<URL> sources) throws SmoothLoadException {
+        // TODO
+        return null;
     }
 
     @Override

@@ -64,21 +64,24 @@ public class SmoothSpaceCampPreset implements SmoothSpaceCamp {
 
     @Override
     public void close() {
-        Iterator<Map.Entry<String, Tuple>> iterator = this.map.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, Tuple> entry = iterator.next();
-            Tuple tuple = entry.getValue();
+        try {
+            Iterator<Map.Entry<String, Tuple>> iterator = this.map.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<String, Tuple> entry = iterator.next();
+                Tuple tuple = entry.getValue();
 
-            try {
-                tuple.moduleSpace.close();
-            } catch (Throwable t) {
-                this.logger.error(tuple.moduleId + " close error.", t);
-            } finally {
-                iterator.remove();
+                try {
+                    tuple.moduleSpace.close();
+                } catch (Exception e) {
+                    this.logger.error(tuple.moduleId + " close error.", e);
+                } finally {
+                    iterator.remove();
+                }
             }
-        }
 
-        this.map = Collections.emptyMap();
+        } finally {
+            this.map = Collections.emptyMap();
+        }
     }
 
 }
