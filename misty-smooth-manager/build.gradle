@@ -21,4 +21,6 @@ apply from: '../global-log-api.gradle'
 dependencies {
     compile project(':misty-description')
     compile project(':misty-smooth-api')
+
+    testImplementation project(':misty-smooth-core')
 }
