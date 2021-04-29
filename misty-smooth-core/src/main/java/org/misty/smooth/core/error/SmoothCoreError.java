@@ -4,16 +4,17 @@ import org.misty.util.error.MistyErrorDefinition;
 import org.misty.util.error.MistyException;
 
 public enum SmoothCoreError implements MistyErrorDefinition<MistyException> {
-    // 0x series [UNDEFINED]
-    // 1x series [UNDEFINED]
-    // 2x series [UNDEFINED]
-    // 3x series [UNDEFINED]
-    // 4x series [UNDEFINED]
-    // 5x series [UNDEFINED]
-    // 6x series [UNDEFINED]
-    // 7x series [UNDEFINED]
-    // 8x series [UNDEFINED]
-    // 9x series [UNDEFINED]
+    // 0x series : [UNDEFINED]
+    // 1x series : loader error
+    CLASSLOADER_BUILD_ERROR("100")
+    // 2x series : [UNDEFINED]
+    // 3x series : [UNDEFINED]
+    // 4x series : [UNDEFINED]
+    // 5x series : [UNDEFINED]
+    // 6x series : [UNDEFINED]
+    // 7x series : [UNDEFINED]
+    // 8x series : [UNDEFINED]
+    // 9x series : [UNDEFINED]
     ;
 
     private final String type = getClass().getSimpleName();

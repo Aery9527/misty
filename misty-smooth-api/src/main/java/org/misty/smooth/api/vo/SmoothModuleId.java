@@ -19,6 +19,10 @@ public final class SmoothModuleId implements SmoothId<SmoothModuleId> {
 
     private String descriptionWithLaunchTime;
 
+    public SmoothModuleId(String moduleName, String moduleVersion) {
+        this(moduleName, moduleVersion, Instant.now());
+    }
+
     public SmoothModuleId(String moduleName, String moduleVersion, Instant launchTime) {
         this.moduleName = moduleName;
         this.moduleVersion = moduleVersion;
@@ -33,7 +37,7 @@ public final class SmoothModuleId implements SmoothId<SmoothModuleId> {
 
     @Override
     public String toString() {
-        return this.description;
+        return toStringWithLaunchTime();
     }
 
     @Override

@@ -35,7 +35,7 @@ public class SmoothManagerId implements SmoothId<SmoothManagerId> {
 
     @Override
     public String toString() {
-        return this.description;
+        return toStringWithLaunchTime();
     }
 
     @Override
