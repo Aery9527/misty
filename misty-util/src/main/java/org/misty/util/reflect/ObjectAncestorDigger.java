@@ -2,7 +2,6 @@ package org.misty.util.reflect;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,15 +15,20 @@ public class ObjectAncestorDigger {
         return list;
     }
 
-    public static <T> List<Class<?>> findSuperClassGenericTypes(Class<? extends T> targetClass, Class<T> superClass) throws UnsupportedOperationException {
+    public static <T> List<Class<?>> findSuperClassGenericTypes(
+            Class<? extends T> targetClass, Class<T> superClass
+    ) throws UnsupportedOperationException {
         try {
             return searchSuperClassGenericTypes(targetClass, superClass);
         } catch (ErrorGenericType errorGenericType) {
-            throw new UnsupportedOperationException(targetClass.getName() + " super class " + superClass.getName() + " generic type error.", errorGenericType);
+            String msg = targetClass.getName() + " super class " + superClass.getName() + " generic type error.";
+            throw new UnsupportedOperationException(msg, errorGenericType);
         }
     }
 
-    public static <T> Optional<Class<?>> findSuperClassGenericType(Class<? extends T> targetClass, Class<T> superClass, int index) throws UnsupportedOperationException {
+    public static <T> Optional<Class<?>> findSuperClassGenericType(
+            Class<? extends T> targetClass, Class<T> superClass, int index
+    ) throws UnsupportedOperationException {
         List<Class<?>> types = findSuperClassGenericTypes(targetClass, superClass);
         if (index >= types.size()) {
             return Optional.empty();
@@ -33,16 +37,21 @@ public class ObjectAncestorDigger {
         }
     }
 
-    public static <T> List<Class<?>> findInterfaceGenericTypes(Class<? extends T> targetClass, Class<T> interfaceClass) throws UnsupportedOperationException {
+    public static <T> List<Class<?>> findInterfaceGenericTypes(
+            Class<? extends T> targetClass, Class<T> interfaceClass
+    ) throws UnsupportedOperationException {
         try {
             Optional<List<Class<?>>> result = searchInterfaceGenericTypes(targetClass, interfaceClass);
             return result.orElse(Collections.emptyList());
         } catch (ErrorGenericType errorGenericType) {
-            throw new UnsupportedOperationException(targetClass.getName() + " interface " + interfaceClass.getName() + " generic type error.", errorGenericType);
+            String msg = targetClass.getName() + " interface " + interfaceClass.getName() + " generic type error.";
+            throw new UnsupportedOperationException(msg, errorGenericType);
         }
     }
 
-    public static <T> Optional<Class<?>> findInterfaceGenericType(Class<? extends T> targetClass, Class<T> interfaceClass, int index) throws UnsupportedOperationException {
+    public static <T> Optional<Class<?>> findInterfaceGenericType(
+            Class<? extends T> targetClass, Class<T> interfaceClass, int index
+    ) throws UnsupportedOperationException {
         List<Class<?>> types = findInterfaceGenericTypes(targetClass, interfaceClass);
         if (index >= types.size()) {
             return Optional.empty();
@@ -51,7 +60,10 @@ public class ObjectAncestorDigger {
         }
     }
 
-    private static <T> List<Class<?>> searchSuperClassGenericTypes(Class<? extends T> targetClass, Class<T> superClass) throws ErrorGenericType {
+    @SuppressWarnings("unchecked")
+    private static <T> List<Class<?>> searchSuperClassGenericTypes(
+            Class<? extends T> targetClass, Class<T> superClass
+    ) throws ErrorGenericType {
         if (targetClass.equals(Object.class)) {
             return Collections.emptyList();
         }
@@ -81,7 +93,9 @@ public class ObjectAncestorDigger {
         }
     }
 
-    private static Optional<List<Class<?>>> searchInterfaceGenericTypes(Class<?> targetClass, Class<?> interfaceClass) throws ErrorGenericType {
+    private static Optional<List<Class<?>>> searchInterfaceGenericTypes(
+            Class<?> targetClass, Class<?> interfaceClass
+    ) throws ErrorGenericType {
         Type[] genericInterfaces = targetClass.getGenericInterfaces();
 
         Optional<List<Class<?>>> result = Optional.empty();
@@ -145,7 +159,7 @@ public class ObjectAncestorDigger {
     private static class ErrorGenericType extends Exception {
 
         private static String mixMsg(ParameterizedType classType, Type genericType) {
-            return "the generic type <" + genericType.toString() + "> of " + classType.getRawType() + " is not clearly class from classloader.";
+            return "the generic type <" + genericType + "> of " + classType.getRawType() + " is not clearly class from classloader.";
         }
 
         private final ParameterizedType classType;

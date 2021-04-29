@@ -8,10 +8,10 @@ public interface FI {
             runnableThrow1.runOrThrow();
         } catch (Exception e) {
             try {
-                throw (ThrowableType) e; // ThrowableType被外部呼叫時決定為A-exception, 但真正執行時拋出B-exception時, 這裡轉型會過...滿神奇的...
+                throw (ThrowableType) e;
             } catch (ClassCastException cce) {
                 cce.printStackTrace();
-                throw new RuntimeException(e); // 所以基本上不會跑到這...因為不會轉型錯誤...
+                throw new RuntimeException(e);
             }
         }
     }
@@ -23,10 +23,10 @@ public interface FI {
             return supplierThrow1.getOrThrow();
         } catch (Exception e) {
             try {
-                throw (ThrowableType) e; // ThrowableType被外部呼叫時決定為A-exception, 但真正執行時拋出B-exception時, 這裡轉型會過...滿神奇的...
+                throw (ThrowableType) e;
             } catch (ClassCastException cce) {
                 cce.printStackTrace();
-                throw new RuntimeException(e); // 所以基本上不會跑到這...因為不會轉型錯誤...
+                throw new RuntimeException(e);
             }
         }
     }

@@ -9,8 +9,11 @@ import org.misty.smooth.api.vo.SmoothModuleId;
 import org.misty.smooth.api.vo.SmoothServiceId;
 import org.misty.smooth.core.context.api.SmoothCoreContext;
 import org.misty.smooth.core.context.api.SmoothCoreEnvironment;
-import org.misty.smooth.core.space.api.SmoothSpaceCamp;
-import org.misty.smooth.core.space.module.api.SmoothModuleSpace;
+import org.misty.smooth.core.context.api.SmoothDomainCamp;
+import org.misty.smooth.core.domain.loader.api.SmoothDomainLoaderFactory;
+import org.misty.smooth.core.domain.manager.loader.SmoothManagerDomainLoader;
+import org.misty.smooth.core.domain.module.loader.SmoothModuleDomainLoader;
+import org.misty.smooth.core.domain.module.api.SmoothModuleDomain;
 import org.misty.smooth.manager.error.SmoothLoadException;
 import org.misty.smooth.manager.loader.SmoothManagerLoader;
 import org.misty.smooth.manager.loader.SmoothModuleLoader;
@@ -41,7 +44,9 @@ public class SmoothCoreContextPreset implements SmoothCoreContext {
 
     private ExecutorService executorService;
 
-    private SmoothSpaceCamp spaceCamp;
+    private SmoothDomainCamp domainCamp;
+
+    private SmoothDomainLoaderFactory domainLoaderFactory;
 
     public SmoothCoreContextPreset(String name, String version) {
         this.coreModuleId = new SmoothModuleId(name, version, this.launchInstant);
@@ -69,43 +74,50 @@ public class SmoothCoreContextPreset implements SmoothCoreContext {
 
     @Override
     public Set<SmoothModuleId> listModuleWithSet() {
-        return this.spaceCamp.listModuleWithSet();
+        return this.domainCamp.listModuleWithSet();
     }
 
     @Override
     public Optional<Set<SmoothServiceId>> listServiceWithSet(String moduleName) {
-        return this.spaceCamp.listServiceWithSet(moduleName);
+        return this.domainCamp.listServiceWithSet(moduleName);
     }
 
     @Override
     public Future<SmoothServiceResponseResult> invokeService(
             String moduleName, String serviceKey, SmoothServiceRequest serviceRequest
     ) throws SmoothModuleNotFoundException, SmoothServiceNotFoundException {
-        SmoothModuleSpace moduleSpace = this.spaceCamp.getModuleSpace(moduleName);
-        return moduleSpace.invokeService(serviceKey, new SmoothServiceRequestOrigin(this.coreModuleId, serviceRequest));
+        SmoothModuleDomain moduleDomain = this.domainCamp.getModuleDomain(moduleName);
+        return moduleDomain.invokeService(serviceKey, new SmoothServiceRequestOrigin(this.coreModuleId, serviceRequest));
     }
 
     @Override
     public void invokeService(
             String moduleName, String serviceKey, SmoothServiceRequest serviceRequest, Consumer<SmoothServiceResponseResult> resultProcessor
     ) throws SmoothModuleNotFoundException, SmoothServiceNotFoundException {
-        SmoothModuleSpace moduleSpace = this.spaceCamp.getModuleSpace(moduleName);
+        SmoothModuleDomain moduleDomain = this.domainCamp.getModuleDomain(moduleName);
         SmoothServiceRequestOrigin requestOrigin = new SmoothServiceRequestOrigin(this.coreModuleId, serviceRequest);
-        moduleSpace.invokeService(serviceKey, requestOrigin, this.executorService, resultProcessor);
+        moduleDomain.invokeService(serviceKey, requestOrigin, this.executorService, resultProcessor);
     }
 
     @Override
     public SmoothManagerLoader loadSmoothManager(SmoothLoaderArgument loaderArgument, Collection<URL> sources) throws SmoothLoadException {
         loaderArgument.lock();
 
-        return null;
+        SmoothManagerDomainLoader managerLoader = this.domainLoaderFactory.buildManagerLoader(loaderArgument, sources);
+        // TODO
+        managerLoader.launch();
+        return managerLoader;
     }
 
     @Override
     public SmoothModuleLoader loadSmoothModule(SmoothLoaderArgument loaderArgument, Collection<URL> sources) throws SmoothLoadException {
         loaderArgument.lock();
 
-        return null;
+        SmoothModuleDomainLoader moduleLoader = this.domainLoaderFactory.buildModuleLoader(loaderArgument, sources);
+        moduleLoader.setDomainCamp(this.domainCamp);
+        // TODO
+        moduleLoader.launch();
+        return moduleLoader;
     }
 
     @Override
@@ -119,7 +131,7 @@ public class SmoothCoreContextPreset implements SmoothCoreContext {
             }
         };
 
-        errorHandle.accept("spaceCamp.close", this.spaceCamp::close);
+        errorHandle.accept("domainCamp.close", this.domainCamp::close);
         errorHandle.accept("executorService.shutdown", this.executorService::shutdown);
     }
 
@@ -131,8 +143,12 @@ public class SmoothCoreContextPreset implements SmoothCoreContext {
         this.executorService = executorService;
     }
 
-    public void setSpaceCamp(SmoothSpaceCamp spaceCamp) {
-        this.spaceCamp = spaceCamp;
+    public void setDomainCamp(SmoothDomainCamp domainCamp) {
+        this.domainCamp = domainCamp;
+    }
+
+    public void setDomainLoaderFactory(SmoothDomainLoaderFactory domainLoaderFactory) {
+        this.domainLoaderFactory = domainLoaderFactory;
     }
 
 }

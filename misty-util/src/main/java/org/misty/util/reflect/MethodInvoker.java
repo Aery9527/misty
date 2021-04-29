@@ -45,7 +45,9 @@ public class MethodInvoker {
         return new VoidMethod(this.target, method);
     }
 
-    public <ReturnType> ReturnMethod<ReturnType> find(Class<ReturnType> returnType, String methodName, Class<?>... parameterTypes) throws NoSuchMethodException {
+    public <ReturnType> ReturnMethod<ReturnType> find(
+            Class<ReturnType> returnType, String methodName, Class<?>... parameterTypes
+    ) throws NoSuchMethodException {
         Method method = this.clazz.getMethod(methodName, parameterTypes);
 
         checkModifier(method);

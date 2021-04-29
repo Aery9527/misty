@@ -4,6 +4,7 @@ import org.misty.util.fi.FiSupplier;
 
 import java.lang.reflect.Constructor;
 
+@SuppressWarnings("SpellCheckingInspection")
 public class ObjectInstantiator<TargetType> {
 
     private final Class<TargetType> target;
@@ -34,6 +35,7 @@ public class ObjectInstantiator<TargetType> {
             this.constructor = constructor;
         }
 
+        @SuppressWarnings("SpellCheckingInspection")
         public TargetType instance(Object... initargs) {
             FiSupplier<TargetType> action = () -> this.constructor.newInstance(initargs);
             return action.getOrHandle();

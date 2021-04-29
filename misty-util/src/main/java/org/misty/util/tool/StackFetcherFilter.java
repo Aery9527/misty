@@ -35,6 +35,11 @@ public interface StackFetcherFilter {
         };
     }
 
+    /**
+     * TODO 之後記得搬到spring的工具裡去
+     *
+     * @return
+     */
     static StackFetcherFilter filterSpringAOP() {
         return (ste) -> {
             String className = ste.getClassName();

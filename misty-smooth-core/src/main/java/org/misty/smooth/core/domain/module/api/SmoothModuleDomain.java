@@ -1,16 +1,17 @@
-package org.misty.smooth.core.space.module.api;
+package org.misty.smooth.core.domain.module.api;
 
 import org.misty.smooth.api.error.SmoothServiceNotFoundException;
 import org.misty.smooth.api.service.vo.SmoothServiceRequestOrigin;
 import org.misty.smooth.api.service.vo.SmoothServiceResponseResult;
 import org.misty.smooth.api.vo.SmoothServiceId;
+import org.misty.smooth.core.domain.api.SmoothDomain;
 
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
-public interface SmoothModuleSpace {
+public interface SmoothModuleDomain extends SmoothDomain {
 
     Set<SmoothServiceId> listServices();
 
@@ -20,7 +21,5 @@ public interface SmoothModuleSpace {
     void invokeService(String serviceKey, SmoothServiceRequestOrigin requestOrigin
             , ExecutorService invokeExecutorService, Consumer<SmoothServiceResponseResult> resultProcessor)
             throws SmoothServiceNotFoundException;
-
-    void close();
 
 }

@@ -1,10 +1,10 @@
-package org.misty.smooth.core.space.impl;
+package org.misty.smooth.core.context.impl;
 
 import org.misty.smooth.api.error.SmoothModuleNotFoundException;
 import org.misty.smooth.api.vo.SmoothModuleId;
 import org.misty.smooth.api.vo.SmoothServiceId;
-import org.misty.smooth.core.space.api.SmoothSpaceCamp;
-import org.misty.smooth.core.space.module.api.SmoothModuleSpace;
+import org.misty.smooth.core.context.api.SmoothDomainCamp;
+import org.misty.smooth.core.domain.module.api.SmoothModuleDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,15 +12,15 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collector;
 
-public class SmoothSpaceCampPreset implements SmoothSpaceCamp {
+public class SmoothDomainCampPreset implements SmoothDomainCamp {
 
     private static class Tuple {
         final SmoothModuleId moduleId;
-        final SmoothModuleSpace moduleSpace;
+        final SmoothModuleDomain moduleDomain;
 
-        public Tuple(SmoothModuleId moduleId, SmoothModuleSpace moduleSpace) {
+        public Tuple(SmoothModuleId moduleId, SmoothModuleDomain moduleDomain) {
             this.moduleId = moduleId;
-            this.moduleSpace = moduleSpace;
+            this.moduleDomain = moduleDomain;
         }
     }
 
@@ -48,18 +48,18 @@ public class SmoothSpaceCampPreset implements SmoothSpaceCamp {
             return Optional.empty();
         }
 
-        Set<SmoothServiceId> serviceIds = tuple.moduleSpace.listServices();
+        Set<SmoothServiceId> serviceIds = tuple.moduleDomain.listServices();
         return Optional.of(serviceIds);
     }
 
     @Override
-    public SmoothModuleSpace getModuleSpace(String moduleName) throws SmoothModuleNotFoundException {
+    public SmoothModuleDomain getModuleDomain(String moduleName) throws SmoothModuleNotFoundException {
         Tuple tuple = this.map.get(moduleName);
         if (tuple == null) {
             throw new SmoothModuleNotFoundException(moduleName);
         }
 
-        return tuple.moduleSpace;
+        return tuple.moduleDomain;
     }
 
     @Override
@@ -71,7 +71,7 @@ public class SmoothSpaceCampPreset implements SmoothSpaceCamp {
                 Tuple tuple = entry.getValue();
 
                 try {
-                    tuple.moduleSpace.close();
+                    tuple.moduleDomain.close();
                 } catch (Exception e) {
                     this.logger.error(tuple.moduleId + " close error.", e);
                 } finally {

@@ -1,10 +1,6 @@
 package org.misty.util.tool;
 
-import java.util.Random;
-
 public class ThreadSleep {
-
-    private static final Random RANDOM = new Random();
 
     public static void withSecond(float second) {
         withMillis((long) (second * 1000L));
@@ -14,7 +10,7 @@ public class ThreadSleep {
         try {
             Thread.sleep(millis);
         } catch (InterruptedException e) {
-            // not thing to do
+            Thread.currentThread().interrupt(); // reset interrupt state
         }
     }
 

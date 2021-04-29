@@ -4,10 +4,12 @@ import org.misty.smooth.api.context.SmoothEnvironment;
 import org.misty.smooth.core.MistyDescription$SmoothCore;
 import org.misty.smooth.core.context.api.SmoothCoreContext;
 import org.misty.smooth.core.context.api.SmoothCoreEnvironment;
+import org.misty.smooth.core.context.api.SmoothDomainCamp;
 import org.misty.smooth.core.context.impl.SmoothCoreContextPreset;
 import org.misty.smooth.core.context.impl.SmoothCoreEnvironmentPreset;
-import org.misty.smooth.core.space.api.SmoothSpaceCamp;
-import org.misty.smooth.core.space.impl.SmoothSpaceCampPreset;
+import org.misty.smooth.core.context.impl.SmoothDomainCampPreset;
+import org.misty.smooth.core.domain.loader.api.SmoothDomainLoaderFactory;
+import org.misty.smooth.core.domain.loader.impl.SmoothDomainLoaderFactoryPreset;
 import org.misty.util.verify.Examiner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +52,9 @@ public class SmoothCoreContextBuilder {
 
     private Function<SmoothEnvironment, ExecutorService> executorServiceFactory = new SmoothCoreExecutorServiceFactory();
 
-    private BiFunction<SmoothEnvironment, ExecutorService, SmoothSpaceCamp> spaceCampFactory;
+    private BiFunction<SmoothEnvironment, ExecutorService, SmoothDomainCamp> domainCampFactory;
+
+    private BiFunction<SmoothEnvironment, ExecutorService, SmoothDomainLoaderFactory> domainLoaderFactoryFactory;
 
     public SmoothCoreContextBuilder() {
         this(new String[]{});
@@ -74,7 +78,9 @@ public class SmoothCoreContextBuilder {
         ExecutorService executorService = setupExecutorService(context, environment);
 
         ContextSetter contextSetter = new ContextSetter(environment, executorService);
-        contextSetter.set("smoothSpaceCamp", this.spaceCampFactory, SmoothSpaceCampPreset::new, context::setSpaceCamp);
+        contextSetter.set("domainCampFactory", this.domainCampFactory, SmoothDomainCampPreset::new, context::setDomainCamp);
+        contextSetter.set("domainLoaderFactoryFactory", this.domainLoaderFactoryFactory, SmoothDomainLoaderFactoryPreset::new,
+                context::setDomainLoaderFactory);
 
         return context;
     }
@@ -147,11 +153,20 @@ public class SmoothCoreContextBuilder {
         this.executorServiceFactory = executorServiceFactory;
     }
 
-    public BiFunction<SmoothEnvironment, ExecutorService, SmoothSpaceCamp> getSpaceCampFactory() {
-        return spaceCampFactory;
+    public BiFunction<SmoothEnvironment, ExecutorService, SmoothDomainCamp> getDomainCampFactory() {
+        return domainCampFactory;
     }
 
-    public void setSpaceCampFactory(BiFunction<SmoothEnvironment, ExecutorService, SmoothSpaceCamp> spaceCampFactory) {
-        this.spaceCampFactory = spaceCampFactory;
+    public void setDomainCampFactory(BiFunction<SmoothEnvironment, ExecutorService, SmoothDomainCamp> domainCampFactory) {
+        this.domainCampFactory = domainCampFactory;
     }
+
+    public BiFunction<SmoothEnvironment, ExecutorService, SmoothDomainLoaderFactory> getDomainLoaderFactoryFactory() {
+        return domainLoaderFactoryFactory;
+    }
+
+    public void setDomainLoaderFactoryFactory(BiFunction<SmoothEnvironment, ExecutorService, SmoothDomainLoaderFactory> domainLoaderFactoryFactory) {
+        this.domainLoaderFactoryFactory = domainLoaderFactoryFactory;
+    }
+
 }

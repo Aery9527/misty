@@ -1,4 +1,4 @@
-package org.misty.smooth.core.space.module.impl;
+package org.misty.smooth.core.domain.module.impl;
 
 import org.misty.smooth.api.error.SmoothServiceNotFoundException;
 import org.misty.smooth.api.lifecycle.SmoothLifecycle;
@@ -8,7 +8,7 @@ import org.misty.smooth.api.service.vo.SmoothServiceResponse;
 import org.misty.smooth.api.service.vo.SmoothServiceResponseResult;
 import org.misty.smooth.api.vo.SmoothModuleId;
 import org.misty.smooth.api.vo.SmoothServiceId;
-import org.misty.smooth.core.space.module.api.SmoothModuleSpace;
+import org.misty.smooth.core.domain.module.api.SmoothModuleDomain;
 
 import java.util.Collections;
 import java.util.Map;
@@ -19,7 +19,7 @@ import java.util.concurrent.Future;
 import java.util.function.Consumer;
 import java.util.stream.Collector;
 
-public class SmoothModuleSpacePreset implements SmoothModuleSpace {
+public class SmoothModuleDomainPreset implements SmoothModuleDomain {
 
     private static class Tuple {
         final SmoothServiceId serviceId;
