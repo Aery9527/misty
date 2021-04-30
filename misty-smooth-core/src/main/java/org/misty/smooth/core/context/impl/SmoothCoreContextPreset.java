@@ -104,6 +104,7 @@ public class SmoothCoreContextPreset implements SmoothCoreContext {
         loaderArgument.lock();
 
         SmoothManagerDomainLoader managerLoader = this.domainLoaderFactory.buildManagerLoader(loaderArgument, sources);
+//        managerLoader.setLoadTypeController();
         // TODO
         managerLoader.launch();
         return managerLoader;

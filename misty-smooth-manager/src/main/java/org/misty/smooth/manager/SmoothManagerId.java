@@ -21,6 +21,10 @@ public class SmoothManagerId implements SmoothId<SmoothManagerId> {
 
     private String descriptionWithLaunchTime;
 
+    public SmoothManagerId(String managerName, String managerVersion) {
+        this(managerName, managerVersion, Instant.now());
+    }
+
     public SmoothManagerId(String managerName, String managerVersion, Instant launchTime) {
         this.managerName = managerName;
         this.managerVersion = managerVersion;

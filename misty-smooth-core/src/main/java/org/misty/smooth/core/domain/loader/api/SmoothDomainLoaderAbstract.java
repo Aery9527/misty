@@ -1,32 +1,48 @@
 package org.misty.smooth.core.domain.loader.api;
 
+import org.misty.smooth.api.lifecycle.SmoothLifecycle;
 import org.misty.smooth.api.vo.SmoothId;
-import org.misty.smooth.core.domain.loader.preset.api.SmoothDomainLifecycleThreadFactory;
 import org.misty.smooth.manager.error.SmoothLoadException;
 import org.misty.smooth.manager.loader.SmoothLoader;
 import org.misty.smooth.manager.loader.enums.SmoothLoadState;
 import org.misty.smooth.manager.loader.enums.SmoothLoadType;
 import org.misty.smooth.manager.loader.vo.SmoothLoaderArgument;
+import org.misty.util.tool.AtomicStep;
 
 import java.util.function.Consumer;
 
 public abstract class SmoothDomainLoaderAbstract<
-        SmoothIdType extends SmoothId<SmoothIdType>, LoadType extends SmoothLoader<SmoothIdType, LoadType>
-        > implements SmoothLoader<SmoothIdType, LoadType>, SmoothDomainLoader {
+        SmoothIdType extends SmoothId<SmoothIdType>,
+        LoadType extends SmoothLoader<SmoothIdType, LoadType>,
+        LifecycleType extends SmoothLifecycle
+        > implements SmoothLoader<SmoothIdType, LoadType>, SmoothDomainLoader<SmoothIdType> {
 
     private SmoothIdType smoothId;
 
-    private SmoothLoadState loadState = SmoothLoadState.LOADING;
+    private AtomicStep<SmoothLoadState> loadState = new AtomicStep<>(SmoothLoadState.INITIAL);
 
     private SmoothLoadType loadType;
 
     private SmoothLoaderArgument loaderArgument;
 
-    private SmoothDomainLifecycleThreadFactory lifecycleThreadFactory;
+    private LifecycleType domainLifecycle;
+
+    private SmoothDomainLaunchThreadFactory<SmoothIdType> launchThreadFactory;
+
+    private SmoothDomainLoadTypeController<SmoothIdType> loadTypeController;
+
+    private Consumer<LoadType> loadFinishAction;
 
     @Override
-    public LoadType registerLoadFinishAction(Consumer<LoadType> action) throws SmoothLoadException {
-        return null;
+    public void launch() {
+        this.loadState.to((currentState) -> {
+            return currentState.toNext(SmoothLoadState.LOADING, (previousState) -> {
+                // TODO
+            });
+        });
+        checkField();
+
+
     }
 
     @Override
@@ -35,8 +51,12 @@ public abstract class SmoothDomainLoaderAbstract<
     }
 
     @Override
-    public void launch() {
+    public LoadType registerLoadFinishAction(Consumer<LoadType> action) throws SmoothLoadException {
+        this.loadFinishAction = action;
+        return (LoadType) this;
+    }
 
+    private void checkField() {
     }
 
     @Override
@@ -50,11 +70,7 @@ public abstract class SmoothDomainLoaderAbstract<
 
     @Override
     public SmoothLoadState getLoadState() {
-        return loadState;
-    }
-
-    public void setLoadState(SmoothLoadState loadState) {
-        this.loadState = loadState;
+        return loadState.get();
     }
 
     @Override
@@ -75,12 +91,29 @@ public abstract class SmoothDomainLoaderAbstract<
         this.loaderArgument = loaderArgument;
     }
 
-    public SmoothDomainLifecycleThreadFactory getLifecycleThreadFactory() {
-        return lifecycleThreadFactory;
+    public LifecycleType getDomainLifecycle() {
+        return domainLifecycle;
     }
 
-    public void setLifecycleThreadFactory(SmoothDomainLifecycleThreadFactory lifecycleThreadFactory) {
-        this.lifecycleThreadFactory = lifecycleThreadFactory;
+    public void setDomainLifecycle(LifecycleType domainLifecycle) {
+        this.domainLifecycle = domainLifecycle;
+    }
+
+    public SmoothDomainLaunchThreadFactory<SmoothIdType> getLaunchThreadFactory() {
+        return launchThreadFactory;
+    }
+
+    public void setLaunchThreadFactory(SmoothDomainLaunchThreadFactory<SmoothIdType> launchThreadFactory) {
+        this.launchThreadFactory = launchThreadFactory;
+    }
+
+    public SmoothDomainLoadTypeController<SmoothIdType> getLoadTypeController() {
+        return loadTypeController;
+    }
+
+    @Override
+    public void setLoadTypeController(SmoothDomainLoadTypeController<SmoothIdType> loadTypeController) {
+        this.loadTypeController = loadTypeController;
     }
 
 }
