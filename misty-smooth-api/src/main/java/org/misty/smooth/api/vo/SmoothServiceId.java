@@ -19,11 +19,6 @@ public final class SmoothServiceId implements SmoothId<SmoothServiceId> {
     }
 
     @Override
-    public String getTypeKey() {
-        return this.serviceKey;
-    }
-
-    @Override
     public String toString() {
         return this.description;
     }
@@ -56,4 +51,10 @@ public final class SmoothServiceId implements SmoothId<SmoothServiceId> {
     public String getServiceName() {
         return serviceName;
     }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
 }

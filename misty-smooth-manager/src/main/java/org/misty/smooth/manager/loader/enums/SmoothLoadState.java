@@ -9,33 +9,49 @@ import java.util.function.Consumer;
 public enum SmoothLoadState {
     INITIAL,
     LOADING,
-    OFFLINE,
+    LOAD_FAILED,
+    WAITING_ONLINE,
+    GOING_ONLINE,
     ONLINE,
+    ONLINE_FAILED,
     DESTROYING,
     DESTROYED;
 
     static {
-        INITIAL.allowNextState = Collections.singleton(LOADING);
-        LOADING.allowNextState = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(OFFLINE, DESTROYING)));
-        OFFLINE.allowNextState = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(ONLINE, DESTROYING)));
-        ONLINE.allowNextState = Collections.singleton(DESTROYING);
-        DESTROYING.allowNextState = Collections.singleton(DESTROYED);
-        DESTROYED.allowNextState = Collections.emptySet();
+        INITIAL.allowedNextState = collect(LOADING);
+        LOADING.allowedNextState = collect(WAITING_ONLINE, LOAD_FAILED);
+        LOAD_FAILED.allowedNextState = collect(LOADING, DESTROYING);
+        WAITING_ONLINE.allowedNextState = collect(GOING_ONLINE, DESTROYING);
+        GOING_ONLINE.allowedNextState = collect(ONLINE, ONLINE_FAILED);
+        ONLINE_FAILED.allowedNextState = collect(GOING_ONLINE, DESTROYING);
+        ONLINE.allowedNextState = collect(DESTROYING);
+        DESTROYING.allowedNextState = collect(DESTROYED);
+        DESTROYED.allowedNextState = collect();
     }
 
-    private Set<SmoothLoadState> allowNextState;
-
-    public SmoothLoadState toNext(SmoothLoadState nextState, Consumer<SmoothLoadState> denyAction) {
-        if (this.allowNextState.contains(nextState)) {
-            return nextState;
+    private static Set<SmoothLoadState> collect(SmoothLoadState... states) {
+        if (states.length == 0) {
+            return Collections.emptySet();
+        } else if (states.length == 1) {
+            return Collections.singleton(states[0]);
         } else {
-            denyAction.accept(this);
-            return null;
+            return Collections.unmodifiableSet(new HashSet<>(Arrays.asList(states)));
         }
     }
 
-    public Set<SmoothLoadState> getAllowNextState() {
-        return allowNextState;
+    private Set<SmoothLoadState> allowedNextState;
+
+    public SmoothLoadState toNext(SmoothLoadState nextState, Consumer<SmoothLoadState> denyAction) {
+        if (this.allowedNextState.contains(nextState)) {
+            return nextState;
+        } else {
+            denyAction.accept(this);
+            return this;
+        }
+    }
+
+    public Set<SmoothLoadState> getAllowedNextStates() {
+        return allowedNextState;
     }
 
 }

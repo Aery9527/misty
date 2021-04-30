@@ -5,8 +5,9 @@ import org.misty.util.error.MistyException;
 
 public enum SmoothCoreError implements MistyErrorDefinition<MistyException> {
     // 0x series : [UNDEFINED]
-    // 1x series : loader error
-    CLASSLOADER_BUILD_ERROR("100")
+    // 1x series : domain loader error
+    DOMAIN_CLASSLOADER_BUILD_ERROR("100"),
+    DOMAIN_LOAD_STATE_ERROR("101"),
     // 2x series : [UNDEFINED]
     // 3x series : [UNDEFINED]
     // 4x series : [UNDEFINED]

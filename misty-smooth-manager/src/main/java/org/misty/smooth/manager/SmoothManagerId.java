@@ -33,11 +33,6 @@ public class SmoothManagerId implements SmoothId<SmoothManagerId> {
     }
 
     @Override
-    public String getTypeKey() {
-        return this.managerName;
-    }
-
-    @Override
     public String toString() {
         return toStringWithLaunchTime();
     }
@@ -78,6 +73,11 @@ public class SmoothManagerId implements SmoothId<SmoothManagerId> {
 
     public String getManagerVersion() {
         return managerVersion;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
     }
 
     public Instant getLaunchTime() {

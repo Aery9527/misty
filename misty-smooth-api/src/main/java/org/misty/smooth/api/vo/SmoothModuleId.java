@@ -31,11 +31,6 @@ public final class SmoothModuleId implements SmoothId<SmoothModuleId> {
     }
 
     @Override
-    public String getTypeKey() {
-        return this.moduleName;
-    }
-
-    @Override
     public String toString() {
         return toStringWithLaunchTime();
     }
@@ -76,6 +71,11 @@ public final class SmoothModuleId implements SmoothId<SmoothModuleId> {
 
     public String getModuleVersion() {
         return moduleVersion;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
     }
 
     public Instant getLaunchTime() {

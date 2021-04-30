@@ -1,21 +1,21 @@
 package org.misty.smooth.api.service.vo;
 
-import org.misty.smooth.api.vo.SmoothModuleId;
+import org.misty.smooth.api.vo.SmoothId;
 
 public final class SmoothServiceRequestOrigin {
 
     public static final String STRING_FORMAT = SmoothServiceRequestOrigin.class.getSimpleName() + "[from:%s]";
 
-    private final SmoothModuleId invokedModule;
+    private final SmoothId<?> invoker;
 
     private final SmoothServiceRequest request;
 
     private final String toString;
 
-    public SmoothServiceRequestOrigin(SmoothModuleId invokedModule, SmoothServiceRequest request) {
-        this.invokedModule = invokedModule;
+    public SmoothServiceRequestOrigin(SmoothId<?> invoker, SmoothServiceRequest request) {
+        this.invoker = invoker;
         this.request = request;
-        this.toString = String.format(STRING_FORMAT, this.invokedModule.toString());
+        this.toString = String.format(STRING_FORMAT, this.invoker.getDescription());
     }
 
     @Override
@@ -23,11 +23,13 @@ public final class SmoothServiceRequestOrigin {
         return this.toString;
     }
 
-    public SmoothModuleId getInvokedModule() {
-        return invokedModule;
+    public SmoothId<?> getInvoker() {
+        return invoker;
     }
 
     public SmoothServiceRequest getRequest() {
         return request;
     }
+
+
 }

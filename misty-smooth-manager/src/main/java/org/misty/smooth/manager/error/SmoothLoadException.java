@@ -2,6 +2,14 @@ package org.misty.smooth.manager.error;
 
 public class SmoothLoadException extends SmoothManagerException {
 
+    public static SmoothLoadException wrap(Throwable t) {
+        if (t instanceof SmoothLoadException) {
+            throw (SmoothLoadException) t;
+        } else {
+            throw new SmoothLoadException(t);
+        }
+    }
+
     public SmoothLoadException() {
     }
 

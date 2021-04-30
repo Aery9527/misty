@@ -1,14 +1,21 @@
 package org.misty.smooth.core.domain.loader.api;
 
+import org.misty.smooth.api.cross.SmoothCrossObject;
 import org.misty.smooth.api.lifecycle.SmoothLifecycle;
 import org.misty.smooth.api.vo.SmoothId;
+import org.misty.smooth.core.error.SmoothCoreError;
 import org.misty.smooth.manager.error.SmoothLoadException;
 import org.misty.smooth.manager.loader.SmoothLoader;
 import org.misty.smooth.manager.loader.enums.SmoothLoadState;
 import org.misty.smooth.manager.loader.enums.SmoothLoadType;
 import org.misty.smooth.manager.loader.vo.SmoothLoaderArgument;
-import org.misty.util.tool.AtomicStep;
+import org.misty.util.tool.AtomicUpdater;
+import org.misty.util.verify.Examiner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 public abstract class SmoothDomainLoaderAbstract<
@@ -17,9 +24,15 @@ public abstract class SmoothDomainLoaderAbstract<
         LifecycleType extends SmoothLifecycle
         > implements SmoothLoader<SmoothIdType, LoadType>, SmoothDomainLoader<SmoothIdType> {
 
-    private SmoothIdType smoothId;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private AtomicStep<SmoothLoadState> loadState = new AtomicStep<>(SmoothLoadState.INITIAL);
+    private final AtomicUpdater<SmoothLoadState> loadState = new AtomicUpdater<>(SmoothLoadState.INITIAL);
+
+    private final AtomicReference<Consumer<LoadType>> loadFinishAction = new AtomicReference<>();
+
+    private SmoothCrossObject domainCrosser;
+
+    private SmoothIdType smoothId;
 
     private SmoothLoadType loadType;
 
@@ -31,32 +44,94 @@ public abstract class SmoothDomainLoaderAbstract<
 
     private SmoothDomainLoadTypeController<SmoothIdType> loadTypeController;
 
-    private Consumer<LoadType> loadFinishAction;
+    private Throwable currentError;
 
     @Override
     public void launch() {
-        this.loadState.to((currentState) -> {
-            return currentState.toNext(SmoothLoadState.LOADING, (previousState) -> {
-                // TODO
-            });
-        });
-        checkField();
+        checkLaunchField();
+        changeState(SmoothLoadState.LOADING);
 
-
+        try {
+            currentError = null;
+            // TODO
+            changeState(SmoothLoadState.WAITING_ONLINE);
+        } catch (Throwable t) {
+            this.logger.error(this.smoothId + " launch error.", t);
+            currentError = t;
+            changeState(SmoothLoadState.LOAD_FAILED);
+        }
     }
 
     @Override
     public void online() throws SmoothLoadException {
+        try {
+            checkOnlineField();
+            changeState(SmoothLoadState.GOING_ONLINE);
+        } catch (Exception e) {
+            throw new SmoothLoadException(e);
+        }
+
+        try {
+            currentError = null;
+            // TODO
+            changeState(SmoothLoadState.ONLINE);
+        } catch (Throwable t) {
+            this.logger.error(this.smoothId + " online error.", t);
+            currentError = t;
+            changeState(SmoothLoadState.ONLINE_FAILED);
+        }
+    }
+
+    @Override
+    public void retryLoading() throws SmoothLoadException {
 
     }
 
     @Override
+    public void retryOnline() throws SmoothLoadException {
+
+    }
+
+    @Override
+    public Optional<Throwable> getCurrentError() {
+        return Optional.ofNullable(this.currentError);
+    }
+
+    @Override
     public LoadType registerLoadFinishAction(Consumer<LoadType> action) throws SmoothLoadException {
-        this.loadFinishAction = action;
+        boolean firstSet = this.loadFinishAction.compareAndSet(null, action);
+        if (!firstSet) {
+            throw new SmoothLoadException("loadFinishAction can't set again.");
+        }
+
+        this.loadFinishAction.set(action);
+        // TODO
         return (LoadType) this;
     }
 
-    private void checkField() {
+    private void checkLaunchField() {
+        Examiner.refuseNullAndEmpty("domainCrosser", this.domainCrosser);
+        Examiner.refuseNullAndEmpty("smoothId", this.smoothId);
+        // TODO
+    }
+
+    private void checkOnlineField() {
+        // TODO
+    }
+
+    private void changeState(SmoothLoadState nextState) {
+        this.loadState.update((state) -> state.toNext(nextState, (currentState) -> {
+            String msg = "can't change state from " + currentState + " to " + nextState;
+            throw SmoothCoreError.DOMAIN_LOAD_STATE_ERROR.thrown(msg);
+        }));
+    }
+
+    public SmoothCrossObject getDomainCrosser() {
+        return domainCrosser;
+    }
+
+    public void setDomainCrosser(SmoothCrossObject domainCrosser) {
+        this.domainCrosser = domainCrosser;
     }
 
     @Override

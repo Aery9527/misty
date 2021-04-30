@@ -27,7 +27,7 @@ public class SmoothDomainClassLoader extends URLClassLoader {
     public void setSmoothId(SmoothId<?> smoothId) {
         boolean success = this.smoothId.compareAndSet(null, smoothId);
         if (!success) {
-            throw SmoothCoreError.CLASSLOADER_BUILD_ERROR.thrown("can't set smoothId again.");
+            throw SmoothCoreError.DOMAIN_CLASSLOADER_BUILD_ERROR.thrown("can't set smoothId again.");
         }
     }
 

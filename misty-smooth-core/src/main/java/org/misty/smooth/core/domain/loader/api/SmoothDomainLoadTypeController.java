@@ -4,10 +4,10 @@ import org.misty.smooth.api.vo.SmoothId;
 import org.misty.smooth.manager.loader.enums.SmoothLoadType;
 import org.misty.smooth.manager.loader.vo.SmoothLoaderArgument;
 
-import java.util.Optional;
-
 public interface SmoothDomainLoadTypeController<SmoothIdType extends SmoothId<SmoothIdType>> {
 
-    Optional<SmoothLoadType> checkType(SmoothLoaderArgument loaderArgument, SmoothIdType smoothId);
+    SmoothLoadType prepareLoading(SmoothLoaderArgument loaderArgument, SmoothIdType smoothId);
+
+    void release(SmoothIdType smoothId);
 
 }

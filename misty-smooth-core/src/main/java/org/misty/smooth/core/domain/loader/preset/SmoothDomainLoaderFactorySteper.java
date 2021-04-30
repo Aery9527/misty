@@ -4,8 +4,8 @@ import org.misty.smooth.api.cross.SmoothCrossObject;
 import org.misty.smooth.api.lifecycle.SmoothLifecycle;
 import org.misty.smooth.api.vo.SmoothId;
 import org.misty.smooth.core.domain.classloader.SmoothDomainClassLoader;
-import org.misty.smooth.core.domain.loader.api.SmoothDomainLoaderAbstract;
 import org.misty.smooth.core.domain.loader.api.SmoothDomainLaunchThreadFactory;
+import org.misty.smooth.core.domain.loader.api.SmoothDomainLoaderAbstract;
 import org.misty.smooth.manager.error.SmoothLoadException;
 import org.misty.smooth.manager.loader.vo.SmoothLoaderArgument;
 import org.slf4j.Logger;
@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
-public class StepExecutor<
+public class SmoothDomainLoaderFactorySteper<
         LifecycleType extends SmoothLifecycle,
         SmoothIdType extends SmoothId<SmoothIdType>,
         DomainLoaderType extends SmoothDomainLoaderAbstract<SmoothIdType, ?, LifecycleType>
@@ -53,6 +53,7 @@ public class StepExecutor<
             classloader.setSmoothId(domainId);
 
             DomainLoaderType loader = this.domainLoaderFactory.get();
+            loader.setDomainCrosser(domainCrosser);
             loader.setSmoothId(domainId);
             loader.setLoaderArgument(loaderArgument);
             loader.setDomainLifecycle(domainLifecycle);
@@ -68,11 +69,7 @@ public class StepExecutor<
                 }
             }
 
-            if (t instanceof SmoothLoadException) {
-                throw t;
-            } else {
-                throw new SmoothLoadException(t);
-            }
+            throw SmoothLoadException.wrap(t);
         }
     }
 
