@@ -15,8 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
@@ -48,6 +48,8 @@ public abstract class SmoothDomainLoaderAbstract<
 
     private SmoothDomainLoadTypeController<SmoothIdType> loadTypeController;
 
+    private ExecutorService launchExecutor;
+
     private Throwable currentError;
 
     @Override
@@ -55,20 +57,41 @@ public abstract class SmoothDomainLoaderAbstract<
         checkLaunchField();
         changeState(SmoothLoadState.LOADING);
 
-        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(
-                (runnable) -> this.launchThreadFactory.build(loaderArgument, this.smoothId, runnable)
-        );
+        currentError = null;
 
-        try {
-            currentError = null;
+        if (this.launchExecutor == null) {
+            this.launchExecutor = Executors.newSingleThreadExecutor((runnable) -> {
+                Thread thread = this.launchThreadFactory.build(loaderArgument, this.smoothId, runnable);
+                thread.setContextClassLoader(this.loaderCrosser.getWrapClassLoader());
+                return thread;
+            });
+        }
+
+        Consumer<Runnable> errorWrapper = (runnable) -> {
+            try {
+                runnable.run();
+            } catch (Throwable t) {
+                this.logger.error(this.smoothId + " launch error.", t);
+                currentError = t;
+                changeState(SmoothLoadState.LOAD_FAILED);
+            }
+        };
+
+        Runnable launchAction = () -> {
+            this.loadType = this.loadTypeController.prepareLoading(this.loaderArgument, this.smoothId);
+            if (this.loadType.equals(SmoothLoadType.DUPLICATE)) {
+
+            }
 
             // TODO
             changeState(SmoothLoadState.WAITING_ONLINE);
-        } catch (Throwable t) {
-            this.logger.error(this.smoothId + " launch error.", t);
-            currentError = t;
-            changeState(SmoothLoadState.LOAD_FAILED);
-        }
+        };
+
+        errorWrapper.accept(() -> {
+            this.launchExecutor.execute(() -> {
+                errorWrapper.accept(launchAction);
+            });
+        });
     }
 
     @Override

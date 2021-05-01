@@ -8,6 +8,7 @@ import org.misty.smooth.core.domain.loader.preset.api.SmoothDomainClassLoaderFac
 import org.misty.smooth.core.domain.loader.preset.api.SmoothDomainLifecycleFactory;
 import org.misty.smooth.core.domain.loader.preset.api.SmoothDomainLifecycleThreadFactory;
 import org.misty.smooth.core.domain.manager.loader.SmoothManagerDomainLoader;
+import org.misty.smooth.core.domain.manager.loader.SmoothManagerDomainLoaderCrossWrapper;
 import org.misty.smooth.core.domain.manager.loader.SmoothManagerDomainLoaderPreset;
 import org.misty.smooth.core.domain.module.loader.SmoothModuleDomainLoader;
 import org.misty.smooth.core.domain.module.loader.SmoothModuleDomainLoaderPreset;
@@ -20,6 +21,8 @@ import java.net.URL;
 import java.util.Collection;
 
 public class SmoothDomainLoaderFactoryPreset implements SmoothDomainLoaderFactory {
+
+    private final ClassLoader wrapClassLoader = getClass().getClassLoader();
 
     private SmoothDomainClassLoaderFactory classLoaderFactory;
 
@@ -38,7 +41,9 @@ public class SmoothDomainLoaderFactoryPreset implements SmoothDomainLoaderFactor
         steper.setSmoothIdFactory(SmoothManagerId::new);
         steper.setDomainLoaderFactory(SmoothManagerDomainLoaderPreset::new);
         steper.setLaunchThreadFactory(this.lifecycleThreadFactory::buildLaunchThread);
-        return steper.build(loaderArgument, sources);
+        SmoothManagerDomainLoader loader = steper.build(loaderArgument, sources);
+
+        return new SmoothManagerDomainLoaderCrossWrapper(this.wrapClassLoader, loader);
     }
 
     @SuppressWarnings("DuplicatedCode")
@@ -52,7 +57,9 @@ public class SmoothDomainLoaderFactoryPreset implements SmoothDomainLoaderFactor
         steper.setSmoothIdFactory(SmoothModuleId::new);
         steper.setDomainLoaderFactory(SmoothModuleDomainLoaderPreset::new);
         steper.setLaunchThreadFactory(this.lifecycleThreadFactory::buildLaunchThread);
-        return steper.build(loaderArgument, sources);
+        SmoothModuleDomainLoaderPreset loader = steper.build(loaderArgument, sources);
+
+        return loader;
     }
 
     public SmoothDomainClassLoaderFactory getClassLoaderFactory() {
