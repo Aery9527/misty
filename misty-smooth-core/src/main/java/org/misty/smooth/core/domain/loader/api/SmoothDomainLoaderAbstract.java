@@ -15,6 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
@@ -52,6 +54,10 @@ public abstract class SmoothDomainLoaderAbstract<
     public void launch() {
         checkLaunchField();
         changeState(SmoothLoadState.LOADING);
+
+        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(
+                (runnable) -> this.launchThreadFactory.build(loaderArgument, this.smoothId, runnable)
+        );
 
         try {
             currentError = null;
@@ -186,7 +192,8 @@ public abstract class SmoothDomainLoaderAbstract<
     }
 
     public void setLaunchThreadFactory(SmoothDomainLaunchThreadFactory<SmoothIdType> launchThreadFactory) {
-        this.launchThreadFactory = launchThreadFactory;
+        ClassLoader wrapClassLoader = this.loaderCrosser.getWrapClassLoader();
+        this.launchThreadFactory = new SmoothDomainLaunchThreadFactoryCrossWrapper<>(wrapClassLoader, launchThreadFactory);
     }
 
     public SmoothDomainLoadTypeController<SmoothIdType> getLoadTypeController() {
@@ -195,7 +202,8 @@ public abstract class SmoothDomainLoaderAbstract<
 
     @Override
     public void setLoadTypeController(SmoothDomainLoadTypeController<SmoothIdType> loadTypeController) {
-        this.loadTypeController = loadTypeController;
+        ClassLoader wrapClassLoader = this.loaderCrosser.getWrapClassLoader();
+        this.loadTypeController = new SmoothDomainLoadTypeControllerCrossWrapper<>(wrapClassLoader, loadTypeController);
     }
 
 }
