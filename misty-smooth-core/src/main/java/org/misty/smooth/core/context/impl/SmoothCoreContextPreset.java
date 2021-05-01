@@ -9,7 +9,7 @@ import org.misty.smooth.api.vo.SmoothModuleId;
 import org.misty.smooth.api.vo.SmoothServiceId;
 import org.misty.smooth.core.context.api.SmoothCoreContext;
 import org.misty.smooth.core.context.api.SmoothCoreEnvironment;
-import org.misty.smooth.core.context.api.SmoothDomainCamp;
+import org.misty.smooth.core.context.api.SmoothModuleDomainCamp;
 import org.misty.smooth.core.domain.loader.api.SmoothDomainLoaderFactory;
 import org.misty.smooth.core.domain.manager.loader.SmoothManagerDomainLoader;
 import org.misty.smooth.core.domain.module.api.SmoothModuleDomain;
@@ -43,7 +43,7 @@ public class SmoothCoreContextPreset implements SmoothCoreContext {
 
     private ExecutorService executorService;
 
-    private SmoothDomainCamp domainCamp;
+    private SmoothModuleDomainCamp domainCamp;
 
     private SmoothDomainLoaderFactory domainLoaderFactory;
 
@@ -120,7 +120,7 @@ public class SmoothCoreContextPreset implements SmoothCoreContext {
             loaderArgument.lock();
 
             SmoothModuleDomainLoader moduleLoader = this.domainLoaderFactory.buildModuleLoader(loaderArgument, sources);
-//        managerLoader.setLoadTypeController();
+            moduleLoader.setLoadTypeController(this.domainCamp);
             // TODO
             moduleLoader.launch();
             return moduleLoader;
@@ -153,7 +153,7 @@ public class SmoothCoreContextPreset implements SmoothCoreContext {
         this.executorService = executorService;
     }
 
-    public void setDomainCamp(SmoothDomainCamp domainCamp) {
+    public void setDomainCamp(SmoothModuleDomainCamp domainCamp) {
         this.domainCamp = domainCamp;
     }
 

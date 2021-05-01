@@ -1,12 +1,17 @@
 package org.misty.smooth.manager.loader.enums;
 
+
 public enum SmoothLoadType {
     /**
-     * 指當前無相同的moduleName被載入, 所以該次為全新載入的module.
+     * no same module is load, so this time is all brand new loading.
      */
     NEW,
     /**
-     * 指當前已有相同的moduleName被載入, 所以該次為替換載入的module.
+     * there is same module loaded, so this time is replace loading.
      */
-    SWITCH;
+    SWITCH,
+    /**
+     * there is same module loaded, but not allow replace.
+     */
+    DUPLICATE;
 }

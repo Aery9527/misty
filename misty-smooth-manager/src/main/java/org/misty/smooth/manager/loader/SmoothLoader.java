@@ -15,9 +15,9 @@ public interface SmoothLoader<SmoothIdType extends SmoothId<SmoothIdType>, LoadT
 
     SmoothLoadState getLoadState();
 
-    SmoothLoadType getLoadType();
-
     SmoothLoaderArgument getLoaderArgument();
+
+    Optional<SmoothLoadType> getLoadType();
 
     LoadType registerLoadFinishAction(Consumer<LoadType> action) throws SmoothLoadException;
 

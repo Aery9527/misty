@@ -3,8 +3,10 @@ package org.misty.smooth.core.context.impl;
 import org.misty.smooth.api.error.SmoothModuleNotFoundException;
 import org.misty.smooth.api.vo.SmoothModuleId;
 import org.misty.smooth.api.vo.SmoothServiceId;
-import org.misty.smooth.core.context.api.SmoothDomainCamp;
+import org.misty.smooth.core.context.api.SmoothModuleDomainCamp;
 import org.misty.smooth.core.domain.module.api.SmoothModuleDomain;
+import org.misty.smooth.manager.loader.enums.SmoothLoadType;
+import org.misty.smooth.manager.loader.vo.SmoothLoaderArgument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,7 +14,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collector;
 
-public class SmoothDomainCampPreset implements SmoothDomainCamp {
+public class SmoothModuleDomainCampPreset implements SmoothModuleDomainCamp {
 
     private static class Tuple {
         final SmoothModuleId moduleId;
@@ -82,6 +84,16 @@ public class SmoothDomainCampPreset implements SmoothDomainCamp {
         } finally {
             this.map = Collections.emptyMap();
         }
+    }
+
+    @Override
+    public SmoothLoadType prepareLoading(SmoothLoaderArgument loaderArgument, SmoothModuleId smoothId) {
+        return null;
+    }
+
+    @Override
+    public void release(SmoothModuleId smoothId) {
+
     }
 
 }

@@ -5,6 +5,8 @@ public class SmoothLoadException extends SmoothManagerException {
     public static SmoothLoadException wrap(Throwable t) {
         if (t instanceof SmoothLoadException) {
             throw (SmoothLoadException) t;
+        } else if (t instanceof Error) {
+            throw (Error) t;
         } else {
             throw new SmoothLoadException(t);
         }

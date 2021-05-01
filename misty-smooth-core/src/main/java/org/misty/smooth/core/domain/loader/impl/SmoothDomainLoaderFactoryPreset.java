@@ -55,4 +55,28 @@ public class SmoothDomainLoaderFactoryPreset implements SmoothDomainLoaderFactor
         return steper.build(loaderArgument, sources);
     }
 
+    public SmoothDomainClassLoaderFactory getClassLoaderFactory() {
+        return classLoaderFactory;
+    }
+
+    public void setClassLoaderFactory(SmoothDomainClassLoaderFactory classLoaderFactory) {
+        this.classLoaderFactory = classLoaderFactory;
+    }
+
+    public SmoothDomainLifecycleFactory getLifecycleFactory() {
+        return lifecycleFactory;
+    }
+
+    public void setLifecycleFactory(SmoothDomainLifecycleFactory lifecycleFactory) {
+        this.lifecycleFactory = lifecycleFactory;
+    }
+
+    public SmoothDomainLifecycleThreadFactory getLifecycleThreadFactory() {
+        return lifecycleThreadFactory;
+    }
+
+    public void setLifecycleThreadFactory(SmoothDomainLifecycleThreadFactory lifecycleThreadFactory) {
+        this.lifecycleThreadFactory = lifecycleThreadFactory;
+    }
+
 }

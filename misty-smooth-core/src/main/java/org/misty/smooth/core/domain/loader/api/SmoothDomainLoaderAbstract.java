@@ -26,6 +26,8 @@ public abstract class SmoothDomainLoaderAbstract<
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
+    private final SmoothCrossObject loaderCrosser = new SmoothCrossObject(getClass().getClassLoader());
+
     private final AtomicUpdater<SmoothLoadState> loadState = new AtomicUpdater<>(SmoothLoadState.INITIAL);
 
     private final AtomicReference<Consumer<LoadType>> loadFinishAction = new AtomicReference<>();
@@ -34,9 +36,9 @@ public abstract class SmoothDomainLoaderAbstract<
 
     private SmoothIdType smoothId;
 
-    private SmoothLoadType loadType;
-
     private SmoothLoaderArgument loaderArgument;
+
+    private SmoothLoadType loadType;
 
     private LifecycleType domainLifecycle;
 
@@ -53,6 +55,7 @@ public abstract class SmoothDomainLoaderAbstract<
 
         try {
             currentError = null;
+
             // TODO
             changeState(SmoothLoadState.WAITING_ONLINE);
         } catch (Throwable t) {
@@ -64,32 +67,38 @@ public abstract class SmoothDomainLoaderAbstract<
 
     @Override
     public void online() throws SmoothLoadException {
-        try {
-            checkOnlineField();
-            changeState(SmoothLoadState.GOING_ONLINE);
-        } catch (Exception e) {
-            throw new SmoothLoadException(e);
-        }
+        this.loaderCrosser.wrap(() -> {
+            try {
+                checkOnlineField();
+                changeState(SmoothLoadState.GOING_ONLINE);
+            } catch (Exception e) {
+                throw SmoothLoadException.wrap(e);
+            }
 
-        try {
-            currentError = null;
-            // TODO
-            changeState(SmoothLoadState.ONLINE);
-        } catch (Throwable t) {
-            this.logger.error(this.smoothId + " online error.", t);
-            currentError = t;
-            changeState(SmoothLoadState.ONLINE_FAILED);
-        }
+            try {
+                currentError = null;
+                // TODO
+                changeState(SmoothLoadState.ONLINE);
+            } catch (Throwable t) {
+                this.logger.error(this.smoothId + " online error.", t);
+                currentError = t;
+                changeState(SmoothLoadState.ONLINE_FAILED);
+            }
+        });
     }
 
     @Override
     public void retryLoading() throws SmoothLoadException {
+        this.loaderCrosser.wrap(() -> {
 
+        });
     }
 
     @Override
     public void retryOnline() throws SmoothLoadException {
+        this.loaderCrosser.wrap(() -> {
 
+        });
     }
 
     @Override
@@ -99,14 +108,16 @@ public abstract class SmoothDomainLoaderAbstract<
 
     @Override
     public LoadType registerLoadFinishAction(Consumer<LoadType> action) throws SmoothLoadException {
-        boolean firstSet = this.loadFinishAction.compareAndSet(null, action);
-        if (!firstSet) {
-            throw new SmoothLoadException("loadFinishAction can't set again.");
-        }
+        return this.loaderCrosser.wrap(() -> {
+            boolean firstSet = this.loadFinishAction.compareAndSet(null, action);
+            if (!firstSet) {
+                throw new SmoothLoadException("loadFinishAction can't set again.");
+            }
 
-        this.loadFinishAction.set(action);
-        // TODO
-        return (LoadType) this;
+            this.loadFinishAction.set(action);
+            // TODO
+            return (LoadType) this;
+        });
     }
 
     private void checkLaunchField() {
@@ -149,21 +160,17 @@ public abstract class SmoothDomainLoaderAbstract<
     }
 
     @Override
-    public SmoothLoadType getLoadType() {
-        return loadType;
-    }
-
-    public void setLoadType(SmoothLoadType loadType) {
-        this.loadType = loadType;
-    }
-
-    @Override
     public SmoothLoaderArgument getLoaderArgument() {
         return loaderArgument;
     }
 
     public void setLoaderArgument(SmoothLoaderArgument loaderArgument) {
         this.loaderArgument = loaderArgument;
+    }
+
+    @Override
+    public Optional<SmoothLoadType> getLoadType() {
+        return Optional.ofNullable(loadType);
     }
 
     public LifecycleType getDomainLifecycle() {
