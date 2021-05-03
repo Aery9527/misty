@@ -1,21 +1,9 @@
 package org.misty.smooth.core.error;
 
 import org.misty.util.error.MistyErrorDefinition;
-import org.misty.util.error.MistyException;
 
-public enum SmoothCoreError implements MistyErrorDefinition<MistyException> {
-    // 0x series : [UNDEFINED]
-    // 1x series : domain loader error
-    DOMAIN_CLASSLOADER_BUILD_ERROR("100"),
-    DOMAIN_LOAD_STATE_ERROR("101"),
-    // 2x series : [UNDEFINED]
-    // 3x series : [UNDEFINED]
-    // 4x series : [UNDEFINED]
-    // 5x series : [UNDEFINED]
-    // 6x series : [UNDEFINED]
-    // 7x series : [UNDEFINED]
-    // 8x series : [UNDEFINED]
-    // 9x series : [UNDEFINED]
+public enum SmoothCoreError implements MistyErrorDefinition<SmoothCoreException> {
+    ARGUMENT_ERROR("01")
     ;
 
     private final String type = getClass().getSimpleName();
@@ -37,23 +25,23 @@ public enum SmoothCoreError implements MistyErrorDefinition<MistyException> {
     }
 
     @Override
-    public MistyException thrown() throws MistyException {
-        throw new MistyException(this);
+    public SmoothCoreException thrown() throws SmoothCoreException {
+        throw new SmoothCoreException(this);
     }
 
     @Override
-    public MistyException thrown(String msg) throws MistyException {
-        throw new MistyException(this, msg);
+    public SmoothCoreException thrown(String msg) throws SmoothCoreException {
+        throw new SmoothCoreException(this, msg);
     }
 
     @Override
-    public MistyException thrown(Throwable cause) throws MistyException {
-        throw new MistyException(this, cause);
+    public SmoothCoreException thrown(Throwable cause) throws SmoothCoreException {
+        throw new SmoothCoreException(this, cause);
     }
 
     @Override
-    public MistyException thrown(String msg, Throwable cause) throws MistyException {
-        throw new MistyException(this, msg, cause);
+    public SmoothCoreException thrown(String msg, Throwable cause) throws SmoothCoreException {
+        throw new SmoothCoreException(this, msg, cause);
     }
 
 }

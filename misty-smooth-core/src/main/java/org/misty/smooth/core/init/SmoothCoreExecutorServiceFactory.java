@@ -3,6 +3,7 @@ package org.misty.smooth.core.init;
 import org.misty.smooth.api.context.SmoothEnvironment;
 import org.misty.smooth.core.constant.ThreadPoolArgument;
 import org.misty.smooth.core.context.validator.EnvironmentShortValidator;
+import org.misty.smooth.core.error.SmoothCoreError;
 import org.misty.util.verify.Examiner;
 import org.misty.util.verify.Judge;
 
@@ -20,7 +21,7 @@ public class SmoothCoreExecutorServiceFactory implements Function<SmoothEnvironm
     }
 
     public SmoothCoreExecutorServiceFactory(ClassLoader executeClassLoader) {
-        Examiner.refuseNullAndEmpty("executeClassLoader", executeClassLoader);
+        Examiner.refuseNullAndEmpty("executeClassLoader", executeClassLoader, SmoothCoreError.ARGUMENT_ERROR);
         this.executeClassLoader = executeClassLoader;
     }
 

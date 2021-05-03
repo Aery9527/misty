@@ -1,5 +1,6 @@
 package org.misty.smooth.core.context.validator;
 
+import org.misty.smooth.core.error.SmoothCoreError;
 import org.misty.util.verify.Examiner;
 import org.misty.util.verify.ExaminerOfIntRange;
 import org.misty.util.verify.Judge;
@@ -32,7 +33,7 @@ public class EnvironmentIntegerValidator implements Function<String, Integer> {
             return this.preset;
         } else {
             int i = Examiner.requireInteger(value);
-            this.examiner.requireIncludeInclude(this.key, i);
+            this.examiner.requireIncludeInclude(this.key, i, SmoothCoreError.ARGUMENT_ERROR);
             return i;
         }
     }

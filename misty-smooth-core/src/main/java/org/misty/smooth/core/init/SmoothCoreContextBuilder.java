@@ -5,11 +5,13 @@ import org.misty.smooth.core.MistyDescription$SmoothCore;
 import org.misty.smooth.core.context.api.SmoothCoreContext;
 import org.misty.smooth.core.context.api.SmoothCoreEnvironment;
 import org.misty.smooth.core.context.api.SmoothModuleDomainCamp;
+import org.misty.smooth.core.context.impl.SmoothCoreContextCrosser;
 import org.misty.smooth.core.context.impl.SmoothCoreContextPreset;
 import org.misty.smooth.core.context.impl.SmoothCoreEnvironmentPreset;
 import org.misty.smooth.core.context.impl.SmoothModuleDomainCampPreset;
 import org.misty.smooth.core.domain.loader.api.SmoothDomainLoaderFactory;
 import org.misty.smooth.core.domain.loader.impl.SmoothDomainLoaderFactoryPreset;
+import org.misty.smooth.core.error.SmoothCoreError;
 import org.misty.util.verify.Examiner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +37,7 @@ public class SmoothCoreContextBuilder {
         private <TargetType> void set(String term, BiFunction<SmoothEnvironment, ExecutorService, TargetType> factory,
                                       Supplier<TargetType> presetSupplier, Consumer<TargetType> setter) {
             TargetType target = factory == null ? presetSupplier.get() : factory.apply(this.environment, this.executorService);
-            Examiner.refuseNullAndEmpty(term, target);
+            Examiner.refuseNullAndEmpty(term, target, SmoothCoreError.ARGUMENT_ERROR);
             setter.accept(target);
         }
     }
@@ -69,8 +71,8 @@ public class SmoothCoreContextBuilder {
     }
 
     public SmoothCoreContext build() {
-        Examiner.refuseNullAndEmpty("name", this.name);
-        Examiner.refuseNullAndEmpty("version", this.version);
+        Examiner.refuseNullAndEmpty("name", this.name, SmoothCoreError.ARGUMENT_ERROR);
+        Examiner.refuseNullAndEmpty("version", this.version, SmoothCoreError.ARGUMENT_ERROR);
 
         SmoothCoreContextPreset context = supplySmoothCoreContextPreset();
 
@@ -82,7 +84,7 @@ public class SmoothCoreContextBuilder {
         contextSetter.set("domainLoaderFactoryFactory", this.domainLoaderFactoryFactory, SmoothDomainLoaderFactoryPreset::new,
                 context::setDomainLoaderFactory);
 
-        return context;
+        return new SmoothCoreContextCrosser(context);
     }
 
     //
@@ -113,7 +115,7 @@ public class SmoothCoreContextBuilder {
 
     protected ExecutorService setupExecutorService(SmoothCoreContextPreset context, SmoothCoreEnvironment environment) {
         ExecutorService executorService = this.executorServiceFactory.apply(environment);
-        Examiner.refuseNullAndEmpty("executorService", executorService);
+        Examiner.refuseNullAndEmpty("executorService", executorService, SmoothCoreError.ARGUMENT_ERROR);
         context.setExecutorService(executorService);
         return executorService;
     }
@@ -149,7 +151,7 @@ public class SmoothCoreContextBuilder {
     }
 
     public void setExecutorServiceFactory(Function<SmoothEnvironment, ExecutorService> executorServiceFactory) {
-        Examiner.refuseNullAndEmpty("executorServiceBuilder", executorServiceFactory);
+        Examiner.refuseNullAndEmpty("executorServiceBuilder", executorServiceFactory, SmoothCoreError.ARGUMENT_ERROR);
         this.executorServiceFactory = executorServiceFactory;
     }
 

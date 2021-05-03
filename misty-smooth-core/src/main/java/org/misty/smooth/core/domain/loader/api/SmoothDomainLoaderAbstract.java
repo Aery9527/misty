@@ -1,9 +1,9 @@
 package org.misty.smooth.core.domain.loader.api;
 
-import org.misty.smooth.api.cross.SmoothCrossObject;
+import org.misty.smooth.api.cross.SmoothCrosser;
 import org.misty.smooth.api.lifecycle.SmoothLifecycle;
 import org.misty.smooth.api.vo.SmoothId;
-import org.misty.smooth.core.error.SmoothCoreError;
+import org.misty.smooth.core.error.SmoothDomainLoadError;
 import org.misty.smooth.manager.error.SmoothLoadException;
 import org.misty.smooth.manager.loader.SmoothLoader;
 import org.misty.smooth.manager.loader.enums.SmoothLoadState;
@@ -28,19 +28,15 @@ public abstract class SmoothDomainLoaderAbstract<
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final SmoothCrossObject loaderCrosser = new SmoothCrossObject(getClass().getClassLoader());
-
     private final AtomicUpdater<SmoothLoadState> loadState = new AtomicUpdater<>(SmoothLoadState.INITIAL);
 
     private final AtomicReference<Consumer<LoadType>> loadFinishAction = new AtomicReference<>();
 
-    private SmoothCrossObject domainCrosser;
+    private SmoothCrosser domainCrosser;
 
     private SmoothIdType smoothId;
 
     private SmoothLoaderArgument loaderArgument;
-
-    private SmoothLoadType loadType;
 
     private LifecycleType domainLifecycle;
 
@@ -48,7 +44,12 @@ public abstract class SmoothDomainLoaderAbstract<
 
     private SmoothDomainLoadTypeController<SmoothIdType> loadTypeController;
 
-    private ExecutorService launchExecutor;
+    private SmoothLoadType loadType;
+
+    /**
+     * thread context classloader is smooth-core's classloader
+     */
+    private ExecutorService launchThread;
 
     private Throwable currentError;
 
@@ -56,16 +57,9 @@ public abstract class SmoothDomainLoaderAbstract<
     public void launch() {
         checkLaunchField();
         changeState(SmoothLoadState.LOADING);
+        startLaunchThread();
 
         currentError = null;
-
-        if (this.launchExecutor == null) {
-            this.launchExecutor = Executors.newSingleThreadExecutor((runnable) -> {
-                Thread thread = this.launchThreadFactory.build(loaderArgument, this.smoothId, runnable);
-                thread.setContextClassLoader(this.loaderCrosser.getWrapClassLoader());
-                return thread;
-            });
-        }
 
         Consumer<Runnable> errorWrapper = (runnable) -> {
             try {
@@ -80,15 +74,15 @@ public abstract class SmoothDomainLoaderAbstract<
         Runnable launchAction = () -> {
             this.loadType = this.loadTypeController.prepareLoading(this.loaderArgument, this.smoothId);
             if (this.loadType.equals(SmoothLoadType.DUPLICATE)) {
-
+                throw SmoothDomainLoadError.LOAD_TYPE_DUPLICATE.thrown();
             }
 
-            // TODO
+            initialLifecycle(this.domainLifecycle);
             changeState(SmoothLoadState.WAITING_ONLINE);
         };
 
         errorWrapper.accept(() -> {
-            this.launchExecutor.execute(() -> {
+            this.launchThread.execute(() -> {
                 errorWrapper.accept(launchAction);
             });
         });
@@ -96,38 +90,32 @@ public abstract class SmoothDomainLoaderAbstract<
 
     @Override
     public void online() throws SmoothLoadException {
-        this.loaderCrosser.wrap(() -> {
-            try {
-                checkOnlineField();
-                changeState(SmoothLoadState.GOING_ONLINE);
-            } catch (Exception e) {
-                throw SmoothLoadException.wrap(e);
-            }
+        try {
+            checkOnlineField();
+            changeState(SmoothLoadState.GOING_ONLINE);
+        } catch (Exception e) {
+            throw SmoothLoadException.wrap(e);
+        }
 
-            try {
-                currentError = null;
-                // TODO
-                changeState(SmoothLoadState.ONLINE);
-            } catch (Throwable t) {
-                this.logger.error(this.smoothId + " online error.", t);
-                currentError = t;
-                changeState(SmoothLoadState.ONLINE_FAILED);
-            }
-        });
+        try {
+            currentError = null;
+            // TODO
+            changeState(SmoothLoadState.ONLINE);
+        } catch (Throwable t) {
+            this.logger.error(this.smoothId + " online error.", t);
+            currentError = t;
+            changeState(SmoothLoadState.ONLINE_FAILED);
+        }
     }
 
     @Override
     public void retryLoading() throws SmoothLoadException {
-        this.loaderCrosser.wrap(() -> {
 
-        });
     }
 
     @Override
     public void retryOnline() throws SmoothLoadException {
-        this.loaderCrosser.wrap(() -> {
 
-        });
     }
 
     @Override
@@ -137,40 +125,55 @@ public abstract class SmoothDomainLoaderAbstract<
 
     @Override
     public LoadType registerLoadFinishAction(Consumer<LoadType> action) throws SmoothLoadException {
-        return this.loaderCrosser.wrap(() -> {
-            boolean firstSet = this.loadFinishAction.compareAndSet(null, action);
-            if (!firstSet) {
-                throw new SmoothLoadException("loadFinishAction can't set again.");
-            }
+        boolean firstSet = this.loadFinishAction.compareAndSet(null, action);
+        if (!firstSet) {
+            throw SmoothDomainLoadError.LOAD_FINISH_ACTION_REGISTER.thrown("loadFinishAction can't set again.");
+        }
 
-            this.loadFinishAction.set(action);
-            // TODO
-            return (LoadType) this;
-        });
+        this.loadFinishAction.set(action);
+        // TODO
+        return (LoadType) this;
     }
 
+    protected abstract void initialLifecycle(LifecycleType domainLifecycle);
+
     private void checkLaunchField() {
-        Examiner.refuseNullAndEmpty("domainCrosser", this.domainCrosser);
-        Examiner.refuseNullAndEmpty("smoothId", this.smoothId);
-        // TODO
+        Examiner.refuseNullAndEmpty("domainCrosser", this.domainCrosser, SmoothDomainLoadError.UNEXPECTED);
+        Examiner.refuseNullAndEmpty("smoothId", this.smoothId, SmoothDomainLoadError.UNEXPECTED);
+        Examiner.refuseNullAndEmpty("loaderArgument", this.loaderArgument, SmoothDomainLoadError.UNEXPECTED);
+        Examiner.refuseNullAndEmpty("domainLifecycle", this.domainLifecycle, SmoothDomainLoadError.UNEXPECTED);
+        Examiner.refuseNullAndEmpty("launchThreadFactory", this.launchThreadFactory, SmoothDomainLoadError.UNEXPECTED);
+        Examiner.refuseNullAndEmpty("loadTypeController", this.loadTypeController, SmoothDomainLoadError.UNEXPECTED);
     }
 
     private void checkOnlineField() {
         // TODO
     }
 
+    private void startLaunchThread() {
+        if (this.launchThread != null) {
+            return;
+        }
+
+        this.launchThread = Executors.newSingleThreadExecutor((runnable) -> {
+            Thread thread = this.launchThreadFactory.build(loaderArgument, this.smoothId, runnable);
+            thread.setContextClassLoader(SmoothDomainLoaderAbstract.class.getClassLoader());
+            return thread;
+        });
+    }
+
     private void changeState(SmoothLoadState nextState) {
         this.loadState.update((state) -> state.toNext(nextState, (currentState) -> {
             String msg = "can't change state from " + currentState + " to " + nextState;
-            throw SmoothCoreError.DOMAIN_LOAD_STATE_ERROR.thrown(msg);
+            throw SmoothDomainLoadError.LOAD_STATE_WRONG.thrown(msg);
         }));
     }
 
-    public SmoothCrossObject getDomainCrosser() {
+    public SmoothCrosser getDomainCrosser() {
         return domainCrosser;
     }
 
-    public void setDomainCrosser(SmoothCrossObject domainCrosser) {
+    public void setDomainCrosser(SmoothCrosser domainCrosser) {
         this.domainCrosser = domainCrosser;
     }
 
@@ -184,22 +187,12 @@ public abstract class SmoothDomainLoaderAbstract<
     }
 
     @Override
-    public SmoothLoadState getLoadState() {
-        return loadState.get();
-    }
-
-    @Override
     public SmoothLoaderArgument getLoaderArgument() {
         return loaderArgument;
     }
 
     public void setLoaderArgument(SmoothLoaderArgument loaderArgument) {
         this.loaderArgument = loaderArgument;
-    }
-
-    @Override
-    public Optional<SmoothLoadType> getLoadType() {
-        return Optional.ofNullable(loadType);
     }
 
     public LifecycleType getDomainLifecycle() {
@@ -215,8 +208,7 @@ public abstract class SmoothDomainLoaderAbstract<
     }
 
     public void setLaunchThreadFactory(SmoothDomainLaunchThreadFactory<SmoothIdType> launchThreadFactory) {
-        ClassLoader wrapClassLoader = this.loaderCrosser.getWrapClassLoader();
-        this.launchThreadFactory = new SmoothDomainLaunchThreadFactoryCrossWrapper<>(wrapClassLoader, launchThreadFactory);
+        this.launchThreadFactory = launchThreadFactory;
     }
 
     public SmoothDomainLoadTypeController<SmoothIdType> getLoadTypeController() {
@@ -225,8 +217,17 @@ public abstract class SmoothDomainLoaderAbstract<
 
     @Override
     public void setLoadTypeController(SmoothDomainLoadTypeController<SmoothIdType> loadTypeController) {
-        ClassLoader wrapClassLoader = this.loaderCrosser.getWrapClassLoader();
-        this.loadTypeController = new SmoothDomainLoadTypeControllerCrossWrapper<>(wrapClassLoader, loadTypeController);
+        this.loadTypeController = loadTypeController;
+    }
+
+    @Override
+    public SmoothLoadState getLoadState() {
+        return loadState.get();
+    }
+
+    @Override
+    public Optional<SmoothLoadType> getLoadType() {
+        return Optional.ofNullable(loadType);
     }
 
 }

@@ -4,11 +4,11 @@ import org.misty.smooth.api.error.SmoothCrossException;
 
 import java.util.function.Supplier;
 
-public class SmoothCrossObject {
+public class SmoothCrosser {
 
     private final ClassLoader wrapClassLoader;
 
-    public SmoothCrossObject(ClassLoader wrapClassLoader) {
+    public SmoothCrosser(ClassLoader wrapClassLoader) {
         if (wrapClassLoader == null) {
             throw new NullPointerException("wrapClassLoader can't be null.");
         }
@@ -30,8 +30,12 @@ public class SmoothCrossObject {
         Supplier<ReturnType> newAction = () -> {
             try {
                 return action.get();
-            } catch (Exception t) {
-                throw new SmoothCrossException(t);
+            } catch (Exception e) {
+                if (e instanceof RuntimeException) {
+                    throw (RuntimeException) e;
+                } else {
+                    throw new SmoothCrossException(e);
+                }
             }
         };
 

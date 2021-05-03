@@ -1,7 +1,7 @@
 package org.misty.smooth.core.domain.classloader;
 
 import org.misty.smooth.api.vo.SmoothId;
-import org.misty.smooth.core.error.SmoothCoreError;
+import org.misty.smooth.core.error.SmoothDomainLoadError;
 
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -27,7 +27,7 @@ public class SmoothDomainClassLoader extends URLClassLoader {
     public void setSmoothId(SmoothId<?> smoothId) {
         boolean success = this.smoothId.compareAndSet(null, smoothId);
         if (!success) {
-            throw SmoothCoreError.DOMAIN_CLASSLOADER_BUILD_ERROR.thrown("can't set smoothId again.");
+            throw SmoothDomainLoadError.CLASSLOADER_BUILD_ERROR.thrown("can't set smoothId again.");
         }
     }
 

@@ -2,6 +2,7 @@ package org.misty.description;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.function.Function;
 
 public class MistyDescriptionWrapper {
 
@@ -34,17 +35,29 @@ public class MistyDescriptionWrapper {
 
         try {
             Class<?> rawClass = this.raw.getClass();
+            ClassLoader rawClassLoader = rawClass.getClassLoader();
             Method getName = rawClass.getDeclaredMethod("getName");
             Method getVersion = rawClass.getDeclaredMethod("getVersion");
             Method getFullName = rawClass.getDeclaredMethod("getFullName");
             Method getFullNameWithClass = rawClass.getDeclaredMethod("getFullNameWithClass");
             Method getDescription = rawClass.getDeclaredMethod("getDescription");
 
-            this.getName = () -> (String) getName.invoke(this.raw);
-            this.getVersion = () -> (String) getVersion.invoke(this.raw);
-            this.getFullName = () -> (String) getFullName.invoke(this.raw);
-            this.getFullNameWithClass = () -> (String) getFullNameWithClass.invoke(this.raw);
-            this.getDescription = () -> (String) getDescription.invoke(this.raw);
+            Function<InvokeWrapper<String>, String> wrapper = (supplier) -> {
+                Thread currentThread = Thread.currentThread();
+                ClassLoader originalContextClassLoader = currentThread.getContextClassLoader();
+                try {
+                    currentThread.setContextClassLoader(rawClassLoader);
+                    return supplier.get();
+                } finally {
+                    currentThread.setContextClassLoader(originalContextClassLoader);
+                }
+            };
+
+            this.getName = () -> wrapper.apply(() -> (String) getName.invoke(this.raw));
+            this.getVersion = () -> wrapper.apply(() -> (String) getVersion.invoke(this.raw));
+            this.getFullName = () -> wrapper.apply(() -> (String) getFullName.invoke(this.raw));
+            this.getFullNameWithClass = () -> wrapper.apply(() -> (String) getFullNameWithClass.invoke(this.raw));
+            this.getDescription = () -> wrapper.apply(() -> (String) getDescription.invoke(this.raw));
 
         } catch (Throwable t) {
             throw new RuntimeException(t);

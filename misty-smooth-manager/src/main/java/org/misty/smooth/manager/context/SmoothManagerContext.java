@@ -1,6 +1,7 @@
 package org.misty.smooth.manager.context;
 
 import org.misty.smooth.api.context.SmoothContext;
+import org.misty.smooth.manager.error.SmoothCloseException;
 import org.misty.smooth.manager.error.SmoothLoadException;
 import org.misty.smooth.manager.loader.SmoothManagerLoader;
 import org.misty.smooth.manager.loader.SmoothModuleLoader;
@@ -41,5 +42,9 @@ public interface SmoothManagerContext extends SmoothContext {
     }
 
     SmoothModuleLoader loadSmoothModule(SmoothLoaderArgument loaderArgument, Collection<URL> sources) throws SmoothLoadException;
+
+    //
+
+    void close() throws SmoothCloseException;
 
 }

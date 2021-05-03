@@ -1,6 +1,6 @@
 package org.misty.smooth.core.domain.loader.preset;
 
-import org.misty.smooth.api.cross.SmoothCrossObject;
+import org.misty.smooth.api.cross.SmoothCrosser;
 import org.misty.smooth.api.lifecycle.SmoothLifecycle;
 import org.misty.smooth.api.vo.SmoothId;
 import org.misty.smooth.core.domain.classloader.SmoothDomainClassLoader;
@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
-public class SmoothDomainLoaderFactorySteper<
+public class SmoothDomainLoaderFactoryBuilder<
         LifecycleType extends SmoothLifecycle,
         SmoothIdType extends SmoothId<SmoothIdType>,
         DomainLoaderType extends SmoothDomainLoaderAbstract<SmoothIdType, ?, LifecycleType>
@@ -27,7 +27,7 @@ public class SmoothDomainLoaderFactorySteper<
 
     private BiFunction<SmoothLoaderArgument, Collection<URL>, SmoothDomainClassLoader> classLoaderFactory;
 
-    private BiFunction<SmoothLoaderArgument, SmoothCrossObject, LifecycleType> lifecycleFactory;
+    private BiFunction<SmoothLoaderArgument, SmoothCrosser, LifecycleType> lifecycleFactory;
 
     private BiFunction<String, String, SmoothIdType> smoothIdFactory;
 
@@ -40,7 +40,7 @@ public class SmoothDomainLoaderFactorySteper<
         try {
             classloader = this.classLoaderFactory.apply(loaderArgument, sources);
 
-            SmoothCrossObject domainCrosser = new SmoothCrossObject(classloader);
+//            SmoothCrosser domainCrosser = new SmoothCrosser(classloader);
 
             LifecycleType domainLifecycle = this.lifecycleFactory.apply(loaderArgument, domainCrosser);
 
@@ -81,11 +81,11 @@ public class SmoothDomainLoaderFactorySteper<
         this.classLoaderFactory = classLoaderFactory;
     }
 
-    public BiFunction<SmoothLoaderArgument, SmoothCrossObject, LifecycleType> getLifecycleFactory() {
+    public BiFunction<SmoothLoaderArgument, SmoothCrosser, LifecycleType> getLifecycleFactory() {
         return lifecycleFactory;
     }
 
-    public void setLifecycleFactory(BiFunction<SmoothLoaderArgument, SmoothCrossObject, LifecycleType> lifecycleFactory) {
+    public void setLifecycleFactory(BiFunction<SmoothLoaderArgument, SmoothCrosser, LifecycleType> lifecycleFactory) {
         this.lifecycleFactory = lifecycleFactory;
     }
 

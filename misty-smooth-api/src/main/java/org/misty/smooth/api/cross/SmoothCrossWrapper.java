@@ -1,6 +1,6 @@
 package org.misty.smooth.api.cross;
 
-public class SmoothCrossWrapper<WrappedTarget> extends SmoothCrossObject {
+public class SmoothCrossWrapper<WrappedTarget> extends SmoothCrosser {
 
     private final WrappedTarget wrappedTarget;
 
