@@ -2,6 +2,7 @@ package org.misty.smooth.api.context;
 
 import org.misty.smooth.api.error.SmoothModuleNotFoundException;
 import org.misty.smooth.api.error.SmoothServiceNotFoundException;
+import org.misty.smooth.api.mark.NeedCross;
 import org.misty.smooth.api.service.SmoothServiceInvoker;
 import org.misty.smooth.api.service.vo.SmoothServiceRequest;
 import org.misty.smooth.api.service.vo.SmoothServiceResponseResult;
@@ -13,6 +14,10 @@ import java.util.*;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
+@NeedCross(
+        implementation = NeedCross.Scope.ANY,
+        usedBy = NeedCross.Scope.ANY
+)
 public interface SmoothContext {
 
     String getIdentifier();

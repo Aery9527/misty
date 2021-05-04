@@ -40,7 +40,7 @@ public class SmoothDomainLoaderFactoryBuilder<
         try {
             classloader = this.classLoaderFactory.apply(loaderArgument, sources);
 
-//            SmoothCrosser domainCrosser = new SmoothCrosser(classloader);
+            SmoothCrosser domainCrosser = new SmoothCrosser(classloader);
 
             LifecycleType domainLifecycle = this.lifecycleFactory.apply(loaderArgument, domainCrosser);
 

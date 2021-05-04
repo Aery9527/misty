@@ -1,9 +1,14 @@
 package org.misty.smooth.api.context;
 
+import org.misty.smooth.api.mark.NeedCross;
+
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
+@NeedCross(
+        implementation = NeedCross.Scope.ANY,
+        usedBy = NeedCross.Scope.ANY
+)
 public interface SmoothEnvironment {
 
     // flag
