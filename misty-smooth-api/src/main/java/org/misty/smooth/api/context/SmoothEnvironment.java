@@ -6,8 +6,8 @@ import java.util.*;
 import java.util.function.Function;
 
 @NeedCross(
-        implementation = NeedCross.Scope.ANY,
-        usedBy = NeedCross.Scope.ANY
+        implementation = NeedCross.Scope.CORE,
+        user = NeedCross.Scope.ANY
 )
 public interface SmoothEnvironment {
 

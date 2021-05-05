@@ -6,7 +6,7 @@ import org.misty.smooth.api.service.vo.SmoothServiceResponse;
 
 @NeedCross(
         implementation = NeedCross.Scope.MODULE,
-        usedBy = NeedCross.Scope.ANY
+        user = NeedCross.Scope.ANY
 )
 public interface SmoothService {
 

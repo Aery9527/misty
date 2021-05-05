@@ -7,7 +7,7 @@ import java.util.Set;
 
 @NeedCross(
         implementation = {NeedCross.Scope.MANAGER, NeedCross.Scope.MODULE},
-        usedBy = NeedCross.Scope.CORE
+        user = NeedCross.Scope.CORE
 )
 public interface SmoothLifecycle {
 

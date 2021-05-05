@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public final class SmoothServiceRequest extends SmoothServiceTransporter {
+public final class SmoothServiceRequest extends SmoothServicePayload {
 
     /**
      * FIXME 這邊有可能傳遞module的物件, 要想個方法當其他module一直拿著此物件導致無法卸載時的處理方式

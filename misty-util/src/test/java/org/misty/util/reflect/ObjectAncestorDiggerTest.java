@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 class ObjectAncestorDiggerTest {
 
     @Test
-    public void test_findSuperClasses() {
+    public void findSuperClasses() {
         Class<?> superA = SuperA.class;
         Class<?> superB = SuperB.class;
         Class<?> superC1 = SuperC1.class;
@@ -31,7 +31,7 @@ class ObjectAncestorDiggerTest {
     }
 
     @Test
-    public void test_findSuperClassGenericTypes() {
+    public void findSuperClassGenericTypes() {
         Class<SuperA> superA = SuperA.class;
         Assertions.assertThat(ObjectAncestorDigger.findSuperClassGenericTypes(superA, Object.class)).isEmpty();
 
@@ -76,7 +76,7 @@ class ObjectAncestorDiggerTest {
     }
 
     @Test
-    public void test_findSuperClassGenericType() {
+    public void findSuperClassGenericType() {
         Class<SuperA> superA = SuperA.class;
         Assertions.assertThatThrownBy(() -> ObjectAncestorDigger.findSuperClassGenericType(superA, Object.class, -1))
                 .isInstanceOf(IndexOutOfBoundsException.class);
@@ -127,7 +127,7 @@ class ObjectAncestorDiggerTest {
     }
 
     @Test
-    public void test_findInterfaceGenericTypes() {
+    public void findInterfaceGenericTypes() {
         Class<Implement1> implement1 = Implement1.class;
         Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericTypes(implement1, _A.class)).isEmpty();
         Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericTypes(implement1, _B.class)).containsExactly(String.class);
@@ -153,7 +153,7 @@ class ObjectAncestorDiggerTest {
     }
 
     @Test
-    public void test_findInterfaceGenericType() {
+    public void findInterfaceGenericType() {
         Class<Implement1> implement1 = Implement1.class;
         Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericType(implement1, _A.class, 0)).isEmpty();
         Assertions.assertThat(ObjectAncestorDigger.findInterfaceGenericType(implement1, _A.class, 1)).isEmpty();

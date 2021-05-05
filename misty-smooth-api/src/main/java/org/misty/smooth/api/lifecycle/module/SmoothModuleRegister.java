@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 
 @NeedCross(
         implementation = NeedCross.Scope.CORE,
-        usedBy = {NeedCross.Scope.MANAGER, NeedCross.Scope.MODULE}
+        user = NeedCross.Scope.MODULE
 )
 public interface SmoothModuleRegister extends SmoothRegister {
 

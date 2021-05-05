@@ -30,12 +30,10 @@ public class SmoothCrosser {
         Supplier<ReturnType> newAction = () -> {
             try {
                 return action.get();
+            } catch (RuntimeException e) {
+                throw e;
             } catch (Exception e) {
-                if (e instanceof RuntimeException) {
-                    throw (RuntimeException) e;
-                } else {
-                    throw new SmoothCrossException(e);
-                }
+                throw new SmoothCrossException(e);
             }
         };
 

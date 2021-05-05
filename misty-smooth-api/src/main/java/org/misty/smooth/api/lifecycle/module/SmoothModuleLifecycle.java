@@ -6,7 +6,7 @@ import org.misty.smooth.api.mark.NeedCross;
 
 @NeedCross(
         implementation = NeedCross.Scope.MODULE,
-        usedBy = NeedCross.Scope.CORE
+        user = NeedCross.Scope.CORE
 )
 public interface SmoothModuleLifecycle extends SmoothLifecycle {
 

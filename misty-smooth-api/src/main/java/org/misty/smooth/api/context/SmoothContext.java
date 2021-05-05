@@ -15,8 +15,8 @@ import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 @NeedCross(
-        implementation = NeedCross.Scope.ANY,
-        usedBy = NeedCross.Scope.ANY
+        implementation = NeedCross.Scope.CORE,
+        user = NeedCross.Scope.ANY
 )
 public interface SmoothContext {
 

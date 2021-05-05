@@ -10,65 +10,6 @@ import java.util.Optional;
 @SuppressWarnings("ALL")
 public class MethodInvoker {
 
-    public static final String CANT_FIND_INSTANCE_METHOD_MSG = "not \"instance\" method of ";
-
-    public static final String CANT_FIND_STATIC_METHOD_MSG = "not \"static\" method of ";
-
-    public static final String CANT_FIND_VOID_METHOD_MSG = "not \"no return\" method of ";
-
-    public static final String CANT_FIND_RETURNED_METHOD_MSG = "not return \"%s\" method of ";
-
-    private final Optional<Object> target;
-
-    private final Class<?> clazz;
-
-    public MethodInvoker(Object target) {
-        this.target = Optional.of(target);
-        this.clazz = target.getClass();
-    }
-
-    public MethodInvoker(Class<?> clazz) {
-        this.target = Optional.empty();
-        this.clazz = clazz;
-    }
-
-    public VoidMethod find(String methodName, Class<?>... parameterTypes) throws NoSuchMethodException {
-        Method method = this.clazz.getMethod(methodName, parameterTypes);
-
-        checkModifier(method);
-
-        Class<?> methodReturnType = method.getReturnType();
-        if (!void.class.equals(methodReturnType)) {
-            throw new NoSuchMethodException(CANT_FIND_VOID_METHOD_MSG + method);
-        }
-
-        return new VoidMethod(this.target, method);
-    }
-
-    public <ReturnType> ReturnMethod<ReturnType> find(
-            Class<ReturnType> returnType, String methodName, Class<?>... parameterTypes
-    ) throws NoSuchMethodException {
-        Method method = this.clazz.getMethod(methodName, parameterTypes);
-
-        checkModifier(method);
-
-        Class<?> methodReturnType = method.getReturnType();
-        if (!returnType.isAssignableFrom(methodReturnType)) {
-            throw new NoSuchMethodException(String.format(CANT_FIND_RETURNED_METHOD_MSG, returnType.getName()) + method);
-        }
-
-        return new ReturnMethod<>(this.target, method);
-    }
-
-    private void checkModifier(Method method) throws NoSuchMethodException {
-        int modifiers = method.getModifiers();
-        if (this.target.isPresent() && Modifier.isStatic(modifiers)) {
-            throw new NoSuchMethodException(CANT_FIND_INSTANCE_METHOD_MSG + method);
-        } else if (!this.target.isPresent() && !Modifier.isStatic(modifiers)) {
-            throw new NoSuchMethodException(CANT_FIND_STATIC_METHOD_MSG + method);
-        }
-    }
-
     public static class TargetMethod {
 
         private final Optional<Object> target;
@@ -129,6 +70,65 @@ public class MethodInvoker {
                 }
             };
             return action.getOrHandle();
+        }
+    }
+
+    public static final String CANT_FIND_INSTANCE_METHOD_MSG = "not \"instance\" method of ";
+
+    public static final String CANT_FIND_STATIC_METHOD_MSG = "not \"static\" method of ";
+
+    public static final String CANT_FIND_VOID_METHOD_MSG = "not \"no return\" method of ";
+
+    public static final String CANT_FIND_RETURNED_METHOD_MSG = "not return \"%s\" method of ";
+
+    private final Optional<Object> target;
+
+    private final Class<?> clazz;
+
+    public MethodInvoker(Object target) {
+        this.target = Optional.of(target);
+        this.clazz = target.getClass();
+    }
+
+    public MethodInvoker(Class<?> clazz) {
+        this.target = Optional.empty();
+        this.clazz = clazz;
+    }
+
+    public VoidMethod find(String methodName, Class<?>... parameterTypes) throws NoSuchMethodException {
+        Method method = this.clazz.getMethod(methodName, parameterTypes);
+
+        checkModifier(method);
+
+        Class<?> methodReturnType = method.getReturnType();
+        if (!void.class.equals(methodReturnType)) {
+            throw new NoSuchMethodException(CANT_FIND_VOID_METHOD_MSG + method);
+        }
+
+        return new VoidMethod(this.target, method);
+    }
+
+    public <ReturnType> ReturnMethod<ReturnType> find(
+            Class<ReturnType> returnType, String methodName, Class<?>... parameterTypes
+    ) throws NoSuchMethodException {
+        Method method = this.clazz.getMethod(methodName, parameterTypes);
+
+        checkModifier(method);
+
+        Class<?> methodReturnType = method.getReturnType();
+        if (!returnType.isAssignableFrom(methodReturnType)) {
+            throw new NoSuchMethodException(String.format(CANT_FIND_RETURNED_METHOD_MSG, returnType.getName()) + method);
+        }
+
+        return new ReturnMethod<>(this.target, method);
+    }
+
+    private void checkModifier(Method method) throws NoSuchMethodException {
+        int modifiers = method.getModifiers();
+        if (this.target.isPresent() && Modifier.isStatic(modifiers)) {
+            throw new NoSuchMethodException(CANT_FIND_INSTANCE_METHOD_MSG + method);
+        } else if (!this.target.isPresent() && !Modifier.isStatic(modifiers)) {
+            throw new NoSuchMethodException(CANT_FIND_STATIC_METHOD_MSG + method);
         }
     }
 

@@ -4,21 +4,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class SmoothServiceTransporter {
+class SmoothServicePayload {
 
     private Map<String, List<String>> header;
 
     private Map<String, String> body;
 
-    public SmoothServiceTransporter() {
+    public SmoothServicePayload() {
         this(new HashMap<>());
     }
 
-    public SmoothServiceTransporter(Map<String, List<String>> header) {
+    public SmoothServicePayload(Map<String, List<String>> header) {
         this(header, new HashMap<>());
     }
 
-    public SmoothServiceTransporter(Map<String, List<String>> header, Map<String, String> body) {
+    public SmoothServicePayload(Map<String, List<String>> header, Map<String, String> body) {
         this.header = header;
         this.body = body;
     }

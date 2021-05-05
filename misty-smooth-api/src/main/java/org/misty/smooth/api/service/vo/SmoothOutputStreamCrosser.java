@@ -1,6 +1,7 @@
 package org.misty.smooth.api.service.vo;
 
 import org.misty.smooth.api.cross.SmoothCrossWrapper;
+import org.misty.smooth.api.mark.NeedCross;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -9,8 +10,10 @@ public class SmoothOutputStreamCrosser extends OutputStream {
 
     private final SmoothCrossWrapper<OutputStream> wrapper;
 
-    public SmoothOutputStreamCrosser(OutputStream inputStream) {
-        this.wrapper = new SmoothCrossWrapper<>(inputStream.getClass().getClassLoader(), inputStream);
+    public SmoothOutputStreamCrosser(
+            @NeedCross(implementation = NeedCross.Scope.ANY, user = NeedCross.Scope.MODULE) OutputStream outputStream
+    ) {
+        this.wrapper = new SmoothCrossWrapper<>(outputStream.getClass().getClassLoader(), outputStream);
     }
 
     public OutputStream getRawOutputStream() {

@@ -7,7 +7,7 @@ import java.util.concurrent.ExecutorService;
 
 @NeedCross(
         implementation = NeedCross.Scope.CORE,
-        usedBy = {NeedCross.Scope.MANAGER, NeedCross.Scope.MODULE}
+        user = {NeedCross.Scope.MANAGER, NeedCross.Scope.MODULE}
 )
 public interface SmoothRegister {
 

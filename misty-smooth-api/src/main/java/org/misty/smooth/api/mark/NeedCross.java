@@ -3,16 +3,19 @@ package org.misty.smooth.api.mark;
 import java.lang.annotation.*;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER})
 @Documented
 public @interface NeedCross {
 
-    enum Scope {
-        ANY, CORE, MANAGER, MODULE
+    class Scope {
+        public static final String ANY = "ANY";
+        public static final String CORE = "CORE";
+        public static final String MANAGER = "MANAGER";
+        public static final String MODULE = "MODULE";
     }
 
-    Scope[] implementation();
+    String[] implementation();
 
-    Scope[] usedBy();
+    String[] user();
 
 }
