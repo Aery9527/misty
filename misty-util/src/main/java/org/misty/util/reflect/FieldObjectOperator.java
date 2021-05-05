@@ -2,8 +2,7 @@ package org.misty.util.reflect;
 
 import java.lang.reflect.Field;
 
-
-public class FieldObjectOperator<TargetType> extends FieldObjectAbstract<TargetType> {
+public class FieldObjectOperator<TargetType> extends FieldObjectAbstract {
 
     private final FieldObjectGetter<TargetType> getter;
 

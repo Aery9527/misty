@@ -2,20 +2,19 @@ package org.misty.util.reflect;
 
 import java.lang.reflect.Field;
 
-@SuppressWarnings("unchecked")
-abstract class FieldObjectAbstract<TargetType> {
+abstract class FieldObjectAbstract {
 
-    private final FieldExtractor.Style style;
+    private final FieldExtractorStyle style;
 
     private final Field field;
 
     protected FieldObjectAbstract(Field field, Object target) {
-        this.style = FieldExtractor.Style.INSTANCE;
+        this.style = FieldExtractorStyle.INSTANCE;
         this.field = field;
     }
 
     protected FieldObjectAbstract(Field field) {
-        this.style = FieldExtractor.Style.STATIC;
+        this.style = FieldExtractorStyle.STATIC;
         this.field = field;
     }
 
@@ -27,11 +26,11 @@ abstract class FieldObjectAbstract<TargetType> {
         return this.field.getDeclaringClass();
     }
 
-    public Class<TargetType> getType() {
-        return (Class<TargetType>) this.field.getType();
+    public Class<?> getType() {
+        return this.field.getType();
     }
 
-    public FieldExtractor.Style getStyle() {
+    public FieldExtractorStyle getStyle() {
         return style;
     }
 

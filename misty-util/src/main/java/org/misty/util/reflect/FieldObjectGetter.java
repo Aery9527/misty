@@ -6,7 +6,7 @@ import java.lang.reflect.Field;
 import java.util.function.Supplier;
 
 @SuppressWarnings("unchecked")
-public class FieldObjectGetter<TargetType> extends FieldObjectAbstract<TargetType> {
+public class FieldObjectGetter<TargetType> extends FieldObjectAbstract {
 
     private final Supplier<TargetType> getter;
 

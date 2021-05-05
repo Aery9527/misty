@@ -5,7 +5,7 @@ import org.misty.util.fi.FiConsumer;
 import java.lang.reflect.Field;
 import java.util.function.Consumer;
 
-public class FieldObjectSetter<TargetType> extends FieldObjectAbstract<TargetType> {
+public class FieldObjectSetter<TargetType> extends FieldObjectAbstract {
 
     private final Consumer<TargetType> setter;
 
