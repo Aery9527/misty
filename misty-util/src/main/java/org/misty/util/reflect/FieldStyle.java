@@ -1,6 +1,6 @@
 package org.misty.util.reflect;
 
-public enum FieldExtractorStyle {
+public enum FieldStyle {
     STATIC, INSTANCE;
 
     public boolean isStatic() {

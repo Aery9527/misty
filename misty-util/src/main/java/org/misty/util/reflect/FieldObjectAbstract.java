@@ -4,17 +4,17 @@ import java.lang.reflect.Field;
 
 abstract class FieldObjectAbstract {
 
-    private final FieldExtractorStyle style;
+    private final FieldStyle fieldStyle;
 
     private final Field field;
 
     protected FieldObjectAbstract(Field field, Object target) {
-        this.style = FieldExtractorStyle.INSTANCE;
+        this.fieldStyle = FieldStyle.INSTANCE;
         this.field = field;
     }
 
     protected FieldObjectAbstract(Field field) {
-        this.style = FieldExtractorStyle.STATIC;
+        this.fieldStyle = FieldStyle.STATIC;
         this.field = field;
     }
 
@@ -26,12 +26,12 @@ abstract class FieldObjectAbstract {
         return this.field.getDeclaringClass();
     }
 
-    public Class<?> getType() {
+    public Class<?> getFieldType() {
         return this.field.getType();
     }
 
-    public FieldExtractorStyle getStyle() {
-        return style;
+    public FieldStyle getFieldStyle() {
+        return fieldStyle;
     }
 
 }
