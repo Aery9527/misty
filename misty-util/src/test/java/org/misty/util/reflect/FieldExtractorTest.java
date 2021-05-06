@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.misty.util.fi.FiBiFunction;
 import org.misty.util.fi.FiConsumer;
+import org.misty.util.fi.FiFunction;
 
 import java.math.BigDecimal;
 import java.util.function.BiConsumer;
@@ -21,6 +22,11 @@ class FieldExtractorTest {
     static final String DEFAULT_a7 = "d";
     static final BigDecimal DEFAULT_a8 = new BigDecimal("4");
 
+    static final byte DEFAULT_b1 = 1;
+    static final byte DEFAULT_b2 = 2;
+    static final byte DEFAULT_b3 = 3;
+    static final byte DEFAULT_b4 = 4;
+
     public static class TestTarget {
         public static final String a1 = DEFAULT_a1;
         public static final BigDecimal a2 = DEFAULT_a2;
@@ -30,6 +36,11 @@ class FieldExtractorTest {
         public final BigDecimal a6 = DEFAULT_a6;
         public String a7 = DEFAULT_a7;
         public BigDecimal a8 = DEFAULT_a8;
+
+        public static final byte b1 = DEFAULT_b1;
+        public static byte b2 = DEFAULT_b2;
+        public final byte b3 = DEFAULT_b3;
+        public byte b4 = DEFAULT_b4;
     }
 
     public static final String static_final_String = "a1";
@@ -40,6 +51,11 @@ class FieldExtractorTest {
     public static final String instance_final_BigDecimal = "a6";
     public static final String instance_String = "a7";
     public static final String instance_BigDecimal = "a8";
+
+    public static final String static_final_byte = "b1";
+    public static final String static_byte = "b2";
+    public static final String instance_final_byte = "b3";
+    public static final String instance_byte = "b4";
 
     public static class NormalTester<Target extends FieldObjectAbstract, FieldType> {
         private final String name;
@@ -52,6 +68,13 @@ class FieldExtractorTest {
             this.fieldType = fieldType;
             this.fieldStyle = fieldStyle;
             this.target = builder.applyOrHandle(this.name, this.fieldType);
+        }
+
+        public NormalTester(String name, Class<FieldType> fieldType, FieldStyle fieldStyle, FiFunction<String, Target> builder) {
+            this.name = name;
+            this.fieldType = fieldType;
+            this.fieldStyle = fieldStyle;
+            this.target = builder.applyOrHandle(this.name);
         }
 
         public void test(FiConsumer<Target> action) {
@@ -81,6 +104,15 @@ class FieldExtractorTest {
 
         public ErrorTester(FiBiFunction<String, Class<?>, FieldObjectAbstract> builder) {
             this.builder = builder;
+        }
+
+        public ErrorTester(FiFunction<String, FieldObjectAbstract> builder) {
+            this.builder = (name, clazz) -> {
+                FieldObjectAbstract target = builder.applyOrHandle(name);
+                Class<?> fieldType = target.getFieldType();
+                Assertions.assertThat(fieldType).isEqualTo(clazz);
+                return target;
+            };
         }
 
         public void noSuchField(Class<?> fieldType, String name) {
@@ -346,6 +378,57 @@ class FieldExtractorTest {
                 errorTester.withoutInstance(BigDecimal.class, instance_BigDecimal);
                 errorTester.withoutInstance(String.class, instance_String);
                 errorTester.withoutInstance(BigDecimal.class, instance_BigDecimal);
+            }
+        };
+
+        test.accept(new FieldExtractor(TestTarget.class), true);
+        test.accept(new FieldExtractor(new TestTarget()), false);
+    }
+
+    @Test
+    void buildByteGetter$normal() {
+        FieldExtractor staticExtractor = new FieldExtractor(TestTarget.class);
+        FieldExtractor instanceExtractor = new FieldExtractor(new TestTarget());
+
+        BiConsumer<FieldExtractor, FieldStyle> staticTest = (extractor, style) -> {
+            new NormalTester<>(static_final_byte, byte.class, style, extractor::buildByteGetter).test((target) -> {
+                Assertions.assertThat(target.get()).isEqualTo(DEFAULT_b1);
+            });
+
+            new NormalTester<>(static_byte, byte.class, style, extractor::buildByteGetter).test((target) -> {
+                Assertions.assertThat(target.get()).isEqualTo(DEFAULT_b2);
+            });
+        };
+
+        BiConsumer<FieldExtractor, FieldStyle> instanceTest = (extractor, style) -> {
+            new NormalTester<>(instance_final_byte, byte.class, style, extractor::buildByteGetter).test((target) -> {
+                Assertions.assertThat(target.get()).isEqualTo(DEFAULT_b3);
+            });
+
+            new NormalTester<>(instance_byte, byte.class, style, extractor::buildByteGetter).test((target) -> {
+                Assertions.assertThat(target.get()).isEqualTo(DEFAULT_b4);
+            });
+        };
+
+        staticTest.accept(staticExtractor, FieldStyle.STATIC);
+
+        staticTest.accept(instanceExtractor, FieldStyle.STATIC); // test instanceExtractor can use static field
+        instanceTest.accept(instanceExtractor, FieldStyle.INSTANCE);
+    }
+
+    @Test
+    void buildByteGetter$error() {
+        BiConsumer<FieldExtractor, Boolean> test = (extractor, isStaticExtractor) -> {
+            ErrorTester errorTester = new ErrorTester(extractor::buildByteGetter);
+
+            errorTester.noSuchField(byte.class, "kerker");
+            errorTester.noSuchField(Byte.class, static_final_byte);
+
+            errorTester.errorFieldType(Double.class, static_final_byte, byte.class);
+
+            if (isStaticExtractor) {
+                errorTester.withoutInstance(byte.class, instance_final_byte);
+                errorTester.withoutInstance(byte.class, instance_byte);
             }
         };
 

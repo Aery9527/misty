@@ -50,6 +50,24 @@ public class FieldExtractor {
         return style.isStatic() ? new FieldObjectOperator<>(field) : new FieldObjectOperator<>(field, this.target.get());
     }
 
+    public FieldByteGetter buildByteGetter(String name) throws NoSuchFieldException {
+        Field field = getField(name, byte.class, false);
+        FieldStyle style = getStyle(field);
+        return style.isStatic() ? new FieldByteGetter(field) : new FieldByteGetter(field, this.target.get());
+    }
+
+    public FieldByteSetter buildByteSetter(String name) throws NoSuchFieldException {
+        Field field = getField(name, byte.class, true);
+        FieldStyle style = getStyle(field);
+        return style.isStatic() ? new FieldByteSetter(field) : new FieldByteSetter(field, this.target.get());
+    }
+
+    public FieldByteOperator buildByteOperator(String name) throws NoSuchFieldException {
+        Field field = getField(name, byte.class, true);
+        FieldStyle style = getStyle(field);
+        return style.isStatic() ? new FieldByteOperator(field) : new FieldByteOperator(field, this.target.get());
+    }
+
     private <FieldType> Field getField(String name, Class<FieldType> fieldType, boolean checkCanSet) throws NoSuchFieldException {
         Field field = this.clazz.getDeclaredField(name);
         int modifiers = field.getModifiers();
