@@ -12,25 +12,34 @@ import java.util.function.Consumer;
 
 class FieldExtractorTest {
 
+    static final String DEFAULT_a1 = "a";
+    static final BigDecimal DEFAULT_a2 = new BigDecimal("1");
+    static final String DEFAULT_a3 = "b";
+    static final BigDecimal DEFAULT_a4 = new BigDecimal("2");
+    static final String DEFAULT_a5 = "c";
+    static final BigDecimal DEFAULT_a6 = new BigDecimal("3");
+    static final String DEFAULT_a7 = "d";
+    static final BigDecimal DEFAULT_a8 = new BigDecimal("4");
+
     public static class TestTarget {
-        public static final String static_final_String = "a";
-        public static final BigDecimal static_final_BigDecimal = new BigDecimal("1");
-        public static String static_String = "b";
-        public static BigDecimal static_BigDecimal = new BigDecimal("2");
-        public final String instance_final_String = "c";
-        public final BigDecimal instance_final_BigDecimal = new BigDecimal("3");
-        public String instance_String = "d";
-        public BigDecimal instance_BigDecimal = new BigDecimal("4");
+        public static final String a1 = DEFAULT_a1;
+        public static final BigDecimal a2 = DEFAULT_a2;
+        public static String a3 = DEFAULT_a3;
+        public static BigDecimal a4 = DEFAULT_a4;
+        public final String a5 = DEFAULT_a5;
+        public final BigDecimal a6 = DEFAULT_a6;
+        public String a7 = DEFAULT_a7;
+        public BigDecimal a8 = DEFAULT_a8;
     }
 
-    public static final String static_final_String = "static_final_String";
-    public static final String static_final_BigDecimal = "static_final_BigDecimal";
-    public static final String static_String = "static_String";
-    public static final String static_BigDecimal = "static_BigDecimal";
-    public static final String instance_final_String = "instance_final_String";
-    public static final String instance_final_BigDecimal = "instance_final_BigDecimal";
-    public static final String instance_String = "instance_String";
-    public static final String instance_BigDecimal = "instance_BigDecimal";
+    public static final String static_final_String = "a1";
+    public static final String static_final_BigDecimal = "a2";
+    public static final String static_String = "a3";
+    public static final String static_BigDecimal = "a4";
+    public static final String instance_final_String = "a5";
+    public static final String instance_final_BigDecimal = "a6";
+    public static final String instance_String = "a7";
+    public static final String instance_BigDecimal = "a8";
 
     public static class NormalTester<Target extends FieldObjectAbstract, FieldType> {
         private final String name;
@@ -101,64 +110,64 @@ class FieldExtractorTest {
 
     @BeforeEach
     void setUp() {
-        TestTarget.static_String = "b";
-        TestTarget.static_BigDecimal = new BigDecimal("2");
+        TestTarget.a3 = DEFAULT_a3;
+        TestTarget.a4 = DEFAULT_a4;
     }
 
     @Test
     void buildObjectGetter$normal() {
-        FieldExtractor classExtractor = new FieldExtractor(TestTarget.class);
+        FieldExtractor staticExtractor = new FieldExtractor(TestTarget.class);
         FieldExtractor instanceExtractor = new FieldExtractor(new TestTarget());
 
         BiConsumer<FieldExtractor, FieldStyle> staticTest = (extractor, style) -> {
             new NormalTester<>(static_final_String, String.class, style, extractor::buildGetter).test((target) -> {
-                Assertions.assertThat(target.get()).isEqualTo("a");
+                Assertions.assertThat(target.get()).isEqualTo(DEFAULT_a1);
             });
 
             new NormalTester<>(static_String, String.class, style, extractor::buildGetter).test((target) -> {
-                Assertions.assertThat(target.get()).isEqualTo("b");
+                Assertions.assertThat(target.get()).isEqualTo(DEFAULT_a3);
             });
 
             new NormalTester<>(static_final_BigDecimal, BigDecimal.class, style, extractor::buildGetter).test((target) -> {
-                Assertions.assertThat(target.get()).isEqualTo(new BigDecimal("1"));
+                Assertions.assertThat(target.get()).isEqualTo(DEFAULT_a2);
             });
             new NormalTester<>(static_final_BigDecimal, Number.class, style, extractor::buildGetter).testWithAssignable((target) -> {
-                Assertions.assertThat(target.get()).isEqualTo(new BigDecimal("1"));
+                Assertions.assertThat(target.get()).isEqualTo(DEFAULT_a2);
             });
 
             new NormalTester<>(static_BigDecimal, BigDecimal.class, style, extractor::buildGetter).test((target) -> {
-                Assertions.assertThat(target.get()).isEqualTo(new BigDecimal("2"));
+                Assertions.assertThat(target.get()).isEqualTo(DEFAULT_a4);
             });
             new NormalTester<>(static_BigDecimal, Number.class, style, extractor::buildGetter).testWithAssignable((target) -> {
-                Assertions.assertThat(target.get()).isEqualTo(new BigDecimal("2"));
+                Assertions.assertThat(target.get()).isEqualTo(DEFAULT_a4);
             });
         };
 
         BiConsumer<FieldExtractor, FieldStyle> instanceTest = (extractor, style) -> {
             new NormalTester<>(instance_final_String, String.class, style, extractor::buildGetter).test((target) -> {
-                Assertions.assertThat(target.get()).isEqualTo("c");
+                Assertions.assertThat(target.get()).isEqualTo(DEFAULT_a5);
             });
 
             new NormalTester<>(instance_String, String.class, style, extractor::buildGetter).test((target) -> {
-                Assertions.assertThat(target.get()).isEqualTo("d");
+                Assertions.assertThat(target.get()).isEqualTo(DEFAULT_a7);
             });
 
             new NormalTester<>(instance_final_BigDecimal, BigDecimal.class, style, extractor::buildGetter).test((target) -> {
-                Assertions.assertThat(target.get()).isEqualTo(new BigDecimal("3"));
+                Assertions.assertThat(target.get()).isEqualTo(DEFAULT_a6);
             });
             new NormalTester<>(instance_final_BigDecimal, Number.class, style, extractor::buildGetter).testWithAssignable((target) -> {
-                Assertions.assertThat(target.get()).isEqualTo(new BigDecimal("3"));
+                Assertions.assertThat(target.get()).isEqualTo(DEFAULT_a6);
             });
 
             new NormalTester<>(instance_BigDecimal, BigDecimal.class, style, extractor::buildGetter).test((target) -> {
-                Assertions.assertThat(target.get()).isEqualTo(new BigDecimal("4"));
+                Assertions.assertThat(target.get()).isEqualTo(DEFAULT_a8);
             });
             new NormalTester<>(instance_BigDecimal, Number.class, style, extractor::buildGetter).testWithAssignable((target) -> {
-                Assertions.assertThat(target.get()).isEqualTo(new BigDecimal("4"));
+                Assertions.assertThat(target.get()).isEqualTo(DEFAULT_a8);
             });
         };
 
-        staticTest.accept(classExtractor, FieldStyle.STATIC);
+        staticTest.accept(staticExtractor, FieldStyle.STATIC);
 
         staticTest.accept(instanceExtractor, FieldStyle.STATIC); // test instanceExtractor can use static field
         instanceTest.accept(instanceExtractor, FieldStyle.INSTANCE);
@@ -188,7 +197,7 @@ class FieldExtractorTest {
 
     @Test
     void buildObjectSetter$normal() {
-        FieldExtractor classExtractor = new FieldExtractor(TestTarget.class);
+        FieldExtractor staticExtractor = new FieldExtractor(TestTarget.class);
         FieldExtractor instanceExtractor = new FieldExtractor(new TestTarget());
 
         BiConsumer<FieldExtractor, FieldStyle> staticTest = (extractor, style) -> {
@@ -197,7 +206,7 @@ class FieldExtractorTest {
 
                 target.set(newString);
 
-                FieldObjectGetter<String> getter = classExtractor.buildGetter(static_String, String.class);
+                FieldObjectGetter<String> getter = staticExtractor.buildGetter(static_String, String.class);
                 Assertions.assertThat(getter.get()).isEqualTo(newString);
             });
 
@@ -206,7 +215,7 @@ class FieldExtractorTest {
 
                 target.set(newBigDecimal);
 
-                FieldObjectGetter<BigDecimal> getter = classExtractor.buildGetter(static_BigDecimal, BigDecimal.class);
+                FieldObjectGetter<BigDecimal> getter = staticExtractor.buildGetter(static_BigDecimal, BigDecimal.class);
                 Assertions.assertThat(getter.get()).isEqualTo(newBigDecimal);
             });
             new NormalTester<>(static_BigDecimal, Number.class, style, extractor::buildSetter).testWithAssignable((target) -> {
@@ -214,7 +223,7 @@ class FieldExtractorTest {
 
                 target.set(newBigDecimal);
 
-                FieldObjectGetter<Number> getter = classExtractor.buildGetter(static_BigDecimal, Number.class);
+                FieldObjectGetter<Number> getter = staticExtractor.buildGetter(static_BigDecimal, Number.class);
                 Assertions.assertThat(getter.get()).isEqualTo(newBigDecimal);
             });
         };
@@ -247,7 +256,7 @@ class FieldExtractorTest {
             });
         };
 
-        staticTest.accept(classExtractor, FieldStyle.STATIC);
+        staticTest.accept(staticExtractor, FieldStyle.STATIC);
 
         staticTest.accept(instanceExtractor, FieldStyle.STATIC); // test instanceExtractor can use static field
         instanceTest.accept(instanceExtractor, FieldStyle.INSTANCE);
@@ -282,36 +291,37 @@ class FieldExtractorTest {
 
     @Test
     void buildObjectOperator$normal() {
+        FieldExtractor staticExtractor = new FieldExtractor(TestTarget.class);
+        FieldExtractor instanceExtractor = new FieldExtractor(new TestTarget());
+
         BiConsumer<FieldExtractor, FieldStyle> staticTest = (extractor, style) -> {
             new NormalTester<>(static_String, String.class, style, extractor::buildOperator).test((target) -> {
-                Assertions.assertThat(target.get()).isEqualTo("b");
+                Assertions.assertThat(target.get()).isEqualTo(DEFAULT_a3);
             });
 
             new NormalTester<>(static_BigDecimal, BigDecimal.class, style, extractor::buildOperator).test((target) -> {
-                Assertions.assertThat(target.get()).isEqualTo(new BigDecimal("2"));
+                Assertions.assertThat(target.get()).isEqualTo(DEFAULT_a4);
             });
             new NormalTester<>(static_BigDecimal, Number.class, style, extractor::buildOperator).testWithAssignable((target) -> {
-                Assertions.assertThat(target.get()).isEqualTo(new BigDecimal("2"));
+                Assertions.assertThat(target.get()).isEqualTo(DEFAULT_a4);
             });
         };
 
         BiConsumer<FieldExtractor, FieldStyle> instanceTest = (extractor, style) -> {
             new NormalTester<>(instance_String, String.class, style, extractor::buildOperator).test((target) -> {
-                Assertions.assertThat(target.get()).isEqualTo("d");
+                Assertions.assertThat(target.get()).isEqualTo(DEFAULT_a7);
             });
 
             new NormalTester<>(instance_BigDecimal, BigDecimal.class, style, extractor::buildOperator).test((target) -> {
-                Assertions.assertThat(target.get()).isEqualTo(new BigDecimal("4"));
+                Assertions.assertThat(target.get()).isEqualTo(DEFAULT_a8);
             });
             new NormalTester<>(instance_BigDecimal, Number.class, style, extractor::buildOperator).testWithAssignable((target) -> {
-                Assertions.assertThat(target.get()).isEqualTo(new BigDecimal("4"));
+                Assertions.assertThat(target.get()).isEqualTo(DEFAULT_a8);
             });
         };
 
-        FieldExtractor classExtractor = new FieldExtractor(TestTarget.class);
-        staticTest.accept(classExtractor, FieldStyle.STATIC);
+        staticTest.accept(staticExtractor, FieldStyle.STATIC);
 
-        FieldExtractor instanceExtractor = new FieldExtractor(new TestTarget());
         staticTest.accept(instanceExtractor, FieldStyle.STATIC); // test instanceExtractor can use static field
         instanceTest.accept(instanceExtractor, FieldStyle.INSTANCE);
     }
