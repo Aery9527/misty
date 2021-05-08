@@ -1,20 +1,33 @@
 package org.misty.util.reflect.method;
 
 import java.lang.reflect.Method;
+import java.util.Optional;
 
-abstract class MethodAbstract {
+public abstract class MethodAbstract {
 
     private final Method method;
+
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    private final Optional<Object> target;
 
     private final MethodStyle methodStyle;
 
     protected MethodAbstract(Method method, Object target) {
         this.method = method;
-        this.methodStyle = MethodStyle.INSTANCE;
+        this.target = Optional.of(target);
+
+        Class<?> declaringClass = method.getDeclaringClass();
+        Class<?> targetClass = target.getClass();
+        if (declaringClass.equals(targetClass)) {
+            this.methodStyle = MethodStyle.INSTANCE;
+        } else {
+            this.methodStyle = MethodStyle.ANCESTOR;
+        }
     }
 
     protected MethodAbstract(Method method) {
         this.method = method;
+        this.target = Optional.empty();
         this.methodStyle = MethodStyle.STATIC;
     }
 
@@ -22,19 +35,12 @@ abstract class MethodAbstract {
         return this.method;
     }
 
-    public String getName() {
-        return this.method.getName();
-    }
-
-    public Class<?> getDeclaringClass() {
-        return this.method.getDeclaringClass();
-    }
-
-    public Class<?> getReturnType() {
-        return this.method.getReturnType();
+    public Optional<Object> getTarget() {
+        return target;
     }
 
     public MethodStyle getMethodStyle() {
         return methodStyle;
     }
+
 }

@@ -6,7 +6,7 @@ import java.lang.reflect.Method;
 import java.util.function.Function;
 
 @SuppressWarnings("unchecked")
-public class MethodObjectInvoker<ReturnType> extends MethodAbstract {
+public class MethodObjectInvoker<ReturnType> extends MethodReturnAbstract<ReturnType> {
 
     private final Function<Object[], ReturnType> invoker;
 
@@ -22,6 +22,7 @@ public class MethodObjectInvoker<ReturnType> extends MethodAbstract {
 
     //
 
+    @Override
     public ReturnType invoke(Object... parameters) {
         return this.invoker.apply(parameters);
     }
