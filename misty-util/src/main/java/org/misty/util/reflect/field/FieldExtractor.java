@@ -32,6 +32,14 @@ public class FieldExtractor {
         this.clazz = clazz;
     }
 
+    public <Type1, Type2 extends Type1> FieldExtractor(Class<Type1> accessibleType, Type2 target) {
+        Objects.requireNonNull(target);
+        Objects.requireNonNull(accessibleType);
+
+        this.target = Optional.of(target);
+        this.clazz = accessibleType;
+    }
+
     //
 
     public <FieldType> FieldObjectGetter<FieldType> buildGetter(String name, Class<FieldType> fieldType) throws NoSuchFieldException {

@@ -13,6 +13,23 @@ import java.util.function.Consumer;
 
 class FieldExtractorTest {
 
+    static final String DEFAULT_A1 = "A";
+    static final String DEFAULT_A2 = "B";
+    static final byte DEFAULT_B1 = 121;
+    static final byte DEFAULT_B2 = 122;
+    static final char DEFAULT_C1 = 131;
+    static final char DEFAULT_C2 = 132;
+    static final double DEFAULT_D1 = 141;
+    static final double DEFAULT_D2 = 142;
+    static final float DEFAULT_E1 = 151;
+    static final float DEFAULT_E2 = 152;
+    static final int DEFAULT_F1 = 161;
+    static final int DEFAULT_F2 = 162;
+    static final long DEFAULT_G1 = 171;
+    static final long DEFAULT_G2 = 172;
+    static final short DEFAULT_H1 = 181;
+    static final short DEFAULT_H2 = 182;
+
     static final String DEFAULT_a1 = "a";
     static final BigDecimal DEFAULT_a2 = new BigDecimal("1");
     static final String DEFAULT_a3 = "b";
@@ -64,58 +81,101 @@ class FieldExtractorTest {
     static final short DEFAULT_h3 = 83;
     static final short DEFAULT_h4 = 84;
 
-    public static class TestTarget {
-        public static final String a1 = DEFAULT_a1;
-        public static final BigDecimal a2 = DEFAULT_a2;
-        public static String a3 = DEFAULT_a3;
-        public static BigDecimal a4 = DEFAULT_a4;
-        public final String a5 = DEFAULT_a5;
-        public final BigDecimal a6 = DEFAULT_a6;
-        public String a7 = DEFAULT_a7;
-        public BigDecimal a8 = DEFAULT_a8;
+    public static class TestTargetParent {
+        private final String A1 = DEFAULT_A1;
+        private String A2 = DEFAULT_A2;
 
-        public static final Byte b0 = DEFAULT_b0;
-        public static final byte b1 = DEFAULT_b1;
-        public static byte b2 = DEFAULT_b2;
-        public final byte b3 = DEFAULT_b3;
-        public byte b4 = DEFAULT_b4;
+        private final byte B1 = DEFAULT_B1;
+        private byte B2 = DEFAULT_B2;
 
-        public static final Character c0 = DEFAULT_c0;
-        public static final char c1 = DEFAULT_c1;
-        public static char c2 = DEFAULT_c2;
-        public final char c3 = DEFAULT_c3;
-        public char c4 = DEFAULT_c4;
+        private final char C1 = DEFAULT_C1;
+        private char C2 = DEFAULT_C2;
 
-        public static final Double d0 = DEFAULT_d0;
-        public static final double d1 = DEFAULT_d1;
-        public static double d2 = DEFAULT_d2;
-        public final double d3 = DEFAULT_d3;
-        public double d4 = DEFAULT_d4;
+        private final double D1 = DEFAULT_D1;
+        private double D2 = DEFAULT_D2;
 
-        public static final Float e0 = DEFAULT_e0;
-        public static final float e1 = DEFAULT_e1;
-        public static float e2 = DEFAULT_e2;
-        public final float e3 = DEFAULT_e3;
-        public float e4 = DEFAULT_e4;
+        private final float E1 = DEFAULT_E1;
+        private float E2 = DEFAULT_E2;
 
-        public static final Integer f0 = DEFAULT_f0;
-        public static final int f1 = DEFAULT_f1;
-        public static int f2 = DEFAULT_f2;
-        public final int f3 = DEFAULT_f3;
-        public int f4 = DEFAULT_f4;
+        private final int F1 = DEFAULT_F1;
+        private int F2 = DEFAULT_F2;
 
-        public static final Long g0 = DEFAULT_g0;
-        public static final long g1 = DEFAULT_g1;
-        public static long g2 = DEFAULT_g2;
-        public final long g3 = DEFAULT_g3;
-        public long g4 = DEFAULT_g4;
+        private final long G1 = DEFAULT_G1;
+        private long G2 = DEFAULT_G2;
 
-        public static final Short h0 = DEFAULT_h0;
-        public static final short h1 = DEFAULT_h1;
-        public static short h2 = DEFAULT_h2;
-        public final short h3 = DEFAULT_h3;
-        public short h4 = DEFAULT_h4;
+        private final short H1 = DEFAULT_H1;
+        private short H2 = DEFAULT_H2;
     }
+
+    public static class TestTarget extends TestTargetParent {
+        private static final String a1 = DEFAULT_a1;
+        private static final BigDecimal a2 = DEFAULT_a2;
+        private static String a3 = DEFAULT_a3;
+        private static BigDecimal a4 = DEFAULT_a4;
+        private final String a5 = DEFAULT_a5;
+        private final BigDecimal a6 = DEFAULT_a6;
+        private String a7 = DEFAULT_a7;
+        private BigDecimal a8 = DEFAULT_a8;
+
+        private static final Byte b0 = DEFAULT_b0;
+        private static final byte b1 = DEFAULT_b1;
+        private static byte b2 = DEFAULT_b2;
+        private final byte b3 = DEFAULT_b3;
+        private byte b4 = DEFAULT_b4;
+
+        private static final Character c0 = DEFAULT_c0;
+        private static final char c1 = DEFAULT_c1;
+        private static char c2 = DEFAULT_c2;
+        private final char c3 = DEFAULT_c3;
+        private char c4 = DEFAULT_c4;
+
+        private static final Double d0 = DEFAULT_d0;
+        private static final double d1 = DEFAULT_d1;
+        private static double d2 = DEFAULT_d2;
+        private final double d3 = DEFAULT_d3;
+        private double d4 = DEFAULT_d4;
+
+        private static final Float e0 = DEFAULT_e0;
+        private static final float e1 = DEFAULT_e1;
+        private static float e2 = DEFAULT_e2;
+        private final float e3 = DEFAULT_e3;
+        private float e4 = DEFAULT_e4;
+
+        private static final Integer f0 = DEFAULT_f0;
+        private static final int f1 = DEFAULT_f1;
+        private static int f2 = DEFAULT_f2;
+        private final int f3 = DEFAULT_f3;
+        private int f4 = DEFAULT_f4;
+
+        private static final Long g0 = DEFAULT_g0;
+        private static final long g1 = DEFAULT_g1;
+        private static long g2 = DEFAULT_g2;
+        private final long g3 = DEFAULT_g3;
+        private long g4 = DEFAULT_g4;
+
+        private static final Short h0 = DEFAULT_h0;
+        private static final short h1 = DEFAULT_h1;
+        private static short h2 = DEFAULT_h2;
+        private final short h3 = DEFAULT_h3;
+        private short h4 = DEFAULT_h4;
+    }
+
+    public static final String INSTANCE_FINAL_STRING = "A1";
+    public static final String INSTANCE_STRING = "A2";
+    public static final String INSTANCE_FINAL_BYTE = "B1";
+    public static final String INSTANCE_BYTE = "B2";
+    public static final String INSTANCE_FINAL_CHAR = "C1";
+    public static final String INSTANCE_CHAR = "C2";
+    public static final String INSTANCE_FINAL_DOUBLE = "D1";
+    public static final String INSTANCE_DOUBLE = "D2";
+    public static final String INSTANCE_FINAL_FLOAT = "E1";
+    public static final String INSTANCE_FLOAT = "E2";
+    public static final String INSTANCE_FINAL_INT = "F1";
+    public static final String INSTANCE_INT = "F2";
+    public static final String INSTANCE_FINAL_LONG = "G1";
+    public static final String INSTANCE_LONG = "G2";
+    public static final String INSTANCE_FINAL_SHORT = "H1";
+    public static final String INSTANCE_SHORT = "H2";
 
     public static final String static_final_String = "a1";
     public static final String static_final_BigDecimal = "a2";
@@ -190,22 +250,28 @@ class FieldExtractorTest {
 
         public void test(FiConsumer<Target> action) {
             testCommon((target) -> {
-                Assertions.assertThat(target.getFieldType()).isEqualTo(this.fieldType);
+                Assertions.assertThat(target.getField().getType()).isEqualTo(this.fieldType);
                 action.acceptOrHandle(target);
             });
         }
 
         public void testWithAssignable(FiConsumer<Target> action) {
             testCommon((target) -> {
-                Assertions.assertThat(this.fieldType).isAssignableFrom(target.getFieldType());
+                Assertions.assertThat(this.fieldType).isAssignableFrom(target.getField().getType());
                 action.acceptOrHandle(target);
             });
         }
 
         private void testCommon(Consumer<Target> action) {
-            Assertions.assertThat(this.target.getDeclaringClass()).isEqualTo(TestTarget.class);
-            Assertions.assertThat(this.target.getName()).isEqualTo(this.name);
+            Assertions.assertThat(this.target.getField().getName()).isEqualTo(this.name);
             Assertions.assertThat(this.target.getFieldStyle()).isEqualTo(this.fieldStyle);
+
+            if (this.fieldStyle.isAncestor()) {
+                Assertions.assertThat(this.target.getField().getDeclaringClass()).isAssignableFrom(TestTarget.class);
+            } else {
+                Assertions.assertThat(this.target.getField().getDeclaringClass()).isEqualTo(TestTarget.class);
+            }
+
             action.accept(this.target);
         }
     }
@@ -295,6 +361,7 @@ class FieldExtractorTest {
     void buildObjectGetter$normal() {
         FieldExtractor staticExtractor = new FieldExtractor(TestTarget.class);
         FieldExtractor instanceExtractor = new FieldExtractor(new TestTarget());
+        FieldExtractor ancestorExtractor = new FieldExtractor(TestTargetParent.class, new TestTarget());
 
         BiConsumer<FieldExtractor, FieldStyle> staticTest = (extractor, style) -> {
             new NormalTester<>(static_final_String, String.class, style, extractor::buildGetter).test((target) -> {
@@ -344,10 +411,22 @@ class FieldExtractorTest {
             });
         };
 
+        BiConsumer<FieldExtractor, FieldStyle> ancestorTest = (extractor, style) -> {
+            new NormalTester<>(INSTANCE_FINAL_STRING, String.class, style, extractor::buildGetter).test((target) -> {
+                Assertions.assertThat(target.get()).isEqualTo(DEFAULT_A1);
+            });
+
+            new NormalTester<>(INSTANCE_STRING, String.class, style, extractor::buildGetter).test((target) -> {
+                Assertions.assertThat(target.get()).isEqualTo(DEFAULT_A2);
+            });
+        };
+
         staticTest.accept(staticExtractor, FieldStyle.STATIC);
 
         staticTest.accept(instanceExtractor, FieldStyle.STATIC); // test instanceExtractor can use static field
         instanceTest.accept(instanceExtractor, FieldStyle.INSTANCE);
+
+        ancestorTest.accept(ancestorExtractor, FieldStyle.ANCESTOR);
     }
 
     @Test
@@ -370,12 +449,17 @@ class FieldExtractorTest {
 
         test.accept(new FieldExtractor(TestTarget.class), true);
         test.accept(new FieldExtractor(new TestTarget()), false);
+
+        FieldExtractor extractor = new FieldExtractor(TestTargetParent.class, new TestTarget());
+        ErrorObjectTester errorTester = new ErrorObjectTester(extractor::buildGetter);
+        errorTester.noSuchField(String.class, instance_String);
     }
 
     @Test
     void buildObjectSetter$normal() {
         FieldExtractor staticExtractor = new FieldExtractor(TestTarget.class);
         FieldExtractor instanceExtractor = new FieldExtractor(new TestTarget());
+        FieldExtractor ancestorExtractor = new FieldExtractor(TestTargetParent.class, new TestTarget());
 
         BiConsumer<FieldExtractor, FieldStyle> staticTest = (extractor, style) -> {
             new NormalTester<>(static_String, String.class, style, extractor::buildSetter).test((target) -> {
@@ -411,7 +495,7 @@ class FieldExtractorTest {
 
                 target.set(newString);
 
-                FieldObjectGetter<String> getter = instanceExtractor.buildGetter(instance_String, String.class);
+                FieldObjectGetter<String> getter = extractor.buildGetter(instance_String, String.class);
                 Assertions.assertThat(getter.get()).isEqualTo(newString);
             });
 
@@ -420,7 +504,7 @@ class FieldExtractorTest {
 
                 target.set(newBigDecimal);
 
-                FieldObjectGetter<BigDecimal> getter = instanceExtractor.buildGetter(instance_BigDecimal, BigDecimal.class);
+                FieldObjectGetter<BigDecimal> getter = extractor.buildGetter(instance_BigDecimal, BigDecimal.class);
                 Assertions.assertThat(getter.get()).isEqualTo(newBigDecimal);
             });
             new NormalTester<>(instance_BigDecimal, Number.class, style, extractor::buildSetter).testWithAssignable((target) -> {
@@ -428,8 +512,19 @@ class FieldExtractorTest {
 
                 target.set(newBigDecimal);
 
-                FieldObjectGetter<Number> getter = instanceExtractor.buildGetter(instance_BigDecimal, Number.class);
+                FieldObjectGetter<Number> getter = extractor.buildGetter(instance_BigDecimal, Number.class);
                 Assertions.assertThat(getter.get()).isEqualTo(newBigDecimal);
+            });
+        };
+
+        BiConsumer<FieldExtractor, FieldStyle> ancestorTest = (extractor, style) -> {
+            new NormalTester<>(INSTANCE_STRING, String.class, style, extractor::buildSetter).test((target) -> {
+                String newString = String.valueOf(System.currentTimeMillis());
+
+                target.set(newString);
+
+                FieldObjectGetter<String> getter = extractor.buildGetter(INSTANCE_STRING, String.class);
+                Assertions.assertThat(getter.get()).isEqualTo(newString);
             });
         };
 
@@ -437,6 +532,8 @@ class FieldExtractorTest {
 
         staticTest.accept(instanceExtractor, FieldStyle.STATIC); // test instanceExtractor can use static field
         instanceTest.accept(instanceExtractor, FieldStyle.INSTANCE);
+
+        ancestorTest.accept(ancestorExtractor, FieldStyle.ANCESTOR);
     }
 
     @Test
@@ -464,12 +561,18 @@ class FieldExtractorTest {
 
         test.accept(new FieldExtractor(TestTarget.class), true);
         test.accept(new FieldExtractor(new TestTarget()), false);
+
+        FieldExtractor extractor = new FieldExtractor(TestTargetParent.class, new TestTarget());
+        ErrorObjectTester errorTester = new ErrorObjectTester(extractor::buildSetter);
+        errorTester.noSuchField(String.class, instance_String);
+        errorTester.fieldIsFinal(String.class, INSTANCE_FINAL_STRING);
     }
 
     @Test
     void buildObjectOperator$normal() {
         FieldExtractor staticExtractor = new FieldExtractor(TestTarget.class);
         FieldExtractor instanceExtractor = new FieldExtractor(new TestTarget());
+        FieldExtractor ancestorExtractor = new FieldExtractor(TestTargetParent.class, new TestTarget());
 
         BiConsumer<FieldExtractor, FieldStyle> staticTest = (extractor, style) -> {
             new NormalTester<>(static_String, String.class, style, extractor::buildOperator).test((target) -> {
@@ -497,10 +600,23 @@ class FieldExtractorTest {
             });
         };
 
+        BiConsumer<FieldExtractor, FieldStyle> ancestorTest = (extractor, style) -> {
+            new NormalTester<>(INSTANCE_STRING, String.class, style, extractor::buildOperator).test((target) -> {
+                String newString = String.valueOf(System.currentTimeMillis());
+
+                target.set(newString);
+
+                FieldObjectGetter<String> getter = extractor.buildGetter(INSTANCE_STRING, String.class);
+                Assertions.assertThat(getter.get()).isEqualTo(newString);
+            });
+        };
+
         staticTest.accept(staticExtractor, FieldStyle.STATIC);
 
         staticTest.accept(instanceExtractor, FieldStyle.STATIC); // test instanceExtractor can use static field
         instanceTest.accept(instanceExtractor, FieldStyle.INSTANCE);
+
+        ancestorTest.accept(ancestorExtractor, FieldStyle.ANCESTOR);
     }
 
     @Test
