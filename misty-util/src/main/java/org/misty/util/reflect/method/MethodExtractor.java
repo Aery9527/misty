@@ -13,6 +13,8 @@ public class MethodExtractor {
         public static final String OPERATING_INSTANCE_WITHOUT_TARGET = "can't build invoker of field \"%s\" without instance.";
     }
 
+    private final Class<?>[] EMPTY_PARAMETER_TYPES = new Class<?>[]{};
+
     private final Optional<Object> target;
 
     private final Class<?> clazz;
@@ -39,18 +41,58 @@ public class MethodExtractor {
         this.clazz = accessibleType;
     }
 
+    //
+
+    public MethodArg0VoidInvoker buildVoidInvoker(String name) throws NoSuchMethodException {
+        MethodVoidInvoker invoker = buildVoidInvoker(name, EMPTY_PARAMETER_TYPES);
+        return new MethodArg0VoidInvoker(invoker);
+    }
+
+    public <Arg1> MethodArg1VoidInvoker<Arg1> buildVoidInvoker(String name, Class<Arg1> arg1Type) throws NoSuchMethodException {
+        MethodVoidInvoker invoker = buildVoidInvoker(name, new Class<?>[]{arg1Type});
+        return new MethodArg1VoidInvoker<>(invoker);
+    }
+
+    public <Arg1, Arg2> MethodArg1VoidInvoker<Arg1> buildVoidInvoker(String name, Class<Arg1> arg1Type, Class<Arg2> arg2Type) throws NoSuchMethodException {
+        MethodVoidInvoker invoker = buildVoidInvoker(name, new Class<?>[]{arg1Type, arg2Type});
+        return new MethodArg1VoidInvoker<>(invoker);
+    }
+
     public MethodVoidInvoker buildVoidInvoker(String name, Class<?>... parameterTypes) throws NoSuchMethodException {
         Method method = getMethodAndCheck(name, void.class, parameterTypes);
-        boolean isStaticMethod = Modifier.isStatic(method.getModifiers());
-        return isStaticMethod ? new MethodVoidInvoker(method) : new MethodVoidInvoker(method, this.target.get());
+        return this.target.map(o -> new MethodVoidInvoker(method, o))
+                .orElseGet(() -> new MethodVoidInvoker(method));
+    }
+
+    //
+
+    public <ReturnType> MethodArg0ReturnInvoker<ReturnType> buildObjectInvoker(
+            String name, Class<ReturnType> returnType
+    ) throws NoSuchMethodException {
+        MethodObjectInvoker<ReturnType> invoker = buildObjectInvoker(name, returnType, EMPTY_PARAMETER_TYPES);
+        return new MethodArg0ReturnInvoker<>(invoker);
+    }
+
+    public <ReturnType, Arg1> MethodArg1ReturnInvoker<ReturnType, Arg1> buildObjectInvoker(
+            String name, Class<ReturnType> returnType, Class<Arg1> arg1Type
+    ) throws NoSuchMethodException {
+        MethodObjectInvoker<ReturnType> invoker = buildObjectInvoker(name, returnType, new Class<?>[]{arg1Type});
+        return new MethodArg1ReturnInvoker<>(invoker);
+    }
+
+    public <ReturnType, Arg1, Arg2> MethodArg2ReturnInvoker<ReturnType, Arg1, Arg2> buildObjectInvoker(
+            String name, Class<ReturnType> returnType, Class<Arg1> arg1Type, Class<Arg2> arg2Type
+    ) throws NoSuchMethodException {
+        MethodObjectInvoker<ReturnType> invoker = buildObjectInvoker(name, returnType, new Class<?>[]{arg1Type, arg2Type});
+        return new MethodArg2ReturnInvoker<>(invoker);
     }
 
     public <ReturnType> MethodObjectInvoker<ReturnType> buildObjectInvoker(
             String name, Class<ReturnType> returnType, Class<?>... parameterTypes
     ) throws NoSuchMethodException {
         Method method = getMethodAndCheck(name, returnType, parameterTypes);
-        boolean isStaticMethod = Modifier.isStatic(method.getModifiers());
-        return isStaticMethod ? new MethodObjectInvoker<>(method) : new MethodObjectInvoker<>(method, this.target.get());
+        return this.target.map(o -> new MethodObjectInvoker<ReturnType>(method, o))
+                .orElseGet(() -> new MethodObjectInvoker<>(method));
     }
 
     //

@@ -1,7 +1,5 @@
 package org.misty.util.reflect.method;
 
-import org.misty.util.reflect.method.MethodReturnAbstract;
-
 public class MethodArg0ReturnInvoker<ReturnType> {
 
     private final MethodReturnAbstract<ReturnType> invoker;
