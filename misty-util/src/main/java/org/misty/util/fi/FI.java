@@ -6,12 +6,12 @@ public interface FI {
     static <ThrowableType extends Throwable> void wrap(FiRunnableThrow1<ThrowableType> runnableThrow1) throws ThrowableType {
         try {
             runnableThrow1.runOrThrow();
-        } catch (Exception e) {
+        } catch (Throwable t) {
             try {
-                throw (ThrowableType) e;
+                throw (ThrowableType) t;
             } catch (ClassCastException cce) {
                 cce.printStackTrace();
-                throw new RuntimeException(e);
+                throw new RuntimeException(t);
             }
         }
     }
@@ -21,12 +21,12 @@ public interface FI {
             throws ThrowableType {
         try {
             return supplierThrow1.getOrThrow();
-        } catch (Exception e) {
+        } catch (Throwable t) {
             try {
-                throw (ThrowableType) e;
+                throw (ThrowableType) t;
             } catch (ClassCastException cce) {
                 cce.printStackTrace();
-                throw new RuntimeException(e);
+                throw new RuntimeException(t);
             }
         }
     }
