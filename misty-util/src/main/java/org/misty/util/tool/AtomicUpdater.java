@@ -33,12 +33,13 @@ public class AtomicUpdater<TargetType> {
         Examiner.refuseNullAndEmpty("changeAction", changeAction);
 
         AtomicReference<TargetType> oldHolder = new AtomicReference<>();
-        this.target = this.lock.use(() -> {
+        this.lock.use(() -> {
             TargetType oldTarget = this.target;
             oldHolder.set(oldTarget);
 
             TargetType newTarget = changeAction.apply(oldTarget);
             this.targetChecker.accept(newTarget);
+            this.target = newTarget;
             return newTarget;
         });
 
