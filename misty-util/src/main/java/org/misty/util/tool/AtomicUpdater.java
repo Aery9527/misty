@@ -40,7 +40,6 @@ public class AtomicUpdater<TargetType> {
             TargetType newTarget = changeAction.apply(oldTarget);
             this.targetChecker.accept(newTarget);
             this.target = newTarget;
-            return newTarget;
         });
 
         return oldHolder.get();

@@ -1,150 +1,163 @@
 package org.misty.util.reflect.method;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.misty.util.fi.FiConsumer;
 
 import java.io.IOException;
 
 class MethodExtractorTest {
 
-    public static final String RETURN_A = "A";
-    public static final byte RETURN_B = 120;
-    public static final char RETURN_C = 130;
-    public static final double RETURN_D = 140;
-    public static final float RETURN_E = 150;
-    public static final int RETURN_F = 160;
-    public static final long RETURN_G = 170;
-    public static final short RETURN_H = 180;
+    public static final String PARENT_RETURN_A = "A";
+    public static final byte PARENT_RETURN_B = 120;
+    public static final char PARENT_RETURN_C = 130;
+    public static final double PARENT_RETURN_D = 140;
+    public static final float PARENT_RETURN_E = 150;
+    public static final int PARENT_RETURN_F = 160;
+    public static final long PARENT_RETURN_G = 170;
+    public static final short PARENT_RETURN_H = 180;
 
-    public static final String RETURN_static_a0 = "static_a0";
-    public static final String RETURN_static_a1 = "static_a1";
-    public static final String RETURN_static_a2 = "static_a2";
-    public static final String RETURN_static_a3 = "static_a3";
-    public static final String RETURN_static_a4 = "static_a4";
-    public static final String RETURN_instance_a0 = "instance_a0";
-    public static final String RETURN_instance_a1 = "instance_a1";
-    public static final String RETURN_instance_a2 = "instance_a2";
-    public static final String RETURN_instance_a3 = "instance_a3";
-    public static final String RETURN_instance_a4 = "instance_a4";
+    public static final String TARGET_RETURN_STATIC_A0 = "STATIC_A0";
+    public static final String TARGET_RETURN_STATIC_A1 = "STATIC_A1";
+    public static final String TARGET_RETURN_STATIC_A2 = "STATIC_A2";
+    public static final String TARGET_RETURN_STATIC_A3 = "STATIC_A3";
+    public static final String TARGET_RETURN_STATIC_A4 = "STATIC_A4";
+    public static final String TARGET_RETURN_INSTANCE_A0 = "INSTANCE_A0";
+    public static final String TARGET_RETURN_INSTANCE_A1 = "INSTANCE_A1";
+    public static final String TARGET_RETURN_INSTANCE_A2 = "INSTANCE_A2";
+    public static final String TARGET_RETURN_INSTANCE_A3 = "INSTANCE_A3";
+    public static final String TARGET_RETURN_INSTANCE_A4 = "INSTANCE_A4";
 
-    public static class TestTargetParent {
+    public static class TestParent {
         protected String A() {
-            return RETURN_A;
+            return PARENT_RETURN_A;
         }
 
         private byte B() {
-            return RETURN_B;
+            return PARENT_RETURN_B;
         }
 
         private char C() {
-            return RETURN_C;
+            return PARENT_RETURN_C;
         }
 
         private double D() {
-            return RETURN_D;
+            return PARENT_RETURN_D;
         }
 
         private float E() {
-            return RETURN_E;
+            return PARENT_RETURN_E;
         }
 
         private int F() {
-            return RETURN_F;
+            return PARENT_RETURN_F;
         }
 
         private long G() {
-            return RETURN_G;
+            return PARENT_RETURN_G;
         }
 
         private short H() {
-            return RETURN_H;
+            return PARENT_RETURN_H;
         }
 
         private void I() {
         }
     }
 
-    public static class TestTarget extends TestTargetParent {
+    public static class TestTarget extends TestParent {
         @Override
         public String A() {
             return getClass().getSimpleName();
         }
 
-        public void thrown() throws IOException {
+        public void thrown1() throws IOException {
             throw new IOException();
         }
 
+        public String thrown2() throws InterruptedException {
+            throw new InterruptedException();
+        }
+
         private static String static_a() {
-            return RETURN_static_a0;
+            return TARGET_RETURN_STATIC_A0;
         }
 
         private static String static_a(String s) {
-            return RETURN_static_a1;
+            return TARGET_RETURN_STATIC_A1;
         }
 
         private static String static_a(String s, int i) {
-            return RETURN_static_a2;
+            return TARGET_RETURN_STATIC_A2;
         }
 
         private static String static_a(String s, int i, long l) {
-            return RETURN_static_a3;
+            return TARGET_RETURN_STATIC_A3;
         }
 
         private static String static_a(String s, int i, long l, float f) {
-            return RETURN_static_a4;
+            return TARGET_RETURN_STATIC_A4;
         }
 
         private String instance_a() {
-            return RETURN_instance_a0;
+            return TARGET_RETURN_INSTANCE_A0;
         }
 
         private String instance_a(String s) {
-            return RETURN_instance_a1;
+            return TARGET_RETURN_INSTANCE_A1;
         }
 
         private String instance_a(String s, int i) {
-            return RETURN_instance_a2;
+            return TARGET_RETURN_INSTANCE_A2;
         }
 
         private String instance_a(String s, int i, long l) {
-            return RETURN_instance_a3;
+            return TARGET_RETURN_INSTANCE_A3;
         }
 
         private String instance_a(String s, int i, long l, float f) {
-            return RETURN_instance_a4;
+            return TARGET_RETURN_INSTANCE_A4;
         }
 
     }
 
-    private static final String INSTANCE_STRING = "A";
-    private static final String INSTANCE_BYTE = "B";
-    private static final String INSTANCE_CHAR = "C";
-    private static final String INSTANCE_DOUBLE = "D";
-    private static final String INSTANCE_FLOAT = "E";
-    private static final String INSTANCE_INT = "F";
-    private static final String INSTANCE_LONG = "G";
-    private static final String INSTANCE_SHORT = "H";
-    private static final String INSTANCE_VOID = "I";
+    private static final String PARENT_INSTANCE_STRING = "A";
+    private static final String PARENT_INSTANCE_BYTE = "B";
+    private static final String PARENT_INSTANCE_CHAR = "C";
+    private static final String PARENT_INSTANCE_DOUBLE = "D";
+    private static final String PARENT_INSTANCE_FLOAT = "E";
+    private static final String PARENT_INSTANCE_INT = "F";
+    private static final String PARENT_INSTANCE_LONG = "G";
+    private static final String PARENT_INSTANCE_SHORT = "H";
+    private static final String PARENT_INSTANCE_VOID = "I";
 
+    private static final String TARGET_INSTANCE_THROWN1 = "thrown1";
+    private static final String TARGET_INSTANCE_THROWN2 = "thrown2";
 
+    private static final String TARGET_STATIC_STRING = "static_a";
+    private static final String TARGET_INSTANCE_STRING = "instance_a";
 
     @Test
-    void overrideMethod() throws NoSuchMethodException {
-//        MethodExtractor extractor = new MethodExtractor(TestTarget.class);
-//        MethodArg0ReturnInvoker<String> a = extractor.buildObjectInvoker("kerker", String.class);
-//        MethodArg1ReturnInvoker<String, Integer> b = extractor.buildObjectInvoker("kerker", String.class, int.class);
-//        MethodArg2ReturnInvoker<String, Integer, Integer> c = extractor.buildObjectInvoker("kerker", String.class, int.class, int.class);
-//        MethodObjectInvoker<String> d = extractor.buildObjectInvoker("kerker", String.class, int.class, int.class, int.class);
+    void overrideMethod() {
+        FiConsumer<MethodExtractor> test = (extractor) -> {
+            MethodArg0ReturnInvoker<String> invoker = extractor.buildObjectInvoker(PARENT_INSTANCE_STRING, String.class);
+            String result = invoker.invoke();
+            Assertions.assertThat(result).isEqualTo(TestTarget.class.getSimpleName());
+        };
 
-//        MethodExtractor extractor = new MethodExtractor(TestTargetParent.class, new TestTarget());
-        MethodExtractor extractor = new MethodExtractor(new TestTarget());
-
-        MethodArg0ReturnInvoker<String> invoker = extractor.buildObjectInvoker("A", String.class);
-        String result = invoker.invoke();
-
-        System.out.println(result);
-
-
+        test.acceptOrHandle(new MethodExtractor(new TestTarget()));
+        test.acceptOrHandle(new MethodExtractor(TestParent.class, new TestTarget()));
     }
 
+    @Test
+    void thrown() throws NoSuchMethodException {
+        MethodExtractor extractor = new MethodExtractor(new TestTarget());
+
+        MethodArg0VoidInvoker thrown1Invoker = extractor.buildVoidInvoker(TARGET_INSTANCE_THROWN1);
+        Assertions.assertThatThrownBy(thrown1Invoker::invoke).isInstanceOf(IOException.class);
+
+        MethodArg0ReturnInvoker<String> thrown2Invoker = extractor.buildObjectInvoker(TARGET_INSTANCE_THROWN2, String.class);
+        Assertions.assertThatThrownBy(thrown2Invoker::invoke).isInstanceOf(InterruptedException.class);
+    }
 
 }

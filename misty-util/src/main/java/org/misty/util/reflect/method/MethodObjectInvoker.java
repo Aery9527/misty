@@ -3,12 +3,11 @@ package org.misty.util.reflect.method;
 import org.misty.util.fi.FiFunction;
 
 import java.lang.reflect.Method;
-import java.util.function.Function;
 
 @SuppressWarnings("unchecked")
 public class MethodObjectInvoker<ReturnType> extends MethodReturnAbstract<ReturnType> {
 
-    private final Function<Object[], ReturnType> invoker;
+    private final FiFunction<Object[], ReturnType> invoker;
 
     protected MethodObjectInvoker(Method method, Object target) {
         super(method, target);
@@ -24,18 +23,8 @@ public class MethodObjectInvoker<ReturnType> extends MethodReturnAbstract<Return
 
     @Override
     public ReturnType invoke(Object... parameters) {
-        return this.invoker.apply(parameters);
+        return this.invoker.applyOrHandle(parameters);
     }
 
-    private Function<Object[], ReturnType> wrapAccessible(Method method, FiFunction<Object[], ReturnType> invoker) {
-        return (parameters) -> {
-            try {
-                method.setAccessible(true);
-                return invoker.applyOrHandle(parameters);
-            } finally {
-                method.setAccessible(false);
-            }
-        };
-    }
 
 }
