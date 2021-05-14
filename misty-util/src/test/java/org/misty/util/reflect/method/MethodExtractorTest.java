@@ -2,21 +2,21 @@ package org.misty.util.reflect.method;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.misty.util.fi.FiBiConsumer;
 import org.misty.util.fi.FiConsumer;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.function.BiConsumer;
 
 class MethodExtractorTest {
 
-    public static final String PARENT_RETURN_A = "A";
-    public static final byte PARENT_RETURN_B = 120;
-    public static final char PARENT_RETURN_C = 130;
-    public static final double PARENT_RETURN_D = 140;
-    public static final float PARENT_RETURN_E = 150;
-    public static final int PARENT_RETURN_F = 160;
-    public static final long PARENT_RETURN_G = 170;
-    public static final short PARENT_RETURN_H = 180;
+    public static final String PARENT_RETURN_A = "1";
+    public static final BigDecimal PARENT_RETURN_B = new BigDecimal("2");
 
+    public static final String TARGET_RETURN_STATIC_A = "STATIC_A";
     public static final String TARGET_RETURN_STATIC_A0 = "STATIC_A0";
     public static final String TARGET_RETURN_STATIC_A1 = "STATIC_A1";
     public static final String TARGET_RETURN_STATIC_A2 = "STATIC_A2";
@@ -33,42 +33,18 @@ class MethodExtractorTest {
             return PARENT_RETURN_A;
         }
 
-        private byte B() {
+        protected BigDecimal B() {
             return PARENT_RETURN_B;
         }
 
-        private char C() {
-            return PARENT_RETURN_C;
-        }
-
-        private double D() {
-            return PARENT_RETURN_D;
-        }
-
-        private float E() {
-            return PARENT_RETURN_E;
-        }
-
-        private int F() {
-            return PARENT_RETURN_F;
-        }
-
-        private long G() {
-            return PARENT_RETURN_G;
-        }
-
-        private short H() {
-            return PARENT_RETURN_H;
-        }
-
-        private void I() {
+        private void C() {
         }
     }
 
     public static class TestTarget extends TestParent {
         @Override
         public String A() {
-            return getClass().getSimpleName();
+            return TARGET_RETURN_STATIC_A;
         }
 
         public void thrown1() throws IOException {
@@ -122,14 +98,15 @@ class MethodExtractorTest {
     }
 
     private static final String PARENT_INSTANCE_STRING = "A";
-    private static final String PARENT_INSTANCE_BYTE = "B";
-    private static final String PARENT_INSTANCE_CHAR = "C";
-    private static final String PARENT_INSTANCE_DOUBLE = "D";
-    private static final String PARENT_INSTANCE_FLOAT = "E";
-    private static final String PARENT_INSTANCE_INT = "F";
-    private static final String PARENT_INSTANCE_LONG = "G";
-    private static final String PARENT_INSTANCE_SHORT = "H";
-    private static final String PARENT_INSTANCE_VOID = "I";
+    private static final String PARENT_INSTANCE_BIGDECIMAL = "B";
+    private static final String PARENT_INSTANCE_BYTE = "C";
+    private static final String PARENT_INSTANCE_CHAR = "D";
+    private static final String PARENT_INSTANCE_DOUBLE = "E";
+    private static final String PARENT_INSTANCE_FLOAT = "F";
+    private static final String PARENT_INSTANCE_INT = "G";
+    private static final String PARENT_INSTANCE_LONG = "H";
+    private static final String PARENT_INSTANCE_SHORT = "I";
+    private static final String PARENT_INSTANCE_VOID = "J";
 
     private static final String TARGET_INSTANCE_THROWN1 = "thrown1";
     private static final String TARGET_INSTANCE_THROWN2 = "thrown2";
@@ -142,7 +119,7 @@ class MethodExtractorTest {
         FiConsumer<MethodExtractor> test = (extractor) -> {
             MethodArg0ReturnInvoker<String> invoker = extractor.buildObjectInvoker(PARENT_INSTANCE_STRING, String.class);
             String result = invoker.invoke();
-            Assertions.assertThat(result).isEqualTo(TestTarget.class.getSimpleName());
+            Assertions.assertThat(result).isEqualTo(TARGET_RETURN_STATIC_A);
         };
 
         test.acceptOrHandle(new MethodExtractor(new TestTarget()));
@@ -158,6 +135,40 @@ class MethodExtractorTest {
 
         MethodArg0ReturnInvoker<String> thrown2Invoker = extractor.buildObjectInvoker(TARGET_INSTANCE_THROWN2, String.class);
         Assertions.assertThatThrownBy(thrown2Invoker::invoke).isInstanceOf(InterruptedException.class);
+    }
+
+    @Test
+    void assignable$normal() throws NoSuchMethodException {
+        MethodExtractor extractor = new MethodExtractor(new TestParent());
+
+        MethodArg0ReturnInvoker<BigDecimal> invoker1 = extractor.buildObjectInvoker(PARENT_INSTANCE_BIGDECIMAL, BigDecimal.class);
+        Assertions.assertThat(invoker1.invoke()).isEqualTo(PARENT_RETURN_B);
+
+        MethodArg0ReturnInvoker<Number> invoker2 = extractor.buildObjectInvoker(PARENT_INSTANCE_BIGDECIMAL, Number.class);
+        Assertions.assertThat(invoker2.invoke()).isEqualTo(PARENT_RETURN_B);
+    }
+
+    @Test
+    void return_String$normal() {
+        FiBiConsumer<MethodExtractor, MethodStyle> staticTest = (extractor, style) -> {
+            MethodArg0ReturnInvoker<String> invoker0 = extractor.buildObjectInvoker(TARGET_STATIC_STRING, String.class);
+            Assertions.assertThat(invoker0.invoke()).isEqualTo(TARGET_RETURN_STATIC_A0);
+
+            try (MockedStatic<TestTarget> mockedStatic = Mockito.mockStatic(TestTarget.class)) {
+                mockedStatic.when(() -> {
+                    TestTarget.static_a(Mockito.anyString());
+                }).thenReturn("wtf");
+            }
+
+            MethodArg1ReturnInvoker<String, String> invoker1 = extractor.buildObjectInvoker(
+                    TARGET_STATIC_STRING, String.class, String.class);
+            Assertions.assertThat(TestTarget.static_a("kerker")).isEqualTo("wtf");
+
+        };
+
+        staticTest.acceptOrHandle(new MethodExtractor(TestTarget.class), MethodStyle.STATIC);
+
+
     }
 
 }

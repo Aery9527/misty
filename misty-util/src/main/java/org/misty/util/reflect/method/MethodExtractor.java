@@ -5,7 +5,6 @@ import java.lang.reflect.Modifier;
 import java.util.Objects;
 import java.util.Optional;
 
-@SuppressWarnings({"OptionalGetWithoutIsPresent", "OptionalUsedAsFieldOrParameterType"})
 public class MethodExtractor {
 
     public static class Message {
@@ -15,6 +14,7 @@ public class MethodExtractor {
 
     private final Class<?>[] EMPTY_PARAMETER_TYPES = new Class<?>[]{};
 
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private final Optional<Object> target;
 
     private final Class<?> clazz;
@@ -53,9 +53,11 @@ public class MethodExtractor {
         return new MethodArg1VoidInvoker<>(invoker);
     }
 
-    public <Arg1, Arg2> MethodArg1VoidInvoker<Arg1> buildVoidInvoker(String name, Class<Arg1> arg1Type, Class<Arg2> arg2Type) throws NoSuchMethodException {
+    public <Arg1, Arg2> MethodArg2VoidInvoker<Arg1, Arg2> buildVoidInvoker(
+            String name, Class<Arg1> arg1Type, Class<Arg2> arg2Type
+    ) throws NoSuchMethodException {
         MethodVoidInvoker invoker = buildVoidInvoker(name, new Class<?>[]{arg1Type, arg2Type});
-        return new MethodArg1VoidInvoker<>(invoker);
+        return new MethodArg2VoidInvoker<>(invoker);
     }
 
     public MethodVoidInvoker buildVoidInvoker(String name, Class<?>... parameterTypes) throws NoSuchMethodException {

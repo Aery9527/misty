@@ -2,9 +2,9 @@ package org.misty.util.reflect.method;
 
 public class MethodArg2ReturnInvoker<ReturnType, Arg1, Arg2> {
 
-    private final MethodReturnAbstract<ReturnType> invoker;
+    private final MethodObjectInvoker<ReturnType> invoker;
 
-    public MethodArg2ReturnInvoker(MethodReturnAbstract<ReturnType> invoker) {
+    public MethodArg2ReturnInvoker(MethodObjectInvoker<ReturnType> invoker) {
         this.invoker = invoker;
     }
 

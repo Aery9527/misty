@@ -1,8 +1,5 @@
 package org.misty.util.reflect.method;
 
-import org.misty.util.error.MistyErrorUtil;
-import org.misty.util.fi.FiConsumer;
-
 import java.lang.reflect.Method;
 import java.util.Optional;
 
@@ -32,19 +29,6 @@ public abstract class MethodAbstract {
         this.method = method;
         this.target = Optional.empty();
         this.methodStyle = MethodStyle.STATIC;
-    }
-
-    protected FiConsumer<Object[]> wrapAccessible(Method method, FiConsumer<Object[]> invoker) {
-        return (parameters) -> {
-            try {
-                method.setAccessible(true);
-                invoker.acceptOrHandle(parameters);
-            } catch (Throwable t) {
-                throw MistyErrorUtil.ignoreProxyException(t);
-            } finally {
-                method.setAccessible(false);
-            }
-        };
     }
 
     public Method getMethod() {
