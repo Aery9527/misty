@@ -1,16 +1,19 @@
 package org.misty.util.reflect.method;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.misty.util.fi.FiBiConsumer;
 import org.misty.util.fi.FiConsumer;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.function.BiConsumer;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
+@SuppressWarnings("OptionalGetWithoutIsPresent")
 class MethodExtractorTest {
 
     public static final String PARENT_RETURN_A = "1";
@@ -18,40 +21,40 @@ class MethodExtractorTest {
 
     public static final String TARGET_RETURN_STATIC_A = "STATIC_A";
     public static final String TARGET_RETURN_STATIC_A0 = "STATIC_A0";
-    public static final String TARGET_RETURN_STATIC_A1 = "STATIC_A1";
-    public static final String TARGET_RETURN_STATIC_A2 = "STATIC_A2";
-    public static final String TARGET_RETURN_STATIC_A3 = "STATIC_A3";
-    public static final String TARGET_RETURN_STATIC_A4 = "STATIC_A4";
     public static final String TARGET_RETURN_INSTANCE_A0 = "INSTANCE_A0";
-    public static final String TARGET_RETURN_INSTANCE_A1 = "INSTANCE_A1";
-    public static final String TARGET_RETURN_INSTANCE_A2 = "INSTANCE_A2";
-    public static final String TARGET_RETURN_INSTANCE_A3 = "INSTANCE_A3";
-    public static final String TARGET_RETURN_INSTANCE_A4 = "INSTANCE_A4";
 
     public static class TestParent {
         protected String A() {
             return PARENT_RETURN_A;
         }
 
-        protected BigDecimal B() {
+        private BigDecimal B() {
             return PARENT_RETURN_B;
         }
 
-        private void C() {
+        private void C(Runnable r) {
+            r.run();
         }
     }
 
     public static class TestTarget extends TestParent {
+        public static Function<String, String> static_a_1;
+        public static BiFunction<String, Integer, String> static_a_2;
+        public static Function3<String, Integer, Float, String> static_a_3;
+        public Function<String, String> instance_a_1;
+        public BiFunction<String, Integer, String> instance_a_2;
+        public Function3<String, Integer, Float, String> instance_a_3;
+
         @Override
         public String A() {
             return TARGET_RETURN_STATIC_A;
         }
 
-        public void thrown1() throws IOException {
+        private void thrown1() throws IOException {
             throw new IOException();
         }
 
-        public String thrown2() throws InterruptedException {
+        private String thrown2() throws InterruptedException {
             throw new InterruptedException();
         }
 
@@ -60,19 +63,15 @@ class MethodExtractorTest {
         }
 
         private static String static_a(String s) {
-            return TARGET_RETURN_STATIC_A1;
+            return static_a_1.apply(s);
         }
 
         private static String static_a(String s, int i) {
-            return TARGET_RETURN_STATIC_A2;
+            return static_a_2.apply(s, i);
         }
 
-        private static String static_a(String s, int i, long l) {
-            return TARGET_RETURN_STATIC_A3;
-        }
-
-        private static String static_a(String s, int i, long l, float f) {
-            return TARGET_RETURN_STATIC_A4;
+        private static String static_a(String s, int i, float l) {
+            return static_a_3.apply(s, i, l);
         }
 
         private String instance_a() {
@@ -80,39 +79,39 @@ class MethodExtractorTest {
         }
 
         private String instance_a(String s) {
-            return TARGET_RETURN_INSTANCE_A1;
+            return instance_a_1.apply(s);
         }
 
         private String instance_a(String s, int i) {
-            return TARGET_RETURN_INSTANCE_A2;
+            return instance_a_2.apply(s, i);
         }
 
-        private String instance_a(String s, int i, long l) {
-            return TARGET_RETURN_INSTANCE_A3;
-        }
-
-        private String instance_a(String s, int i, long l, float f) {
-            return TARGET_RETURN_INSTANCE_A4;
+        private String instance_a(String s, int i, float l) {
+            return instance_a_3.apply(s, i, l);
         }
 
     }
 
+    private interface Function3<T1, T2, T3, R> {
+        R apply(T1 t1, T2 t2, T3 t3);
+    }
+
     private static final String PARENT_INSTANCE_STRING = "A";
     private static final String PARENT_INSTANCE_BIGDECIMAL = "B";
-    private static final String PARENT_INSTANCE_BYTE = "C";
-    private static final String PARENT_INSTANCE_CHAR = "D";
-    private static final String PARENT_INSTANCE_DOUBLE = "E";
-    private static final String PARENT_INSTANCE_FLOAT = "F";
-    private static final String PARENT_INSTANCE_INT = "G";
-    private static final String PARENT_INSTANCE_LONG = "H";
-    private static final String PARENT_INSTANCE_SHORT = "I";
-    private static final String PARENT_INSTANCE_VOID = "J";
+    private static final String PARENT_INSTANCE_VOID = "C";
 
     private static final String TARGET_INSTANCE_THROWN1 = "thrown1";
     private static final String TARGET_INSTANCE_THROWN2 = "thrown2";
 
     private static final String TARGET_STATIC_STRING = "static_a";
     private static final String TARGET_INSTANCE_STRING = "instance_a";
+
+    @BeforeEach
+    void setUp() {
+        TestTarget.static_a_1 = null;
+        TestTarget.static_a_2 = null;
+        TestTarget.static_a_3 = null;
+    }
 
     @Test
     void overrideMethod() {
@@ -138,7 +137,7 @@ class MethodExtractorTest {
     }
 
     @Test
-    void assignable$normal() throws NoSuchMethodException {
+    void assignable() throws NoSuchMethodException {
         MethodExtractor extractor = new MethodExtractor(new TestParent());
 
         MethodArg0ReturnInvoker<BigDecimal> invoker1 = extractor.buildObjectInvoker(PARENT_INSTANCE_BIGDECIMAL, BigDecimal.class);
@@ -149,26 +148,162 @@ class MethodExtractorTest {
     }
 
     @Test
-    void return_String$normal() {
+    void return$normal() {
         FiBiConsumer<MethodExtractor, MethodStyle> staticTest = (extractor, style) -> {
             MethodArg0ReturnInvoker<String> invoker0 = extractor.buildObjectInvoker(TARGET_STATIC_STRING, String.class);
             Assertions.assertThat(invoker0.invoke()).isEqualTo(TARGET_RETURN_STATIC_A0);
+            Assertions.assertThat(invoker0.getMethodStyle()).isEqualTo(style);
 
-            try (MockedStatic<TestTarget> mockedStatic = Mockito.mockStatic(TestTarget.class)) {
-                mockedStatic.when(() -> {
-                    TestTarget.static_a(Mockito.anyString());
-                }).thenReturn("wtf");
-            }
+            AtomicReference<String> checkPoint1 = new AtomicReference<>();
+            AtomicReference<Integer> checkPoint2 = new AtomicReference<>();
+            AtomicReference<Float> checkPoint3 = new AtomicReference<>();
 
             MethodArg1ReturnInvoker<String, String> invoker1 = extractor.buildObjectInvoker(
                     TARGET_STATIC_STRING, String.class, String.class);
-            Assertions.assertThat(TestTarget.static_a("kerker")).isEqualTo("wtf");
+            TestTarget.static_a_1 = (s) -> {
+                checkPoint1.set(s);
+                return "A1";
+            };
+            Assertions.assertThat(invoker1.invoke("A")).isEqualTo("A1");
+            Assertions.assertThat(invoker1.getMethodStyle()).isEqualTo(style);
+            Assertions.assertThat(checkPoint1.get()).isEqualTo("A");
+
+            checkPoint1.set(null);
+            MethodArg2ReturnInvoker<String, String, Integer> invoker2 = extractor.buildObjectInvoker(
+                    TARGET_STATIC_STRING, String.class, String.class, int.class);
+            TestTarget.static_a_2 = (s, i) -> {
+                checkPoint1.set(s);
+                checkPoint2.set(i);
+                return "A2";
+            };
+            Assertions.assertThat(invoker2.invoke("B", 9527)).isEqualTo("A2");
+            Assertions.assertThat(invoker2.getMethodStyle()).isEqualTo(style);
+            Assertions.assertThat(checkPoint1.get()).isEqualTo("B");
+            Assertions.assertThat(checkPoint2.get()).isEqualTo(9527);
+
+            checkPoint1.set(null);
+            checkPoint2.set(null);
+            MethodObjectInvoker<String> invoker3 = extractor.buildObjectInvoker(
+                    TARGET_STATIC_STRING, String.class, String.class, int.class, float.class);
+            TestTarget.static_a_3 = (s, i, f) -> {
+                checkPoint1.set(s);
+                checkPoint2.set(i);
+                checkPoint3.set(f);
+                return "A3";
+            };
+            Assertions.assertThat(invoker3.invoke("C", 9527, 55.66f)).isEqualTo("A3");
+            Assertions.assertThat(invoker3.getMethodStyle()).isEqualTo(style);
+            Assertions.assertThat(checkPoint1.get()).isEqualTo("C");
+            Assertions.assertThat(checkPoint2.get()).isEqualTo(9527);
+            Assertions.assertThat(checkPoint3.get()).isEqualTo(55.66f);
+        };
+
+        FiBiConsumer<MethodExtractor, MethodStyle> instanceTest = (extractor, style) -> {
+            MethodArg0ReturnInvoker<String> invoker0 = extractor.buildObjectInvoker(TARGET_INSTANCE_STRING, String.class);
+            Assertions.assertThat(invoker0.invoke()).isEqualTo(TARGET_RETURN_INSTANCE_A0);
+            Assertions.assertThat(invoker0.getMethodStyle()).isEqualTo(style);
+
+            AtomicReference<String> checkPoint1 = new AtomicReference<>();
+            AtomicReference<Integer> checkPoint2 = new AtomicReference<>();
+            AtomicReference<Float> checkPoint3 = new AtomicReference<>();
+
+            MethodArg1ReturnInvoker<String, String> invoker1 = extractor.buildObjectInvoker(
+                    TARGET_INSTANCE_STRING, String.class, String.class);
+            ((TestTarget) invoker1.getTarget().get()).instance_a_1 = (s) -> {
+                checkPoint1.set(s);
+                return "a1";
+            };
+            Assertions.assertThat(invoker1.invoke("a")).isEqualTo("a1");
+            Assertions.assertThat(invoker1.getMethodStyle()).isEqualTo(style);
+            Assertions.assertThat(checkPoint1.get()).isEqualTo("a");
+
+            checkPoint1.set(null);
+            MethodArg2ReturnInvoker<String, String, Integer> invoker2 = extractor.buildObjectInvoker(
+                    TARGET_INSTANCE_STRING, String.class, String.class, int.class);
+            ((TestTarget) invoker1.getTarget().get()).instance_a_2 = (s, i) -> {
+                checkPoint1.set(s);
+                checkPoint2.set(i);
+                return "a2";
+            };
+            Assertions.assertThat(invoker2.invoke("b", 9527)).isEqualTo("a2");
+            Assertions.assertThat(invoker2.getMethodStyle()).isEqualTo(style);
+            Assertions.assertThat(checkPoint1.get()).isEqualTo("b");
+            Assertions.assertThat(checkPoint2.get()).isEqualTo(9527);
+
+            checkPoint1.set(null);
+            checkPoint2.set(null);
+            MethodObjectInvoker<String> invoker3 = extractor.buildObjectInvoker(
+                    TARGET_INSTANCE_STRING, String.class, String.class, int.class, float.class);
+            ((TestTarget) invoker1.getTarget().get()).instance_a_3 = (s, i, f) -> {
+                checkPoint1.set(s);
+                checkPoint2.set(i);
+                checkPoint3.set(f);
+                return "a3";
+            };
+            Assertions.assertThat(invoker3.invoke("c", 9527, 55.66f)).isEqualTo("a3");
+            Assertions.assertThat(invoker3.getMethodStyle()).isEqualTo(style);
+            Assertions.assertThat(checkPoint1.get()).isEqualTo("c");
+            Assertions.assertThat(checkPoint2.get()).isEqualTo(9527);
+            Assertions.assertThat(checkPoint3.get()).isEqualTo(55.66f);
+        };
+
+        FiBiConsumer<MethodExtractor, MethodStyle> ancestorTest = (extractor, style) -> {
+            MethodArg0ReturnInvoker<BigDecimal> invoker0 = extractor.buildObjectInvoker(PARENT_INSTANCE_BIGDECIMAL, BigDecimal.class);
+            Assertions.assertThat(invoker0.invoke()).isEqualTo(PARENT_RETURN_B);
+            Assertions.assertThat(invoker0.getMethodStyle()).isEqualTo(style);
+
+            AtomicBoolean checkPoint = new AtomicBoolean(false);
+            Runnable runnable = () -> checkPoint.set(true);
+            MethodArg1VoidInvoker<Runnable> invoker1 = extractor.buildVoidInvoker(PARENT_INSTANCE_VOID, Runnable.class);
+            invoker1.invoke(runnable);
+            Assertions.assertThat(checkPoint.get()).isTrue();
+            Assertions.assertThat(invoker1.getMethodStyle()).isEqualTo(style);
+        };
+
+        MethodExtractor staticExtractor = new MethodExtractor(TestTarget.class);
+        staticTest.acceptOrHandle(staticExtractor, MethodStyle.STATIC);
+
+        MethodExtractor instanceExtractor = new MethodExtractor(new TestTarget());
+        staticTest.acceptOrHandle(instanceExtractor, MethodStyle.STATIC); // test instanceExtractor can invoke static method
+        instanceTest.acceptOrHandle(instanceExtractor, MethodStyle.INSTANCE);
+
+        MethodExtractor ancestorExtractor = new MethodExtractor(TestParent.class, new TestTarget());
+        ancestorTest.acceptOrHandle(ancestorExtractor, MethodStyle.ANCESTOR);
+    }
+
+    @Test
+    void return$error() {
+        Runnable staticTest = () -> {
+            MethodExtractor staticExtractor = new MethodExtractor(TestTarget.class);
+            Assertions.assertThatThrownBy(() -> staticExtractor.buildObjectInvoker("kerker", String.class))
+                    .isInstanceOf(NoSuchMethodException.class);
+
+            Assertions.assertThatThrownBy(() -> staticExtractor.buildObjectInvoker(TARGET_INSTANCE_STRING, int.class))
+                    .isInstanceOf(NoSuchMethodException.class)
+                    .hasMessage(String.format(MethodExtractor.Message.ERROR_RETURN_TYPE, TARGET_INSTANCE_STRING, String.class.getName(), int.class.getName()));
+
+            Assertions.assertThatThrownBy(() -> staticExtractor.buildObjectInvoker(TARGET_INSTANCE_STRING, String.class))
+                    .isInstanceOf(NoSuchMethodException.class)
+                    .hasMessage(String.format(MethodExtractor.Message.OPERATING_INSTANCE_WITHOUT_TARGET, TARGET_INSTANCE_STRING));
+        };
+
+        Runnable instanceTest = () -> {
+            MethodExtractor instanceExtractor = new MethodExtractor(new TestTarget());
+            Assertions.assertThatThrownBy(() -> instanceExtractor.buildObjectInvoker("kerker", String.class))
+                    .isInstanceOf(NoSuchMethodException.class);
+
+            Assertions.assertThatThrownBy(() -> instanceExtractor.buildObjectInvoker(TARGET_INSTANCE_STRING, int.class))
+                    .isInstanceOf(NoSuchMethodException.class)
+                    .hasMessage(String.format(MethodExtractor.Message.ERROR_RETURN_TYPE, TARGET_INSTANCE_STRING, String.class.getName(), int.class.getName()));
+        };
+
+        Runnable ancestorTest = () -> {
 
         };
 
-        staticTest.acceptOrHandle(new MethodExtractor(TestTarget.class), MethodStyle.STATIC);
-
-
+        staticTest.run();
+        instanceTest.run();
+        ancestorTest.run();
     }
 
 }

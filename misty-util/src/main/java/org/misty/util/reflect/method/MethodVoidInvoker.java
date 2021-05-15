@@ -5,7 +5,7 @@ import org.misty.util.fi.FiConsumer;
 
 import java.lang.reflect.Method;
 
-public class MethodVoidInvoker extends MethodAbstract {
+public class MethodVoidInvoker extends MethodInvokerAbstract {
 
     private final FiConsumer<Object[]> invoker;
 

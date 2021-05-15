@@ -6,7 +6,7 @@ import org.misty.util.fi.FiFunction;
 import java.lang.reflect.Method;
 
 @SuppressWarnings("unchecked")
-public class MethodObjectInvoker<ReturnType> extends MethodAbstract {
+public class MethodObjectInvoker<ReturnType> extends MethodInvokerAbstract {
 
     private final FiFunction<Object[], ReturnType> invoker;
 

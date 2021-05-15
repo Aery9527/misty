@@ -3,7 +3,7 @@ package org.misty.util.reflect.method;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
-public abstract class MethodAbstract {
+public abstract class MethodInvokerAbstract implements MethodInvoker {
 
     private final Method method;
 
@@ -12,7 +12,7 @@ public abstract class MethodAbstract {
 
     private final MethodStyle methodStyle;
 
-    protected MethodAbstract(Method method, Object target) {
+    protected MethodInvokerAbstract(Method method, Object target) {
         this.method = method;
         this.target = Optional.of(target);
 
@@ -25,20 +25,23 @@ public abstract class MethodAbstract {
         }
     }
 
-    protected MethodAbstract(Method method) {
+    protected MethodInvokerAbstract(Method method) {
         this.method = method;
         this.target = Optional.empty();
         this.methodStyle = MethodStyle.STATIC;
     }
 
+    @Override
     public Method getMethod() {
         return this.method;
     }
 
+    @Override
     public Optional<Object> getTarget() {
         return target;
     }
 
+    @Override
     public MethodStyle getMethodStyle() {
         return methodStyle;
     }

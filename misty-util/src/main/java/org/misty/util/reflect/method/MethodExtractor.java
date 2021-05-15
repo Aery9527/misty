@@ -8,8 +8,8 @@ import java.util.Optional;
 public class MethodExtractor {
 
     public static class Message {
-        public static final String ERROR_RETURN_TYPE = "field \"%s\" return type is %s not %s.";
-        public static final String OPERATING_INSTANCE_WITHOUT_TARGET = "can't build invoker of field \"%s\" without instance.";
+        public static final String ERROR_RETURN_TYPE = "method \"%s\" return type is \"%s\" not \"%s\".";
+        public static final String OPERATING_INSTANCE_WITHOUT_TARGET = "can't build invoker of method \"%s\" without instance.";
     }
 
     private final Class<?>[] EMPTY_PARAMETER_TYPES = new Class<?>[]{};
@@ -93,8 +93,8 @@ public class MethodExtractor {
             String name, Class<ReturnType> returnType, Class<?>... parameterTypes
     ) throws NoSuchMethodException {
         Method method = getMethodAndCheck(name, returnType, parameterTypes);
-        return this.target.map(o -> new MethodObjectInvoker<ReturnType>(method, o))
-                .orElseGet(() -> new MethodObjectInvoker<>(method));
+        boolean isStaticField = Modifier.isStatic(method.getModifiers());
+        return isStaticField ? new MethodObjectInvoker<>(method) : new MethodObjectInvoker<>(method, this.target.get());
     }
 
     //
@@ -104,7 +104,7 @@ public class MethodExtractor {
 
         Class<?> actuallyReturnType = method.getReturnType();
         if (!returnType.isAssignableFrom(actuallyReturnType)) {
-            throw new NoSuchMethodException(String.format(Message.ERROR_RETURN_TYPE, name, actuallyReturnType, returnType));
+            throw new NoSuchMethodException(String.format(Message.ERROR_RETURN_TYPE, name, actuallyReturnType.getName(), returnType.getName()));
         }
 
         int modifiers = method.getModifiers();
