@@ -165,6 +165,8 @@ class MethodExtractorTest {
                 return "A1";
             };
             Assertions.assertThat(invoker1.invoke("A")).isEqualTo("A1");
+            Assertions.assertThat(invoker1.getMethod()).isEqualTo(TestTarget.class.getDeclaredMethod(TARGET_STATIC_STRING, String.class));
+            Assertions.assertThat(invoker1.getTarget()).isEmpty();
             Assertions.assertThat(invoker1.getMethodStyle()).isEqualTo(style);
             Assertions.assertThat(checkPoint1.get()).isEqualTo("A");
 
@@ -177,6 +179,8 @@ class MethodExtractorTest {
                 return "A2";
             };
             Assertions.assertThat(invoker2.invoke("B", 9527)).isEqualTo("A2");
+            Assertions.assertThat(invoker2.getMethod()).isEqualTo(TestTarget.class.getDeclaredMethod(TARGET_STATIC_STRING, String.class, int.class));
+            Assertions.assertThat(invoker2.getTarget()).isEmpty();
             Assertions.assertThat(invoker2.getMethodStyle()).isEqualTo(style);
             Assertions.assertThat(checkPoint1.get()).isEqualTo("B");
             Assertions.assertThat(checkPoint2.get()).isEqualTo(9527);
@@ -192,6 +196,8 @@ class MethodExtractorTest {
                 return "A3";
             };
             Assertions.assertThat(invoker3.invoke("C", 9527, 55.66f)).isEqualTo("A3");
+            Assertions.assertThat(invoker3.getMethod()).isEqualTo(TestTarget.class.getDeclaredMethod(TARGET_STATIC_STRING, String.class, int.class, float.class));
+            Assertions.assertThat(invoker3.getTarget()).isEmpty();
             Assertions.assertThat(invoker3.getMethodStyle()).isEqualTo(style);
             Assertions.assertThat(checkPoint1.get()).isEqualTo("C");
             Assertions.assertThat(checkPoint2.get()).isEqualTo(9527);
@@ -214,6 +220,8 @@ class MethodExtractorTest {
                 return "a1";
             };
             Assertions.assertThat(invoker1.invoke("a")).isEqualTo("a1");
+            Assertions.assertThat(invoker1.getMethod()).isEqualTo(TestTarget.class.getDeclaredMethod(TARGET_INSTANCE_STRING, String.class));
+            Assertions.assertThat(invoker1.getTarget()).isNotEmpty();
             Assertions.assertThat(invoker1.getMethodStyle()).isEqualTo(style);
             Assertions.assertThat(checkPoint1.get()).isEqualTo("a");
 
@@ -226,6 +234,8 @@ class MethodExtractorTest {
                 return "a2";
             };
             Assertions.assertThat(invoker2.invoke("b", 9527)).isEqualTo("a2");
+            Assertions.assertThat(invoker2.getMethod()).isEqualTo(TestTarget.class.getDeclaredMethod(TARGET_INSTANCE_STRING, String.class, int.class));
+            Assertions.assertThat(invoker2.getTarget()).isNotEmpty();
             Assertions.assertThat(invoker2.getMethodStyle()).isEqualTo(style);
             Assertions.assertThat(checkPoint1.get()).isEqualTo("b");
             Assertions.assertThat(checkPoint2.get()).isEqualTo(9527);
@@ -241,6 +251,8 @@ class MethodExtractorTest {
                 return "a3";
             };
             Assertions.assertThat(invoker3.invoke("c", 9527, 55.66f)).isEqualTo("a3");
+            Assertions.assertThat(invoker3.getMethod()).isEqualTo(TestTarget.class.getDeclaredMethod(TARGET_INSTANCE_STRING, String.class, int.class, float.class));
+            Assertions.assertThat(invoker3.getTarget()).isNotEmpty();
             Assertions.assertThat(invoker3.getMethodStyle()).isEqualTo(style);
             Assertions.assertThat(checkPoint1.get()).isEqualTo("c");
             Assertions.assertThat(checkPoint2.get()).isEqualTo(9527);
@@ -250,6 +262,8 @@ class MethodExtractorTest {
         FiBiConsumer<MethodExtractor, MethodStyle> ancestorTest = (extractor, style) -> {
             MethodArg0ReturnInvoker<BigDecimal> invoker0 = extractor.buildObjectInvoker(PARENT_INSTANCE_BIGDECIMAL, BigDecimal.class);
             Assertions.assertThat(invoker0.invoke()).isEqualTo(PARENT_RETURN_B);
+            Assertions.assertThat(invoker0.getMethod()).isEqualTo(TestParent.class.getDeclaredMethod(PARENT_INSTANCE_BIGDECIMAL));
+            Assertions.assertThat(invoker0.getTarget()).isNotEmpty();
             Assertions.assertThat(invoker0.getMethodStyle()).isEqualTo(style);
 
             AtomicBoolean checkPoint = new AtomicBoolean(false);
@@ -257,6 +271,8 @@ class MethodExtractorTest {
             MethodArg1VoidInvoker<Runnable> invoker1 = extractor.buildVoidInvoker(PARENT_INSTANCE_VOID, Runnable.class);
             invoker1.invoke(runnable);
             Assertions.assertThat(checkPoint.get()).isTrue();
+            Assertions.assertThat(invoker1.getMethod()).isEqualTo(TestParent.class.getDeclaredMethod(PARENT_INSTANCE_VOID, Runnable.class));
+            Assertions.assertThat(invoker1.getTarget()).isNotEmpty();
             Assertions.assertThat(invoker1.getMethodStyle()).isEqualTo(style);
         };
 
@@ -274,36 +290,64 @@ class MethodExtractorTest {
     @Test
     void return$error() {
         Runnable staticTest = () -> {
-            MethodExtractor staticExtractor = new MethodExtractor(TestTarget.class);
-            Assertions.assertThatThrownBy(() -> staticExtractor.buildObjectInvoker("kerker", String.class))
+            MethodExtractor extractor = new MethodExtractor(TestTarget.class);
+            Assertions.assertThatThrownBy(() -> extractor.buildObjectInvoker("kerker", String.class))
                     .isInstanceOf(NoSuchMethodException.class);
 
-            Assertions.assertThatThrownBy(() -> staticExtractor.buildObjectInvoker(TARGET_INSTANCE_STRING, int.class))
+            Assertions.assertThatThrownBy(() -> extractor.buildObjectInvoker(TARGET_INSTANCE_STRING, int.class))
                     .isInstanceOf(NoSuchMethodException.class)
                     .hasMessage(String.format(MethodExtractor.Message.ERROR_RETURN_TYPE, TARGET_INSTANCE_STRING, String.class.getName(), int.class.getName()));
 
-            Assertions.assertThatThrownBy(() -> staticExtractor.buildObjectInvoker(TARGET_INSTANCE_STRING, String.class))
+            Assertions.assertThatThrownBy(() -> extractor.buildObjectInvoker(TARGET_INSTANCE_STRING, String.class))
                     .isInstanceOf(NoSuchMethodException.class)
                     .hasMessage(String.format(MethodExtractor.Message.OPERATING_INSTANCE_WITHOUT_TARGET, TARGET_INSTANCE_STRING));
         };
 
         Runnable instanceTest = () -> {
-            MethodExtractor instanceExtractor = new MethodExtractor(new TestTarget());
-            Assertions.assertThatThrownBy(() -> instanceExtractor.buildObjectInvoker("kerker", String.class))
+            MethodExtractor extractor = new MethodExtractor(new TestTarget());
+            Assertions.assertThatThrownBy(() -> extractor.buildObjectInvoker("kerker", String.class))
                     .isInstanceOf(NoSuchMethodException.class);
 
-            Assertions.assertThatThrownBy(() -> instanceExtractor.buildObjectInvoker(TARGET_INSTANCE_STRING, int.class))
+            Assertions.assertThatThrownBy(() -> extractor.buildObjectInvoker(TARGET_INSTANCE_STRING, int.class))
                     .isInstanceOf(NoSuchMethodException.class)
                     .hasMessage(String.format(MethodExtractor.Message.ERROR_RETURN_TYPE, TARGET_INSTANCE_STRING, String.class.getName(), int.class.getName()));
         };
 
         Runnable ancestorTest = () -> {
+            MethodExtractor extractor = new MethodExtractor(TestParent.class, new TestTarget());
 
+            Assertions.assertThatThrownBy(() -> extractor.buildObjectInvoker(TARGET_INSTANCE_STRING, int.class))
+                    .isInstanceOf(NoSuchMethodException.class)
+                    .hasMessage(TestParent.class.getName() + "." + TARGET_INSTANCE_STRING + "()");
         };
 
         staticTest.run();
         instanceTest.run();
         ancestorTest.run();
+    }
+
+    @Test
+    void void$normal() {
+        FiBiConsumer<MethodExtractor, MethodStyle> staticTest = (extractor, style) -> {
+
+
+
+        };
+
+        MethodExtractor staticExtractor = new MethodExtractor(TestTarget.class);
+        staticTest.acceptOrHandle(staticExtractor, MethodStyle.STATIC);
+
+//        MethodExtractor instanceExtractor = new MethodExtractor(new TestTarget());
+//        staticTest.acceptOrHandle(instanceExtractor, MethodStyle.STATIC); // test instanceExtractor can invoke static method
+//        instanceTest.acceptOrHandle(instanceExtractor, MethodStyle.INSTANCE);
+
+//        MethodExtractor ancestorExtractor = new MethodExtractor(TestParent.class, new TestTarget());
+//        ancestorTest.acceptOrHandle(ancestorExtractor, MethodStyle.ANCESTOR);
+    }
+
+    @Test
+    void void$error() {
+
     }
 
 }
