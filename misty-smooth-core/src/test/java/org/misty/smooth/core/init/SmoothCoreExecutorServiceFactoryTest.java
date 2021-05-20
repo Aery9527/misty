@@ -122,14 +122,14 @@ class SmoothCoreExecutorServiceFactoryTest {
 
         String namePrefix = ThreadPoolArgument.NamePrefix.PRESET;
         ThreadFactory threadFactory = this.factory.getThreadFactory(this.environment);
-        Assertions.assertThat(threadFactory.newThread(r).getName()).isEqualTo(namePrefix + "0001");
-        Assertions.assertThat(threadFactory.newThread(r).getName()).isEqualTo(namePrefix + "0002");
+        Assertions.assertThat(threadFactory.newThread(r).getName()).isEqualTo(namePrefix + "001");
+        Assertions.assertThat(threadFactory.newThread(r).getName()).isEqualTo(namePrefix + "002");
 
         namePrefix = "kerker";
         this.environment.addArgument(ThreadPoolArgument.NamePrefix.KEY, namePrefix);
         threadFactory = this.factory.getThreadFactory(this.environment);
-        Assertions.assertThat(threadFactory.newThread(r).getName()).isEqualTo(namePrefix + "0001");
-        Assertions.assertThat(threadFactory.newThread(r).getName()).isEqualTo(namePrefix + "0002");
+        Assertions.assertThat(threadFactory.newThread(r).getName()).isEqualTo(namePrefix + "001");
+        Assertions.assertThat(threadFactory.newThread(r).getName()).isEqualTo(namePrefix + "002");
     }
 
     @Test
@@ -137,16 +137,17 @@ class SmoothCoreExecutorServiceFactoryTest {
         Runnable r = () -> {
         };
 
-        this.environment.addArgument(ThreadPoolArgument.Rotation.KEY, "3");
+        short rotation = 100;
+
+        this.environment.addArgument(ThreadPoolArgument.Rotation.KEY, String.valueOf(rotation));
         String namePrefix = ThreadPoolArgument.NamePrefix.PRESET;
         ThreadFactory threadFactory = this.factory.getThreadFactory(this.environment);
-        Assertions.assertThat(threadFactory.newThread(r).getName()).isEqualTo(namePrefix + "0001");
-        Assertions.assertThat(threadFactory.newThread(r).getName()).isEqualTo(namePrefix + "0002");
-        Assertions.assertThat(threadFactory.newThread(r).getName()).isEqualTo(namePrefix + "0003");
-        Assertions.assertThat(threadFactory.newThread(r).getName()).isEqualTo(namePrefix + "0001");
-        Assertions.assertThat(threadFactory.newThread(r).getName()).isEqualTo(namePrefix + "0002");
-        Assertions.assertThat(threadFactory.newThread(r).getName()).isEqualTo(namePrefix + "0003");
-        Assertions.assertThat(threadFactory.newThread(r).getName()).isEqualTo(namePrefix + "0001");
+
+        for (short i = 1; i <= rotation; i++) {
+            String threadName = namePrefix + String.format("%03d", i);
+            Assertions.assertThat(threadFactory.newThread(r).getName()).isEqualTo(threadName);
+        }
+        Assertions.assertThat(threadFactory.newThread(r).getName()).isEqualTo(namePrefix + "001");
     }
 
 }
