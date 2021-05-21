@@ -5,6 +5,7 @@ import java.lang.reflect.Modifier;
 import java.util.Objects;
 import java.util.Optional;
 
+@SuppressWarnings("OptionalGetWithoutIsPresent")
 public class MethodExtractor {
 
     public static class Message {
@@ -62,8 +63,8 @@ public class MethodExtractor {
 
     public MethodVoidInvoker buildVoidInvoker(String name, Class<?>... parameterTypes) throws NoSuchMethodException {
         Method method = getMethodAndCheck(name, void.class, parameterTypes);
-        return this.target.map(o -> new MethodVoidInvoker(method, o))
-                .orElseGet(() -> new MethodVoidInvoker(method));
+        boolean isStaticField = Modifier.isStatic(method.getModifiers());
+        return isStaticField ? new MethodVoidInvoker(method) : new MethodVoidInvoker(method, this.target.get());
     }
 
     //

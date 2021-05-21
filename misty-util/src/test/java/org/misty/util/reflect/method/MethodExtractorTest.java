@@ -10,7 +10,9 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 @SuppressWarnings("OptionalGetWithoutIsPresent")
@@ -44,6 +46,15 @@ class MethodExtractorTest {
         public Function<String, String> instance_a_1;
         public BiFunction<String, Integer, String> instance_a_2;
         public Function3<String, Integer, Float, String> instance_a_3;
+
+        public static Runnable static_b_0;
+        public static Consumer<String> static_b_1;
+        public static BiConsumer<String, Integer> static_b_2;
+        public static Consumer3<String, Integer, Float> static_b_3;
+        public Runnable instance_b_0;
+        public Consumer<String> instance_b_1;
+        public BiConsumer<String, Integer> instance_b_2;
+        public Consumer3<String, Integer, Float> instance_b_3;
 
         @Override
         public String A() {
@@ -90,10 +101,46 @@ class MethodExtractorTest {
             return instance_a_3.apply(s, i, l);
         }
 
+        private static void static_b() {
+            static_b_0.run();
+        }
+
+        private static void static_b(String s) {
+            static_b_1.accept(s);
+        }
+
+        private static void static_b(String s, int i) {
+            static_b_2.accept(s, i);
+        }
+
+        private static void static_b(String s, int i, float f) {
+            static_b_3.accept(s, i, f);
+        }
+
+        private void instance_b() {
+            instance_b_0.run();
+        }
+
+        private void instance_b(String s) {
+            instance_b_1.accept(s);
+        }
+
+        private void instance_b(String s, int i) {
+            instance_b_2.accept(s, i);
+        }
+
+        private void instance_b(String s, int i, float f) {
+            instance_b_3.accept(s, i, f);
+        }
+
     }
 
     private interface Function3<T1, T2, T3, R> {
         R apply(T1 t1, T2 t2, T3 t3);
+    }
+
+    private interface Consumer3<T1, T2, T3> {
+        void accept(T1 t1, T2 t2, T3 t3);
     }
 
     private static final String PARENT_INSTANCE_STRING = "A";
@@ -106,11 +153,19 @@ class MethodExtractorTest {
     private static final String TARGET_STATIC_STRING = "static_a";
     private static final String TARGET_INSTANCE_STRING = "instance_a";
 
+    private static final String TARGET_STATIC_VOID = "static_b";
+    private static final String TARGET_INSTANCE_VOID = "instance_b";
+
     @BeforeEach
     void setUp() {
         TestTarget.static_a_1 = null;
         TestTarget.static_a_2 = null;
         TestTarget.static_a_3 = null;
+
+        TestTarget.static_b_0 = null;
+        TestTarget.static_b_1 = null;
+        TestTarget.static_b_2 = null;
+        TestTarget.static_b_3 = null;
     }
 
     @Test
@@ -265,15 +320,6 @@ class MethodExtractorTest {
             Assertions.assertThat(invoker0.getMethod()).isEqualTo(TestParent.class.getDeclaredMethod(PARENT_INSTANCE_BIGDECIMAL));
             Assertions.assertThat(invoker0.getTarget()).isNotEmpty();
             Assertions.assertThat(invoker0.getMethodStyle()).isEqualTo(style);
-
-            AtomicBoolean checkPoint = new AtomicBoolean(false);
-            Runnable runnable = () -> checkPoint.set(true);
-            MethodArg1VoidInvoker<Runnable> invoker1 = extractor.buildVoidInvoker(PARENT_INSTANCE_VOID, Runnable.class);
-            invoker1.invoke(runnable);
-            Assertions.assertThat(checkPoint.get()).isTrue();
-            Assertions.assertThat(invoker1.getMethod()).isEqualTo(TestParent.class.getDeclaredMethod(PARENT_INSTANCE_VOID, Runnable.class));
-            Assertions.assertThat(invoker1.getTarget()).isNotEmpty();
-            Assertions.assertThat(invoker1.getMethodStyle()).isEqualTo(style);
         };
 
         MethodExtractor staticExtractor = new MethodExtractor(TestTarget.class);
@@ -291,6 +337,7 @@ class MethodExtractorTest {
     void return$error() {
         Runnable staticTest = () -> {
             MethodExtractor extractor = new MethodExtractor(TestTarget.class);
+
             Assertions.assertThatThrownBy(() -> extractor.buildObjectInvoker("kerker", String.class))
                     .isInstanceOf(NoSuchMethodException.class);
 
@@ -305,6 +352,7 @@ class MethodExtractorTest {
 
         Runnable instanceTest = () -> {
             MethodExtractor extractor = new MethodExtractor(new TestTarget());
+
             Assertions.assertThatThrownBy(() -> extractor.buildObjectInvoker("kerker", String.class))
                     .isInstanceOf(NoSuchMethodException.class);
 
@@ -329,25 +377,154 @@ class MethodExtractorTest {
     @Test
     void void$normal() {
         FiBiConsumer<MethodExtractor, MethodStyle> staticTest = (extractor, style) -> {
+            AtomicBoolean checkPoint0 = new AtomicBoolean(false);
+            MethodArg0VoidInvoker invoker0 = extractor.buildVoidInvoker(TARGET_STATIC_VOID);
+            TestTarget.static_b_0 = () -> checkPoint0.set(true);
+            invoker0.invoke();
+            Assertions.assertThat(invoker0.getMethod()).isEqualTo(TestTarget.class.getDeclaredMethod(TARGET_STATIC_VOID));
+            Assertions.assertThat(invoker0.getTarget()).isEmpty();
+            Assertions.assertThat(invoker0.getMethodStyle()).isEqualTo(style);
+            Assertions.assertThat(checkPoint0.get()).isTrue();
 
+            AtomicReference<String> checkPoint1 = new AtomicReference<>();
+            AtomicReference<Integer> checkPoint2 = new AtomicReference<>();
+            AtomicReference<Float> checkPoint3 = new AtomicReference<>();
 
+            MethodArg1VoidInvoker<String> invoker1 = extractor.buildVoidInvoker(TARGET_STATIC_VOID, String.class);
+            TestTarget.static_b_1 = checkPoint1::set;
+            invoker1.invoke("A");
+            Assertions.assertThat(invoker1.getMethod()).isEqualTo(TestTarget.class.getDeclaredMethod(TARGET_STATIC_VOID, String.class));
+            Assertions.assertThat(invoker1.getTarget()).isEmpty();
+            Assertions.assertThat(invoker1.getMethodStyle()).isEqualTo(style);
+            Assertions.assertThat(checkPoint1.get()).isEqualTo("A");
 
+            checkPoint1.set(null);
+            MethodArg2VoidInvoker<String, Integer> invoker2 = extractor.buildVoidInvoker(TARGET_STATIC_VOID, String.class, int.class);
+            TestTarget.static_b_2 = (s, i) -> {
+                checkPoint1.set(s);
+                checkPoint2.set(i);
+            };
+            invoker2.invoke("B", 9527);
+            Assertions.assertThat(invoker2.getMethod()).isEqualTo(TestTarget.class.getDeclaredMethod(TARGET_STATIC_VOID, String.class, int.class));
+            Assertions.assertThat(invoker2.getTarget()).isEmpty();
+            Assertions.assertThat(invoker2.getMethodStyle()).isEqualTo(style);
+            Assertions.assertThat(checkPoint1.get()).isEqualTo("B");
+            Assertions.assertThat(checkPoint2.get()).isEqualTo(9527);
+
+            checkPoint1.set(null);
+            checkPoint2.set(null);
+            MethodVoidInvoker invoker3 = extractor.buildVoidInvoker(TARGET_STATIC_VOID, String.class, int.class, float.class);
+            TestTarget.static_b_3 = (s, i, f) -> {
+                checkPoint1.set(s);
+                checkPoint2.set(i);
+                checkPoint3.set(f);
+            };
+            invoker3.invoke("C", 9527, 55.66f);
+            Assertions.assertThat(invoker3.getMethod()).isEqualTo(TestTarget.class.getDeclaredMethod(TARGET_STATIC_VOID, String.class, int.class, float.class));
+            Assertions.assertThat(invoker3.getTarget()).isEmpty();
+            Assertions.assertThat(invoker3.getMethodStyle()).isEqualTo(style);
+            Assertions.assertThat(checkPoint1.get()).isEqualTo("C");
+            Assertions.assertThat(checkPoint2.get()).isEqualTo(9527);
+            Assertions.assertThat(checkPoint3.get()).isEqualTo(55.66f);
+        };
+
+        FiBiConsumer<MethodExtractor, MethodStyle> instanceTest = (extractor, style) -> {
+            AtomicBoolean checkPoint0 = new AtomicBoolean(false);
+            MethodArg0VoidInvoker invoker0 = extractor.buildVoidInvoker(TARGET_INSTANCE_VOID);
+
+            ((TestTarget) invoker0.getTarget().get()).instance_b_0 = () -> checkPoint0.set(true);
+            invoker0.invoke();
+            Assertions.assertThat(invoker0.getMethod()).isEqualTo(TestTarget.class.getDeclaredMethod(TARGET_INSTANCE_VOID));
+            Assertions.assertThat(invoker0.getTarget()).isNotEmpty();
+            Assertions.assertThat(invoker0.getMethodStyle()).isEqualTo(style);
+            Assertions.assertThat(checkPoint0.get()).isTrue();
+
+            AtomicReference<String> checkPoint1 = new AtomicReference<>();
+            AtomicReference<Integer> checkPoint2 = new AtomicReference<>();
+            AtomicReference<Float> checkPoint3 = new AtomicReference<>();
+
+            MethodArg1VoidInvoker<String> invoker1 = extractor.buildVoidInvoker(TARGET_INSTANCE_VOID, String.class);
+            ((TestTarget) invoker0.getTarget().get()).instance_b_1 = checkPoint1::set;
+            invoker1.invoke("A");
+            Assertions.assertThat(invoker1.getMethod()).isEqualTo(TestTarget.class.getDeclaredMethod(TARGET_INSTANCE_VOID, String.class));
+            Assertions.assertThat(invoker1.getTarget()).isNotEmpty();
+            Assertions.assertThat(invoker1.getMethodStyle()).isEqualTo(style);
+            Assertions.assertThat(checkPoint1.get()).isEqualTo("A");
+
+            checkPoint1.set(null);
+            MethodArg2VoidInvoker<String, Integer> invoker2 = extractor.buildVoidInvoker(TARGET_INSTANCE_VOID, String.class, int.class);
+            ((TestTarget) invoker0.getTarget().get()).instance_b_2 = (s, i) -> {
+                checkPoint1.set(s);
+                checkPoint2.set(i);
+            };
+            invoker2.invoke("B", 9527);
+            Assertions.assertThat(invoker2.getMethod()).isEqualTo(TestTarget.class.getDeclaredMethod(TARGET_INSTANCE_VOID, String.class, int.class));
+            Assertions.assertThat(invoker2.getTarget()).isNotEmpty();
+            Assertions.assertThat(invoker2.getMethodStyle()).isEqualTo(style);
+            Assertions.assertThat(checkPoint1.get()).isEqualTo("B");
+            Assertions.assertThat(checkPoint2.get()).isEqualTo(9527);
+
+            checkPoint1.set(null);
+            checkPoint2.set(null);
+            MethodVoidInvoker invoker3 = extractor.buildVoidInvoker(TARGET_INSTANCE_VOID, String.class, int.class, float.class);
+            ((TestTarget) invoker0.getTarget().get()).instance_b_3 = (s, i, f) -> {
+                checkPoint1.set(s);
+                checkPoint2.set(i);
+                checkPoint3.set(f);
+            };
+            invoker3.invoke("C", 9527, 55.66f);
+            Assertions.assertThat(invoker3.getMethod()).isEqualTo(TestTarget.class.getDeclaredMethod(TARGET_INSTANCE_VOID, String.class, int.class, float.class));
+            Assertions.assertThat(invoker3.getTarget()).isNotEmpty();
+            Assertions.assertThat(invoker3.getMethodStyle()).isEqualTo(style);
+            Assertions.assertThat(checkPoint1.get()).isEqualTo("C");
+            Assertions.assertThat(checkPoint2.get()).isEqualTo(9527);
+            Assertions.assertThat(checkPoint3.get()).isEqualTo(55.66f);
+        };
+
+        FiBiConsumer<MethodExtractor, MethodStyle> ancestorTest = (extractor, style) -> {
+            AtomicBoolean checkPoint = new AtomicBoolean(false);
+            Runnable runnable = () -> checkPoint.set(true);
+            MethodArg1VoidInvoker<Runnable> invoker1 = extractor.buildVoidInvoker(PARENT_INSTANCE_VOID, Runnable.class);
+            invoker1.invoke(runnable);
+            Assertions.assertThat(checkPoint.get()).isTrue();
+            Assertions.assertThat(invoker1.getMethod()).isEqualTo(TestParent.class.getDeclaredMethod(PARENT_INSTANCE_VOID, Runnable.class));
+            Assertions.assertThat(invoker1.getTarget()).isNotEmpty();
+            Assertions.assertThat(invoker1.getMethodStyle()).isEqualTo(style);
         };
 
         MethodExtractor staticExtractor = new MethodExtractor(TestTarget.class);
         staticTest.acceptOrHandle(staticExtractor, MethodStyle.STATIC);
 
-//        MethodExtractor instanceExtractor = new MethodExtractor(new TestTarget());
-//        staticTest.acceptOrHandle(instanceExtractor, MethodStyle.STATIC); // test instanceExtractor can invoke static method
-//        instanceTest.acceptOrHandle(instanceExtractor, MethodStyle.INSTANCE);
+        MethodExtractor instanceExtractor = new MethodExtractor(new TestTarget());
+        staticTest.acceptOrHandle(instanceExtractor, MethodStyle.STATIC); // test instanceExtractor can invoke static method
+        instanceTest.acceptOrHandle(instanceExtractor, MethodStyle.INSTANCE);
 
-//        MethodExtractor ancestorExtractor = new MethodExtractor(TestParent.class, new TestTarget());
-//        ancestorTest.acceptOrHandle(ancestorExtractor, MethodStyle.ANCESTOR);
+        MethodExtractor ancestorExtractor = new MethodExtractor(TestParent.class, new TestTarget());
+        ancestorTest.acceptOrHandle(ancestorExtractor, MethodStyle.ANCESTOR);
     }
 
     @Test
     void void$error() {
+        Runnable staticTest = () -> {
+            MethodExtractor extractor = new MethodExtractor(TestTarget.class);
 
+            Assertions.assertThatThrownBy(() -> extractor.buildVoidInvoker("kerker", String.class))
+                    .isInstanceOf(NoSuchMethodException.class);
+
+            Assertions.assertThatThrownBy(() -> extractor.buildVoidInvoker(TARGET_INSTANCE_VOID, String.class))
+                    .isInstanceOf(NoSuchMethodException.class)
+                    .hasMessage(String.format(MethodExtractor.Message.OPERATING_INSTANCE_WITHOUT_TARGET, TARGET_INSTANCE_VOID));
+        };
+
+        Runnable instanceTest = () -> {
+            MethodExtractor extractor = new MethodExtractor(new TestTarget());
+
+            Assertions.assertThatThrownBy(() -> extractor.buildVoidInvoker("kerker", String.class))
+                    .isInstanceOf(NoSuchMethodException.class);
+        };
+
+        staticTest.run();
+        instanceTest.run();
     }
 
 }
