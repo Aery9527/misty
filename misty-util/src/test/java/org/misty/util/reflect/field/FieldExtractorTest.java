@@ -585,6 +585,32 @@ class FieldExtractorTest {
             new NormalTester<>(static_BigDecimal, Number.class, style, extractor::buildOperator).testWithAssignable((target) -> {
                 Assertions.assertThat(target.get()).isEqualTo(DEFAULT_a4);
             });
+
+            new NormalTester<>(static_String, String.class, style, extractor::buildOperator).test((target) -> {
+                String newString = String.valueOf(System.currentTimeMillis());
+
+                target.set(newString);
+
+                FieldObjectGetter<String> getter = staticExtractor.buildGetter(static_String, String.class);
+                Assertions.assertThat(getter.get()).isEqualTo(newString);
+            });
+
+            new NormalTester<>(static_BigDecimal, BigDecimal.class, style, extractor::buildOperator).test((target) -> {
+                BigDecimal newBigDecimal = new BigDecimal(System.currentTimeMillis());
+
+                target.set(newBigDecimal);
+
+                FieldObjectGetter<BigDecimal> getter = staticExtractor.buildGetter(static_BigDecimal, BigDecimal.class);
+                Assertions.assertThat(getter.get()).isEqualTo(newBigDecimal);
+            });
+            new NormalTester<>(static_BigDecimal, Number.class, style, extractor::buildOperator).testWithAssignable((target) -> {
+                BigDecimal newBigDecimal = new BigDecimal(System.currentTimeMillis());
+
+                target.set(newBigDecimal);
+
+                FieldObjectGetter<Number> getter = staticExtractor.buildGetter(static_BigDecimal, Number.class);
+                Assertions.assertThat(getter.get()).isEqualTo(newBigDecimal);
+            });
         };
 
         BiConsumer<FieldExtractor, FieldStyle> instanceTest = (extractor, style) -> {
@@ -598,9 +624,44 @@ class FieldExtractorTest {
             new NormalTester<>(instance_BigDecimal, Number.class, style, extractor::buildOperator).testWithAssignable((target) -> {
                 Assertions.assertThat(target.get()).isEqualTo(DEFAULT_a8);
             });
+
+            new NormalTester<>(instance_String, String.class, style, extractor::buildOperator).test((target) -> {
+                String newString = String.valueOf(System.currentTimeMillis());
+
+                target.set(newString);
+
+                FieldObjectGetter<String> getter = extractor.buildGetter(instance_String, String.class);
+                Assertions.assertThat(getter.get()).isEqualTo(newString);
+            });
+
+            new NormalTester<>(instance_BigDecimal, BigDecimal.class, style, extractor::buildOperator).test((target) -> {
+                BigDecimal newBigDecimal = new BigDecimal(System.currentTimeMillis());
+
+                target.set(newBigDecimal);
+
+                FieldObjectGetter<BigDecimal> getter = extractor.buildGetter(instance_BigDecimal, BigDecimal.class);
+                Assertions.assertThat(getter.get()).isEqualTo(newBigDecimal);
+            });
+            new NormalTester<>(instance_BigDecimal, Number.class, style, extractor::buildOperator).testWithAssignable((target) -> {
+                BigDecimal newBigDecimal = new BigDecimal(System.currentTimeMillis());
+
+                target.set(newBigDecimal);
+
+                FieldObjectGetter<Number> getter = extractor.buildGetter(instance_BigDecimal, Number.class);
+                Assertions.assertThat(getter.get()).isEqualTo(newBigDecimal);
+            });
         };
 
         BiConsumer<FieldExtractor, FieldStyle> ancestorTest = (extractor, style) -> {
+            new NormalTester<>(INSTANCE_STRING, String.class, style, extractor::buildOperator).test((target) -> {
+                String newString = String.valueOf(System.currentTimeMillis());
+
+                target.set(newString);
+
+                FieldObjectGetter<String> getter = extractor.buildGetter(INSTANCE_STRING, String.class);
+                Assertions.assertThat(getter.get()).isEqualTo(newString);
+            });
+
             new NormalTester<>(INSTANCE_STRING, String.class, style, extractor::buildOperator).test((target) -> {
                 String newString = String.valueOf(System.currentTimeMillis());
 
@@ -613,6 +674,7 @@ class FieldExtractorTest {
 
         staticTest.accept(staticExtractor, FieldStyle.STATIC);
 
+        setUp();
         staticTest.accept(instanceExtractor, FieldStyle.STATIC); // test instanceExtractor can use static field
         instanceTest.accept(instanceExtractor, FieldStyle.INSTANCE);
 
@@ -758,19 +820,38 @@ class FieldExtractorTest {
         FieldExtractor instanceExtractor = new FieldExtractor(new TestTarget());
 
         BiConsumer<FieldExtractor, FieldStyle> staticTest = (extractor, style) -> {
-            new NormalTester<>(static_byte, byte.class, style, extractor::buildOperator).test((target) -> {
+            new NormalTester<>(static_byte, byte.class, style, extractor::buildByteOperator).test((target) -> {
                 Assertions.assertThat(target.get()).isEqualTo(DEFAULT_b2);
+            });
+
+            new NormalTester<>(static_byte, byte.class, style, extractor::buildByteOperator).test((target) -> {
+                byte newByte = -127;
+
+                target.set(newByte);
+
+                FieldByteGetter getter = staticExtractor.buildByteGetter(static_byte);
+                Assertions.assertThat(getter.get()).isEqualTo(newByte);
             });
         };
 
         BiConsumer<FieldExtractor, FieldStyle> instanceTest = (extractor, style) -> {
-            new NormalTester<>(instance_byte, byte.class, style, extractor::buildOperator).test((target) -> {
+            new NormalTester<>(instance_byte, byte.class, style, extractor::buildByteOperator).test((target) -> {
                 Assertions.assertThat(target.get()).isEqualTo(DEFAULT_b4);
+            });
+
+            new NormalTester<>(instance_byte, byte.class, style, extractor::buildByteOperator).test((target) -> {
+                byte newByte = -127;
+
+                target.set(newByte);
+
+                FieldByteGetter getter = instanceExtractor.buildByteGetter(instance_byte);
+                Assertions.assertThat(getter.get()).isEqualTo(newByte);
             });
         };
 
         staticTest.accept(staticExtractor, FieldStyle.STATIC);
 
+        setUp();
         staticTest.accept(instanceExtractor, FieldStyle.STATIC); // test instanceExtractor can use static field
         instanceTest.accept(instanceExtractor, FieldStyle.INSTANCE);
     }
@@ -911,16 +992,35 @@ class FieldExtractorTest {
             new NormalTester<>(static_char, char.class, style, extractor::buildCharOperator).test((target) -> {
                 Assertions.assertThat(target.get()).isEqualTo(DEFAULT_c2);
             });
+
+            new NormalTester<>(static_char, char.class, style, extractor::buildCharOperator).test((target) -> {
+                char newChar = 'z';
+
+                target.set(newChar);
+
+                FieldCharGetter getter = staticExtractor.buildCharGetter(static_char);
+                Assertions.assertThat(getter.get()).isEqualTo(newChar);
+            });
         };
 
         BiConsumer<FieldExtractor, FieldStyle> instanceTest = (extractor, style) -> {
             new NormalTester<>(instance_char, char.class, style, extractor::buildCharOperator).test((target) -> {
                 Assertions.assertThat(target.get()).isEqualTo(DEFAULT_c4);
             });
+
+            new NormalTester<>(instance_char, char.class, style, extractor::buildCharOperator).test((target) -> {
+                char newChar = 'z';
+
+                target.set(newChar);
+
+                FieldCharGetter getter = instanceExtractor.buildCharGetter(instance_char);
+                Assertions.assertThat(getter.get()).isEqualTo(newChar);
+            });
         };
 
         staticTest.accept(staticExtractor, FieldStyle.STATIC);
 
+        setUp();
         staticTest.accept(instanceExtractor, FieldStyle.STATIC); // test instanceExtractor can use static field
         instanceTest.accept(instanceExtractor, FieldStyle.INSTANCE);
     }
@@ -1061,16 +1161,35 @@ class FieldExtractorTest {
             new NormalTester<>(static_double, double.class, style, extractor::buildDoubleOperator).test((target) -> {
                 Assertions.assertThat(target.get()).isEqualTo(DEFAULT_d2);
             });
+
+            new NormalTester<>(static_double, double.class, style, extractor::buildDoubleOperator).test((target) -> {
+                double newDouble = -9527;
+
+                target.set(newDouble);
+
+                FieldDoubleGetter getter = staticExtractor.buildDoubleGetter(static_double);
+                Assertions.assertThat(getter.get()).isEqualTo(newDouble);
+            });
         };
 
         BiConsumer<FieldExtractor, FieldStyle> instanceTest = (extractor, style) -> {
             new NormalTester<>(instance_double, double.class, style, extractor::buildDoubleOperator).test((target) -> {
                 Assertions.assertThat(target.get()).isEqualTo(DEFAULT_d4);
             });
+
+            new NormalTester<>(instance_double, double.class, style, extractor::buildDoubleOperator).test((target) -> {
+                double newDouble = -9527;
+
+                target.set(newDouble);
+
+                FieldDoubleGetter getter = instanceExtractor.buildDoubleGetter(instance_double);
+                Assertions.assertThat(getter.get()).isEqualTo(newDouble);
+            });
         };
 
         staticTest.accept(staticExtractor, FieldStyle.STATIC);
 
+        setUp();
         staticTest.accept(instanceExtractor, FieldStyle.STATIC); // test instanceExtractor can use static field
         instanceTest.accept(instanceExtractor, FieldStyle.INSTANCE);
     }
@@ -1211,16 +1330,35 @@ class FieldExtractorTest {
             new NormalTester<>(static_float, float.class, style, extractor::buildFloatOperator).test((target) -> {
                 Assertions.assertThat(target.get()).isEqualTo(DEFAULT_e2);
             });
+
+            new NormalTester<>(static_float, float.class, style, extractor::buildFloatOperator).test((target) -> {
+                float newFloat = -9527;
+
+                target.set(newFloat);
+
+                FieldFloatGetter getter = staticExtractor.buildFloatGetter(static_float);
+                Assertions.assertThat(getter.get()).isEqualTo(newFloat);
+            });
         };
 
         BiConsumer<FieldExtractor, FieldStyle> instanceTest = (extractor, style) -> {
             new NormalTester<>(instance_float, float.class, style, extractor::buildFloatOperator).test((target) -> {
                 Assertions.assertThat(target.get()).isEqualTo(DEFAULT_e4);
             });
+
+            new NormalTester<>(instance_float, float.class, style, extractor::buildFloatOperator).test((target) -> {
+                float newFloat = -9527;
+
+                target.set(newFloat);
+
+                FieldFloatGetter getter = instanceExtractor.buildFloatGetter(instance_float);
+                Assertions.assertThat(getter.get()).isEqualTo(newFloat);
+            });
         };
 
         staticTest.accept(staticExtractor, FieldStyle.STATIC);
 
+        setUp();
         staticTest.accept(instanceExtractor, FieldStyle.STATIC); // test instanceExtractor can use static field
         instanceTest.accept(instanceExtractor, FieldStyle.INSTANCE);
     }
@@ -1361,16 +1499,35 @@ class FieldExtractorTest {
             new NormalTester<>(static_int, int.class, style, extractor::buildIntOperator).test((target) -> {
                 Assertions.assertThat(target.get()).isEqualTo(DEFAULT_f2);
             });
+
+            new NormalTester<>(static_int, int.class, style, extractor::buildIntOperator).test((target) -> {
+                int newInt = -9527;
+
+                target.set(newInt);
+
+                FieldIntGetter getter = staticExtractor.buildIntGetter(static_int);
+                Assertions.assertThat(getter.get()).isEqualTo(newInt);
+            });
         };
 
         BiConsumer<FieldExtractor, FieldStyle> instanceTest = (extractor, style) -> {
             new NormalTester<>(instance_int, int.class, style, extractor::buildIntOperator).test((target) -> {
                 Assertions.assertThat(target.get()).isEqualTo(DEFAULT_f4);
             });
+
+            new NormalTester<>(instance_int, int.class, style, extractor::buildIntOperator).test((target) -> {
+                int newInt = -9527;
+
+                target.set(newInt);
+
+                FieldIntGetter getter = instanceExtractor.buildIntGetter(instance_int);
+                Assertions.assertThat(getter.get()).isEqualTo(newInt);
+            });
         };
 
         staticTest.accept(staticExtractor, FieldStyle.STATIC);
 
+        setUp();
         staticTest.accept(instanceExtractor, FieldStyle.STATIC); // test instanceExtractor can use static field
         instanceTest.accept(instanceExtractor, FieldStyle.INSTANCE);
     }
@@ -1511,16 +1668,35 @@ class FieldExtractorTest {
             new NormalTester<>(static_long, long.class, style, extractor::buildLongOperator).test((target) -> {
                 Assertions.assertThat(target.get()).isEqualTo(DEFAULT_g2);
             });
+
+            new NormalTester<>(static_long, long.class, style, extractor::buildLongOperator).test((target) -> {
+                long newLong = -9527;
+
+                target.set(newLong);
+
+                FieldLongGetter getter = staticExtractor.buildLongGetter(static_long);
+                Assertions.assertThat(getter.get()).isEqualTo(newLong);
+            });
         };
 
         BiConsumer<FieldExtractor, FieldStyle> instanceTest = (extractor, style) -> {
             new NormalTester<>(instance_long, long.class, style, extractor::buildLongOperator).test((target) -> {
                 Assertions.assertThat(target.get()).isEqualTo(DEFAULT_g4);
             });
+
+            new NormalTester<>(instance_long, long.class, style, extractor::buildLongOperator).test((target) -> {
+                long newLong = -9527;
+
+                target.set(newLong);
+
+                FieldLongGetter getter = instanceExtractor.buildLongGetter(instance_long);
+                Assertions.assertThat(getter.get()).isEqualTo(newLong);
+            });
         };
 
         staticTest.accept(staticExtractor, FieldStyle.STATIC);
 
+        setUp();
         staticTest.accept(instanceExtractor, FieldStyle.STATIC); // test instanceExtractor can use static field
         instanceTest.accept(instanceExtractor, FieldStyle.INSTANCE);
     }
@@ -1661,16 +1837,35 @@ class FieldExtractorTest {
             new NormalTester<>(static_short, short.class, style, extractor::buildShortOperator).test((target) -> {
                 Assertions.assertThat(target.get()).isEqualTo(DEFAULT_h2);
             });
+
+            new NormalTester<>(static_short, short.class, style, extractor::buildShortOperator).test((target) -> {
+                short nerShort = -9527;
+
+                target.set(nerShort);
+
+                FieldShortGetter getter = staticExtractor.buildShortGetter(static_short);
+                Assertions.assertThat(getter.get()).isEqualTo(nerShort);
+            });
         };
 
         BiConsumer<FieldExtractor, FieldStyle> instanceTest = (extractor, style) -> {
             new NormalTester<>(instance_short, short.class, style, extractor::buildShortOperator).test((target) -> {
                 Assertions.assertThat(target.get()).isEqualTo(DEFAULT_h4);
             });
+
+            new NormalTester<>(instance_short, short.class, style, extractor::buildShortOperator).test((target) -> {
+                short newShort = -9527;
+
+                target.set(newShort);
+
+                FieldShortGetter getter = instanceExtractor.buildShortGetter(instance_short);
+                Assertions.assertThat(getter.get()).isEqualTo(newShort);
+            });
         };
 
         staticTest.accept(staticExtractor, FieldStyle.STATIC);
 
+        setUp();
         staticTest.accept(instanceExtractor, FieldStyle.STATIC); // test instanceExtractor can use static field
         instanceTest.accept(instanceExtractor, FieldStyle.INSTANCE);
     }
