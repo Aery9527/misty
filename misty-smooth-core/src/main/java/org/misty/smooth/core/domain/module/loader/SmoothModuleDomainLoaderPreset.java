@@ -1,9 +1,9 @@
 package org.misty.smooth.core.domain.module.loader;
 
-import org.misty.smooth.api.context.SmoothContext;
 import org.misty.smooth.api.lifecycle.module.SmoothModuleLifecycle;
 import org.misty.smooth.api.lifecycle.module.SmoothModuleRegister;
 import org.misty.smooth.api.vo.SmoothModuleId;
+import org.misty.smooth.core.domain.impl.SmoothDomainContext;
 import org.misty.smooth.core.domain.loader.api.SmoothDomainLoaderAbstract;
 import org.misty.smooth.manager.loader.SmoothModuleLoader;
 
@@ -13,13 +13,16 @@ public class SmoothModuleDomainLoaderPreset
 
     @Override
     protected void initialLifecycle(SmoothModuleLifecycle domainLifecycle) {
+        SmoothDomainContext context = new SmoothDomainContext();
+        context.setSmoothId(super.getSmoothId());
+        context.setLaunchInstant(super.getSmoothId().getLaunchTime());
+        context.setParentContext(super.getParentContext());
 
-
-
-
-        SmoothContext context = null;
         SmoothModuleRegister register = null;
-        domainLifecycle.initial(context, register);
+
+        domainLifecycle.initial(context, register); // FIXME lifecycle need cross
+
+
     }
 
 }

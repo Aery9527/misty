@@ -13,7 +13,7 @@ public class AtomicUpdater<TargetType> {
 
     private final Consumer<TargetType> targetChecker;
 
-    private TargetType target;
+    private final AtomicReference<TargetType> target = new AtomicReference<>();
 
     public AtomicUpdater(TargetType target) {
         this(target, (newTarget) -> {
@@ -25,7 +25,7 @@ public class AtomicUpdater<TargetType> {
         Examiner.refuseNullAndEmpty("targetChecker", targetChecker);
         targetChecker.accept(target);
 
-        this.target = target;
+        this.target.set(target);
         this.targetChecker = targetChecker;
     }
 
@@ -34,19 +34,19 @@ public class AtomicUpdater<TargetType> {
 
         AtomicReference<TargetType> oldHolder = new AtomicReference<>();
         this.lock.use(() -> {
-            TargetType oldTarget = this.target;
+            TargetType oldTarget = this.target.get();
             oldHolder.set(oldTarget);
 
             TargetType newTarget = changeAction.apply(oldTarget);
             this.targetChecker.accept(newTarget);
-            this.target = newTarget;
+            this.target.set(newTarget);
         });
 
         return oldHolder.get();
     }
 
     public TargetType get() {
-        return target;
+        return target.get();
     }
 
 }

@@ -1,5 +1,6 @@
 package org.misty.smooth.core.domain.loader.preset;
 
+import org.misty.smooth.api.context.SmoothContext;
 import org.misty.smooth.api.cross.SmoothCrosser;
 import org.misty.smooth.api.lifecycle.SmoothLifecycle;
 import org.misty.smooth.api.vo.SmoothId;
@@ -17,7 +18,7 @@ import java.util.Collection;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
-public class SmoothDomainLoaderFactoryBuilder<
+public class SmoothDomainLoaderBuilder<
         LifecycleType extends SmoothLifecycle,
         SmoothIdType extends SmoothId<SmoothIdType>,
         DomainLoaderType extends SmoothDomainLoaderAbstract<SmoothIdType, ?, LifecycleType>
@@ -35,6 +36,8 @@ public class SmoothDomainLoaderFactoryBuilder<
 
     private SmoothDomainLaunchThreadFactory<SmoothIdType> launchThreadFactory;
 
+    private SmoothContext parentContext;
+
     public DomainLoaderType build(SmoothLoaderArgument loaderArgument, Collection<URL> sources) throws SmoothLoadException {
         SmoothDomainClassLoader classloader = null;
         try {
@@ -44,11 +47,9 @@ public class SmoothDomainLoaderFactoryBuilder<
 
             LifecycleType domainLifecycle = this.lifecycleFactory.apply(loaderArgument, domainCrosser);
 
-            SmoothIdType domainId = domainCrosser.wrap(() -> {
-                String moduleName = domainLifecycle.getName();
-                String moduleVersion = domainLifecycle.getVersion();
-                return this.smoothIdFactory.apply(moduleName, moduleVersion);
-            });
+            String moduleName = domainCrosser.wrap(domainLifecycle::getName);
+            String moduleVersion = domainCrosser.wrap(domainLifecycle::getVersion);
+            SmoothIdType domainId = this.smoothIdFactory.apply(moduleName, moduleVersion);
 
             classloader.setSmoothId(domainId);
 
@@ -58,6 +59,7 @@ public class SmoothDomainLoaderFactoryBuilder<
             loader.setLoaderArgument(loaderArgument);
             loader.setDomainLifecycle(domainLifecycle);
             loader.setLaunchThreadFactory(this.launchThreadFactory);
+            loader.setParentContext(this.parentContext);
             return loader;
 
         } catch (Exception t) {
@@ -113,4 +115,11 @@ public class SmoothDomainLoaderFactoryBuilder<
         this.launchThreadFactory = launchThreadFactory;
     }
 
+    public SmoothContext getParentContext() {
+        return parentContext;
+    }
+
+    public void setParentContext(SmoothContext parentContext) {
+        this.parentContext = parentContext;
+    }
 }

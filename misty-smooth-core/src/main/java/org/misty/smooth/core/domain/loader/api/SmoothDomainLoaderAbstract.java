@@ -1,5 +1,6 @@
 package org.misty.smooth.core.domain.loader.api;
 
+import org.misty.smooth.api.context.SmoothContext;
 import org.misty.smooth.api.cross.SmoothCrosser;
 import org.misty.smooth.api.lifecycle.SmoothLifecycle;
 import org.misty.smooth.api.vo.SmoothId;
@@ -40,16 +41,18 @@ public abstract class SmoothDomainLoaderAbstract<
 
     private LifecycleType domainLifecycle;
 
+    private SmoothContext parentContext;
+
     private SmoothDomainLaunchThreadFactory<SmoothIdType> launchThreadFactory;
 
     private SmoothDomainLoadTypeController<SmoothIdType> loadTypeController;
-
-    private SmoothLoadType loadType;
 
     /**
      * thread context classloader is smooth-core's classloader
      */
     private ExecutorService launchThread;
+
+    private SmoothLoadType loadType;
 
     private Throwable currentError;
 
@@ -59,20 +62,24 @@ public abstract class SmoothDomainLoaderAbstract<
         changeState(SmoothLoadState.LOADING);
         startLaunchThread();
 
-        currentError = null;
+        this.loadType = null;
+        this.currentError = null;
 
         Consumer<Runnable> errorWrapper = (runnable) -> {
             try {
                 runnable.run();
             } catch (Throwable t) {
                 this.logger.error(this.smoothId + " launch error.", t);
-                currentError = t;
+                this.currentError = t;
                 changeState(SmoothLoadState.LOAD_FAILED);
             }
         };
 
         Runnable launchAction = () -> {
-            this.loadType = this.loadTypeController.prepareLoading(this.loaderArgument, this.smoothId);
+            SmoothLoadType loadType = this.loadTypeController.prepareLoading(this.loaderArgument, this.smoothId);
+            Examiner.refuseNullAndEmpty("loadType", this.domainCrosser, SmoothDomainLoadError.UNEXPECTED);
+
+            this.loadType = loadType;
             if (this.loadType.equals(SmoothLoadType.DUPLICATE)) {
                 throw SmoothDomainLoadError.LOAD_TYPE_DUPLICATE.thrown();
             }
@@ -98,12 +105,12 @@ public abstract class SmoothDomainLoaderAbstract<
         }
 
         try {
-            currentError = null;
+            this.currentError = null;
             // TODO
             changeState(SmoothLoadState.ONLINE);
         } catch (Throwable t) {
             this.logger.error(this.smoothId + " online error.", t);
-            currentError = t;
+            this.currentError = t;
             changeState(SmoothLoadState.ONLINE_FAILED);
         }
     }
@@ -119,19 +126,16 @@ public abstract class SmoothDomainLoaderAbstract<
     }
 
     @Override
-    public Optional<Throwable> getCurrentError() {
-        return Optional.ofNullable(this.currentError);
-    }
-
-    @Override
     public LoadType registerLoadFinishAction(Consumer<LoadType> action) throws SmoothLoadException {
-        boolean firstSet = this.loadFinishAction.compareAndSet(null, action);
+        Examiner.refuseNullAndEmpty("loadFinishAction", action, SmoothDomainLoadError.UNEXPECTED);
+
+        boolean firstSet = this.loadFinishAction.compareAndSet(null, action); // FIXME action要cross
         if (!firstSet) {
             throw SmoothDomainLoadError.LOAD_FINISH_ACTION_REGISTER.thrown("loadFinishAction can't set again.");
         }
 
-        this.loadFinishAction.set(action);
-        // TODO
+        // TODO 若register的時候已經載完(或失敗), 就要調用action了
+
         return (LoadType) this;
     }
 
@@ -142,6 +146,7 @@ public abstract class SmoothDomainLoaderAbstract<
         Examiner.refuseNullAndEmpty("smoothId", this.smoothId, SmoothDomainLoadError.UNEXPECTED);
         Examiner.refuseNullAndEmpty("loaderArgument", this.loaderArgument, SmoothDomainLoadError.UNEXPECTED);
         Examiner.refuseNullAndEmpty("domainLifecycle", this.domainLifecycle, SmoothDomainLoadError.UNEXPECTED);
+        Examiner.refuseNullAndEmpty("parentContext", this.parentContext, SmoothDomainLoadError.UNEXPECTED);
         Examiner.refuseNullAndEmpty("launchThreadFactory", this.launchThreadFactory, SmoothDomainLoadError.UNEXPECTED);
         Examiner.refuseNullAndEmpty("loadTypeController", this.loadTypeController, SmoothDomainLoadError.UNEXPECTED);
     }
@@ -203,6 +208,14 @@ public abstract class SmoothDomainLoaderAbstract<
         this.domainLifecycle = domainLifecycle;
     }
 
+    public SmoothContext getParentContext() {
+        return parentContext;
+    }
+
+    public void setParentContext(SmoothContext parentContext) {
+        this.parentContext = parentContext;
+    }
+
     public SmoothDomainLaunchThreadFactory<SmoothIdType> getLaunchThreadFactory() {
         return launchThreadFactory;
     }
@@ -222,12 +235,17 @@ public abstract class SmoothDomainLoaderAbstract<
 
     @Override
     public SmoothLoadState getLoadState() {
-        return loadState.get();
+        return this.loadState.get();
     }
 
     @Override
     public Optional<SmoothLoadType> getLoadType() {
-        return Optional.ofNullable(loadType);
+        return Optional.ofNullable(this.loadType);
+    }
+
+    @Override
+    public Optional<Throwable> getCurrentError() {
+        return Optional.ofNullable(this.currentError);
     }
 
 }

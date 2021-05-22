@@ -1,9 +1,10 @@
 package org.misty.smooth.core.domain.loader.impl;
 
+import org.misty.smooth.api.context.SmoothContext;
 import org.misty.smooth.api.lifecycle.module.SmoothModuleLifecycle;
 import org.misty.smooth.api.vo.SmoothModuleId;
 import org.misty.smooth.core.domain.loader.api.SmoothDomainLoaderFactory;
-import org.misty.smooth.core.domain.loader.preset.SmoothDomainLoaderFactoryBuilder;
+import org.misty.smooth.core.domain.loader.preset.SmoothDomainLoaderBuilder;
 import org.misty.smooth.core.domain.loader.preset.api.SmoothDomainClassLoaderFactory;
 import org.misty.smooth.core.domain.loader.preset.api.SmoothDomainLifecycleFactory;
 import org.misty.smooth.core.domain.loader.preset.api.SmoothDomainLifecycleThreadFactory;
@@ -21,23 +22,30 @@ import java.util.Collection;
 
 public class SmoothDomainLoaderFactoryPreset implements SmoothDomainLoaderFactory {
 
+    private final SmoothContext parentContext;
+
     private SmoothDomainClassLoaderFactory classLoaderFactory;
 
     private SmoothDomainLifecycleFactory lifecycleFactory;
 
     private SmoothDomainLifecycleThreadFactory lifecycleThreadFactory;
 
+    public SmoothDomainLoaderFactoryPreset(SmoothContext parentContext) {
+        this.parentContext = parentContext;
+    }
+
     @SuppressWarnings("DuplicatedCode")
     @Override
     public SmoothManagerDomainLoader buildManagerLoader(SmoothLoaderArgument loaderArgument, Collection<URL> sources)
             throws SmoothLoadException {
-        SmoothDomainLoaderFactoryBuilder<SmoothManagerLifecycle, SmoothManagerId, SmoothManagerDomainLoaderPreset> builder;
-        builder = new SmoothDomainLoaderFactoryBuilder<>();
+        SmoothDomainLoaderBuilder<SmoothManagerLifecycle, SmoothManagerId, SmoothManagerDomainLoaderPreset> builder;
+        builder = new SmoothDomainLoaderBuilder<>();
         builder.setClassLoaderFactory(this.classLoaderFactory::buildManagerClassLoader);
         builder.setLifecycleFactory(this.lifecycleFactory::findManagerLifecycle);
         builder.setSmoothIdFactory(SmoothManagerId::new);
         builder.setDomainLoaderFactory(SmoothManagerDomainLoaderPreset::new);
         builder.setLaunchThreadFactory(this.lifecycleThreadFactory::buildLaunchThread);
+        builder.setParentContext(this.parentContext);
         return builder.build(loaderArgument, sources);
     }
 
@@ -45,13 +53,14 @@ public class SmoothDomainLoaderFactoryPreset implements SmoothDomainLoaderFactor
     @Override
     public SmoothModuleDomainLoader buildModuleLoader(SmoothLoaderArgument loaderArgument, Collection<URL> sources)
             throws SmoothLoadException {
-        SmoothDomainLoaderFactoryBuilder<SmoothModuleLifecycle, SmoothModuleId, SmoothModuleDomainLoaderPreset> builder;
-        builder = new SmoothDomainLoaderFactoryBuilder<>();
+        SmoothDomainLoaderBuilder<SmoothModuleLifecycle, SmoothModuleId, SmoothModuleDomainLoaderPreset> builder;
+        builder = new SmoothDomainLoaderBuilder<>();
         builder.setClassLoaderFactory(this.classLoaderFactory::buildModuleClassLoader);
         builder.setLifecycleFactory(this.lifecycleFactory::findModuleLifecycle);
         builder.setSmoothIdFactory(SmoothModuleId::new);
         builder.setDomainLoaderFactory(SmoothModuleDomainLoaderPreset::new);
         builder.setLaunchThreadFactory(this.lifecycleThreadFactory::buildLaunchThread);
+        builder.setParentContext(this.parentContext);
         return builder.build(loaderArgument, sources);
     }
 

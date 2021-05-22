@@ -7,6 +7,7 @@ import org.misty.smooth.api.service.SmoothService;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 @NeedCross(
@@ -21,6 +22,6 @@ public interface SmoothModuleRegister extends SmoothRegister {
 
     void registerService(Collection<SmoothService> services) throws SmoothActionRegisterException;
 
-    void registerResponseResultProcessErrorHandler(Consumer<Throwable> errorHandler) throws SmoothActionRegisterException;
+    void registerResponseResultProcessErrorHandler(BiConsumer<SmoothService, Throwable> errorHandler) throws SmoothActionRegisterException;
 
 }

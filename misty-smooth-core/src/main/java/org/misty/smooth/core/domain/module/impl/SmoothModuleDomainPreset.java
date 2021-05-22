@@ -39,7 +39,6 @@ public class SmoothModuleDomainPreset implements SmoothModuleDomain {
 
     private ExecutorService moduleExecutorService;
 
-    //    private Map<String, Tuple> map = new ConcurrentHashMap<>(32);
     private Map<String, Tuple> map;
 
     @Override
