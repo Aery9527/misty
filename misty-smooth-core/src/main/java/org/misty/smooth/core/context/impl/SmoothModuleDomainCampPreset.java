@@ -26,6 +26,11 @@ public class SmoothModuleDomainCampPreset implements SmoothModuleDomainCamp {
     private Map<SmoothModuleId, SmoothModuleDomain> domainMap = new ConcurrentHashMap<>(this.defaultInitialCapacity);
 
     @Override
+    public String getPresetVersion() {
+        return SmoothModuleId.PRESET_VERSION;
+    }
+
+    @Override
     public Set<SmoothModuleId> listModuleWithSet() {
         if (this.domainMap.isEmpty()) {
             return Collections.emptySet();
@@ -122,6 +127,11 @@ public class SmoothModuleDomainCampPreset implements SmoothModuleDomainCamp {
     @Override
     public SmoothModuleDomain getModuleDomain(String moduleName, String moduleVersion) throws SmoothModuleNotFoundException {
         SmoothModuleId id = buildModuleId(moduleName, moduleVersion);
+        return getModuleDomain(id);
+    }
+
+    @Override
+    public SmoothModuleDomain getModuleDomain(SmoothModuleId id) throws SmoothModuleNotFoundException {
         SmoothModuleDomain moduleDomain = this.domainMap.get(id);
         if (moduleDomain == null) {
             throw new SmoothModuleNotFoundException(id.getDescription());
@@ -163,10 +173,6 @@ public class SmoothModuleDomainCampPreset implements SmoothModuleDomainCamp {
     public boolean releaseWaitForOnline(SmoothModuleId smoothId) {
         // TODO
         return true;
-    }
-
-    protected String getPresetVersion() {
-        return SmoothModuleId.PRESET_VERSION;
     }
 
     protected SmoothModuleId buildModuleId(String name) {

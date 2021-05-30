@@ -12,6 +12,8 @@ import java.util.Set;
 
 public interface SmoothModuleDomainCamp extends SmoothDomainLoadTypeController<SmoothModuleId> {
 
+    String getPresetVersion();
+
     Set<SmoothModuleId> listModuleWithSet();
 
     Map<String, Set<String>> listModuleWithMap();
@@ -29,6 +31,8 @@ public interface SmoothModuleDomainCamp extends SmoothDomainLoadTypeController<S
     SmoothModuleDomain getModuleDomain(String moduleName) throws SmoothModuleNotFoundException;
 
     SmoothModuleDomain getModuleDomain(String moduleName, String moduleVersion) throws SmoothModuleNotFoundException;
+
+    SmoothModuleDomain getModuleDomain(SmoothModuleId id) throws SmoothModuleNotFoundException;
 
     void close();
 

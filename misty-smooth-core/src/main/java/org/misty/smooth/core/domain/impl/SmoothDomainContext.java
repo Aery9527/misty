@@ -4,6 +4,8 @@ import org.misty.smooth.api.context.SmoothContext;
 import org.misty.smooth.api.context.SmoothEnvironment;
 import org.misty.smooth.api.error.SmoothModuleNotFoundException;
 import org.misty.smooth.api.error.SmoothServiceNotFoundException;
+import org.misty.smooth.api.mark.Guide;
+import org.misty.smooth.api.service.SmoothServiceInvoker;
 import org.misty.smooth.api.service.vo.SmoothServiceRequest;
 import org.misty.smooth.api.service.vo.SmoothServiceResponseResult;
 import org.misty.smooth.api.vo.SmoothId;
@@ -11,11 +13,16 @@ import org.misty.smooth.api.vo.SmoothModuleId;
 import org.misty.smooth.api.vo.SmoothServiceId;
 
 import java.time.Instant;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
+@Guide(needCross = false,
+        implementationBy = Guide.Scope.CORE,
+        usedBy = Guide.Scope.MODULE
+)
 public class SmoothDomainContext implements SmoothContext {
 
     private SmoothId<?> smoothId;
@@ -45,18 +52,53 @@ public class SmoothDomainContext implements SmoothContext {
     }
 
     @Override
+    public Map<String, Set<String>> listModuleWithMap() {
+        return this.parentContext.listModuleWithMap();
+    }
+
+    @Override
+    public Optional<String> getModulePresetVersion(String moduleName) {
+        return this.parentContext.getModulePresetVersion(moduleName);
+    }
+
+    @Override
     public Optional<Set<SmoothServiceId>> listServiceWithSet(String moduleName) {
         return this.parentContext.listServiceWithSet(moduleName);
     }
 
     @Override
-    public Future<SmoothServiceResponseResult> invokeService(String moduleName, String serviceKey, SmoothServiceRequest serviceRequest) throws SmoothModuleNotFoundException, SmoothServiceNotFoundException {
-        return this.parentContext.invokeService(moduleName, serviceKey, serviceRequest);
+    public Optional<Set<SmoothServiceId>> listServiceWithSet(String moduleName, String moduleVersion) {
+        return this.parentContext.listServiceWithSet(moduleName, moduleVersion);
     }
 
     @Override
-    public void invokeService(String moduleName, String serviceKey, SmoothServiceRequest serviceRequest, Consumer<SmoothServiceResponseResult> resultProcessor) throws SmoothModuleNotFoundException, SmoothServiceNotFoundException {
-        this.parentContext.invokeService(moduleName, serviceKey, serviceRequest, resultProcessor);
+    public Optional<Map<String, String>> listServiceWithMap(String moduleName) {
+        return this.parentContext.listServiceWithMap(moduleName);
+    }
+
+    @Override
+    public Optional<Map<String, String>> listServiceWithMap(String moduleName, String moduleVersion) {
+        return this.parentContext.listServiceWithMap(moduleName, moduleVersion);
+    }
+
+    @Override
+    public SmoothServiceInvoker buildServiceInvoker(String moduleName, String serviceKey) {
+        return null; // FIXME
+    }
+
+    @Override
+    public SmoothServiceInvoker buildServiceInvoker(String moduleName, String moduleVersion, String serviceKey) {
+        return null; // FIXME
+    }
+
+    @Override
+    public void invoke(SmoothModuleId id, String serviceKey, SmoothServiceRequest serviceRequest, Consumer<SmoothServiceResponseResult> resultProcessor) throws SmoothModuleNotFoundException, SmoothServiceNotFoundException {
+        // FIXME
+    }
+
+    @Override
+    public Future<SmoothServiceResponseResult> invoke(SmoothModuleId id, String serviceKey, SmoothServiceRequest serviceRequest) throws SmoothModuleNotFoundException, SmoothServiceNotFoundException {
+        return null; // FIXME
     }
 
     public SmoothId<?> getSmoothId() {

@@ -2,17 +2,16 @@ package org.misty.smooth.api.lifecycle.module;
 
 import org.misty.smooth.api.error.SmoothActionRegisterException;
 import org.misty.smooth.api.lifecycle.SmoothRegister;
-import org.misty.smooth.api.mark.NeedCross;
+import org.misty.smooth.api.mark.Guide;
 import org.misty.smooth.api.service.SmoothService;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
-@NeedCross(
-        implementation = NeedCross.Scope.CORE,
-        user = NeedCross.Scope.MODULE
+@Guide(
+        implementationBy = Guide.Scope.CORE,
+        usedBy = Guide.Scope.MODULE
 )
 public interface SmoothModuleRegister extends SmoothRegister {
 

@@ -1,14 +1,14 @@
 package org.misty.smooth.api.service.vo;
 
 import org.misty.smooth.api.cross.SmoothCrossWrapper;
-import org.misty.smooth.api.mark.NeedCross;
+import org.misty.smooth.api.mark.Guide;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-@NeedCross(
-        implementation = {NeedCross.Scope.CORE, NeedCross.Scope.MANAGER},
-        user = NeedCross.Scope.MODULE
+@Guide(
+        implementationBy = {Guide.Scope.CORE, Guide.Scope.MANAGER},
+        usedBy = Guide.Scope.MODULE
 )
 public class SmoothInputStreamCrosser extends InputStream {
 

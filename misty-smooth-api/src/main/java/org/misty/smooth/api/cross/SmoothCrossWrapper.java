@@ -18,4 +18,19 @@ public class SmoothCrossWrapper<WrappedTarget> extends SmoothCrosser {
         return wrappedTarget;
     }
 
+    @Override
+    public int hashCode() {
+        return wrap(this.wrappedTarget::hashCode);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return wrap(() -> this.wrappedTarget.equals(obj));
+    }
+
+    @Override
+    public String toString() {
+        return wrap(this.wrappedTarget::toString);
+    }
+
 }

@@ -2,11 +2,11 @@ package org.misty.smooth.api.lifecycle.module;
 
 import org.misty.smooth.api.context.SmoothContext;
 import org.misty.smooth.api.lifecycle.SmoothLifecycle;
-import org.misty.smooth.api.mark.NeedCross;
+import org.misty.smooth.api.mark.Guide;
 
-@NeedCross(
-        implementation = NeedCross.Scope.MODULE,
-        user = NeedCross.Scope.CORE
+@Guide(
+        implementationBy = Guide.Scope.MODULE,
+        usedBy = Guide.Scope.CORE
 )
 public interface SmoothModuleLifecycle extends SmoothLifecycle {
 

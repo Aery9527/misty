@@ -1,13 +1,16 @@
 package org.misty.smooth.api.context;
 
-import org.misty.smooth.api.mark.NeedCross;
+import org.misty.smooth.api.mark.Guide;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
-@NeedCross(
-        implementation = NeedCross.Scope.CORE,
-        user = NeedCross.Scope.ANY
+@Guide(
+        implementationBy = Guide.Scope.CORE,
+        usedBy = Guide.Scope.ANY
 )
 public interface SmoothEnvironment {
 

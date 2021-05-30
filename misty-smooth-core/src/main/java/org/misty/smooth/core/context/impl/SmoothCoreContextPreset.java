@@ -29,10 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.time.Instant;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.function.BiConsumer;
@@ -112,25 +109,43 @@ public class SmoothCoreContextPreset implements SmoothCoreContext {
     }
 
     @Override
-    public Future<SmoothServiceResponseResult> invokeService(
-            String moduleName, String serviceKey, SmoothServiceRequest serviceRequest
-    ) throws SmoothModuleNotFoundException, SmoothServiceNotFoundException {
-        SmoothModuleDomain moduleDomain = this.domainCamp.getModuleDomain(moduleName);
+    public SmoothServiceInvoker buildServiceInvoker(String moduleName, String serviceKey) {
+        return buildServiceInvoker(moduleName, this.domainCamp.getPresetVersion(), serviceKey);
+    }
+
+    @Override
+    public SmoothServiceInvoker buildServiceInvoker(String moduleName, String moduleVersion, String serviceKey) {
+        return new SmoothServiceInvoker(moduleName, moduleVersion, serviceKey, this, this);
+    }
+
+    @Override
+    public Future<SmoothServiceResponseResult> invoke(SmoothModuleId id, String serviceKey, SmoothServiceRequest serviceRequest)
+            throws SmoothModuleNotFoundException, SmoothServiceNotFoundException {
+        SmoothModuleDomain moduleDomain = this.domainCamp.getModuleDomain(id);
         return moduleDomain.invokeService(serviceKey, new SmoothServiceRequestOrigin(this.coreId, serviceRequest));
     }
 
     @Override
-    public void invokeService(
-            String moduleName, String serviceKey, SmoothServiceRequest serviceRequest, Consumer<SmoothServiceResponseResult> resultProcessor
-    ) throws SmoothModuleNotFoundException, SmoothServiceNotFoundException {
-        SmoothModuleDomain moduleDomain = this.domainCamp.getModuleDomain(moduleName);
+    public void invoke(SmoothModuleId id, String serviceKey, SmoothServiceRequest serviceRequest, Consumer<SmoothServiceResponseResult> resultProcessor)
+            throws SmoothModuleNotFoundException, SmoothServiceNotFoundException {
+        SmoothModuleDomain moduleDomain = this.domainCamp.getModuleDomain(id);
         SmoothServiceRequestOrigin requestOrigin = new SmoothServiceRequestOrigin(this.coreId, serviceRequest);
         moduleDomain.invokeService(serviceKey, requestOrigin, this.executorService, resultProcessor); // FIXME resultProcessor要crosser
     }
 
     @Override
-    public SmoothServiceInvoker buildServiceInvoker(String moduleName, String serviceKey) {
-        return new SmoothServiceInvoker(moduleName, serviceKey, this);
+    public SmoothManagerLoader loadSmoothManager(URL... sources) throws SmoothLoadException {
+        return loadSmoothManager(new SmoothLoaderArgument(), sources);
+    }
+
+    @Override
+    public SmoothManagerLoader loadSmoothManager(SmoothLoaderArgument loaderArgument, URL... sources) throws SmoothLoadException {
+        return loadSmoothManager(loaderArgument, Arrays.asList(sources));
+    }
+
+    @Override
+    public SmoothManagerLoader loadSmoothManager(Collection<URL> sources) throws SmoothLoadException {
+        return loadSmoothManager(new SmoothLoaderArgument(), sources);
     }
 
     @Override
@@ -143,6 +158,21 @@ public class SmoothCoreContextPreset implements SmoothCoreContext {
         managerLoader.launch();
 
         return new SmoothManagerDomainLoaderCrosser(managerLoader);
+    }
+
+    @Override
+    public SmoothModuleLoader loadSmoothModule(URL... sources) throws SmoothLoadException {
+        return loadSmoothModule(new SmoothLoaderArgument(), sources);
+    }
+
+    @Override
+    public SmoothModuleLoader loadSmoothModule(SmoothLoaderArgument loaderArgument, URL... sources) throws SmoothLoadException {
+        return loadSmoothModule(loaderArgument, Arrays.asList(sources));
+    }
+
+    @Override
+    public SmoothModuleLoader loadSmoothModule(Collection<URL> sources) throws SmoothLoadException {
+        return loadSmoothModule(new SmoothLoaderArgument(), sources);
     }
 
     @Override

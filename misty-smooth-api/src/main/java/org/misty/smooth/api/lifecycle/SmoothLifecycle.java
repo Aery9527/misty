@@ -1,13 +1,13 @@
 package org.misty.smooth.api.lifecycle;
 
-import org.misty.smooth.api.mark.NeedCross;
+import org.misty.smooth.api.mark.Guide;
 
 import java.util.Collections;
 import java.util.Set;
 
-@NeedCross(
-        implementation = {NeedCross.Scope.MANAGER, NeedCross.Scope.MODULE},
-        user = NeedCross.Scope.CORE
+@Guide(
+        implementationBy = {Guide.Scope.MANAGER, Guide.Scope.MODULE},
+        usedBy = Guide.Scope.CORE
 )
 public interface SmoothLifecycle {
 

@@ -1,12 +1,12 @@
 package org.misty.smooth.api.service;
 
-import org.misty.smooth.api.mark.NeedCross;
+import org.misty.smooth.api.mark.Guide;
 import org.misty.smooth.api.service.vo.SmoothServiceRequestOrigin;
 import org.misty.smooth.api.service.vo.SmoothServiceResponse;
 
-@NeedCross(
-        implementation = NeedCross.Scope.MODULE,
-        user = NeedCross.Scope.ANY
+@Guide(
+        implementationBy = Guide.Scope.MODULE,
+        usedBy = Guide.Scope.ANY
 )
 public interface SmoothService {
 

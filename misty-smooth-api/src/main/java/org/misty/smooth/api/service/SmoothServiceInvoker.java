@@ -1,10 +1,10 @@
 package org.misty.smooth.api.service;
 
-import org.misty.smooth.api.context.SmoothContext;
 import org.misty.smooth.api.error.SmoothModuleNotFoundException;
 import org.misty.smooth.api.error.SmoothServiceNotFoundException;
 import org.misty.smooth.api.service.vo.SmoothServiceRequest;
 import org.misty.smooth.api.service.vo.SmoothServiceResponseResult;
+import org.misty.smooth.api.vo.SmoothModuleId;
 
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
@@ -12,32 +12,38 @@ import java.util.function.Consumer;
 public class SmoothServiceInvoker {
 
     public static class Format {
-        public static final String DESCRIPTION = SmoothServiceInvoker.class.getSimpleName() + "(%s)(%s)";
+        public static final String DESCRIPTION = SmoothServiceInvoker.class.getSimpleName() + "(%s)(%s)(%s)";
     }
 
-    private final String moduleName;
+    private final SmoothModuleId id;
 
     private final String serviceKey;
 
-    private final SmoothContext smoothContext;
+    private final SmoothServiceFutureInvoker futureInvoker;
+
+    private final SmoothServiceCallbackInvoker callbackInvoker;
 
     private final String description;
 
-    public SmoothServiceInvoker(String moduleName, String serviceKey, SmoothContext smoothContext) {
-        this.moduleName = moduleName;
+    public SmoothServiceInvoker(String moduleName, String moduleVersion, String serviceKey,
+                                SmoothServiceFutureInvoker futureInvoker,
+                                SmoothServiceCallbackInvoker callbackInvoker
+    ) {
+        this.id = new SmoothModuleId(moduleName, moduleVersion);
         this.serviceKey = serviceKey;
-        this.smoothContext = smoothContext;
-        this.description = String.format(Format.DESCRIPTION, moduleName, serviceKey);
+        this.futureInvoker = futureInvoker;
+        this.callbackInvoker = callbackInvoker;
+        this.description = String.format(Format.DESCRIPTION, moduleName, moduleVersion, serviceKey);
     }
 
     public Future<SmoothServiceResponseResult> invoke(SmoothServiceRequest serviceRequest)
             throws SmoothModuleNotFoundException, SmoothServiceNotFoundException {
-        return this.smoothContext.invokeService(this.moduleName, this.serviceKey, serviceRequest);
+        return this.futureInvoker.invoke(this.id, this.serviceKey, serviceRequest);
     }
 
     public void invoke(SmoothServiceRequest serviceRequest, Consumer<SmoothServiceResponseResult> resultProcessor)
             throws SmoothModuleNotFoundException, SmoothServiceNotFoundException {
-        this.smoothContext.invokeService(this.moduleName, this.serviceKey, serviceRequest, resultProcessor);
+        this.callbackInvoker.invoke(this.id, this.serviceKey, serviceRequest, resultProcessor);
     }
 
     @Override
@@ -60,7 +66,11 @@ public class SmoothServiceInvoker {
     }
 
     public String getModuleName() {
-        return moduleName;
+        return this.id.getModuleName();
+    }
+
+    public String getModuleVersion() {
+        return this.id.getModuleVersion();
     }
 
     public String getServiceKey() {
