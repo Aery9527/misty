@@ -2,6 +2,7 @@ package org.misty.smooth.core.context.impl;
 
 import org.misty.smooth.api.error.SmoothModuleNotFoundException;
 import org.misty.smooth.api.error.SmoothServiceNotFoundException;
+import org.misty.smooth.api.service.SmoothServiceInvoker;
 import org.misty.smooth.api.service.vo.SmoothServiceRequest;
 import org.misty.smooth.api.service.vo.SmoothServiceRequestOrigin;
 import org.misty.smooth.api.service.vo.SmoothServiceResponseResult;
@@ -29,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import java.net.URL;
 import java.time.Instant;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -80,8 +82,33 @@ public class SmoothCoreContextPreset implements SmoothCoreContext {
     }
 
     @Override
+    public Map<String, Set<String>> listModuleWithMap() {
+        return this.domainCamp.listModuleWithMap();
+    }
+
+    @Override
+    public Optional<String> getModulePresetVersion(String moduleName) {
+        return this.domainCamp.getModulePresetVersion(moduleName);
+    }
+
+    @Override
     public Optional<Set<SmoothServiceId>> listServiceWithSet(String moduleName) {
         return this.domainCamp.listServiceWithSet(moduleName);
+    }
+
+    @Override
+    public Optional<Set<SmoothServiceId>> listServiceWithSet(String moduleName, String moduleVersion) {
+        return this.domainCamp.listServiceWithSet(moduleName, moduleVersion);
+    }
+
+    @Override
+    public Optional<Map<String, String>> listServiceWithMap(String moduleName) {
+        return this.domainCamp.listServiceWithMap(moduleName);
+    }
+
+    @Override
+    public Optional<Map<String, String>> listServiceWithMap(String moduleName, String moduleVersion) {
+        return this.domainCamp.listServiceWithMap(moduleName, moduleVersion);
     }
 
     @Override
@@ -99,6 +126,11 @@ public class SmoothCoreContextPreset implements SmoothCoreContext {
         SmoothModuleDomain moduleDomain = this.domainCamp.getModuleDomain(moduleName);
         SmoothServiceRequestOrigin requestOrigin = new SmoothServiceRequestOrigin(this.coreId, serviceRequest);
         moduleDomain.invokeService(serviceKey, requestOrigin, this.executorService, resultProcessor); // FIXME resultProcessor要crosser
+    }
+
+    @Override
+    public SmoothServiceInvoker buildServiceInvoker(String moduleName, String serviceKey) {
+        return new SmoothServiceInvoker(moduleName, serviceKey, this);
     }
 
     @Override

@@ -21,7 +21,6 @@ class SmoothServicePayloadHeaderContentTest {
 
     }
 
-
     @Test
     void size() {
         int returned = 9527;

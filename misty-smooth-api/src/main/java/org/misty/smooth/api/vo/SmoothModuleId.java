@@ -1,6 +1,8 @@
 package org.misty.smooth.api.vo;
 
 import java.time.Instant;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 
 public final class SmoothModuleId implements SmoothId<SmoothModuleId> {
 
@@ -9,13 +11,15 @@ public final class SmoothModuleId implements SmoothId<SmoothModuleId> {
         public static final String DESCRIPTION_WITH_LAUNCH_TIME = DESCRIPTION + "(%s)";
     }
 
+    public static final String PRESET_VERSION = "<PRESET_VERSION>";
+
     private final String moduleName;
 
     private final String moduleVersion;
 
     private final Instant launchTime;
 
-    private final String description;
+    private final AtomicReference<Supplier<String>> description = new AtomicReference<>();
 
     private String descriptionWithLaunchTime;
 
@@ -27,7 +31,11 @@ public final class SmoothModuleId implements SmoothId<SmoothModuleId> {
         this.moduleName = moduleName;
         this.moduleVersion = moduleVersion;
         this.launchTime = launchTime;
-        this.description = String.format(Format.DESCRIPTION, this.moduleName, this.moduleVersion);
+        this.description.set(() -> {
+            String description = String.format(Format.DESCRIPTION, this.moduleName, this.moduleVersion);
+            this.description.set(() -> description);
+            return description;
+        });
     }
 
     @Override
@@ -37,13 +45,16 @@ public final class SmoothModuleId implements SmoothId<SmoothModuleId> {
 
     @Override
     public int hashCode() {
-        return this.description.hashCode();
+        String desc = this.description.get().get();
+        return desc.hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof SmoothModuleId) {
-            return ((SmoothModuleId) obj).description.equals(this.description);
+            String desc1 = ((SmoothModuleId) obj).description.get().get();
+            String desc2 = this.description.get().get();
+            return desc1.equals(desc2);
         } else {
             return false;
         }
@@ -75,7 +86,7 @@ public final class SmoothModuleId implements SmoothId<SmoothModuleId> {
 
     @Override
     public String getDescription() {
-        return description;
+        return description.get().get();
     }
 
     public Instant getLaunchTime() {

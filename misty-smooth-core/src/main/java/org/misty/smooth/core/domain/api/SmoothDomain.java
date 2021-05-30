@@ -1,6 +1,10 @@
 package org.misty.smooth.core.domain.api;
 
-public interface SmoothDomain {
+import org.misty.smooth.api.vo.SmoothId;
+
+public interface SmoothDomain<SmoothIdType extends SmoothId<SmoothIdType>> {
+
+    SmoothIdType getSmoothId();
 
     void close();
 

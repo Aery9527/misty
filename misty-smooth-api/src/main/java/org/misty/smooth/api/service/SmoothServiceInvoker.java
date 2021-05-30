@@ -1,6 +1,8 @@
 package org.misty.smooth.api.service;
 
 import org.misty.smooth.api.context.SmoothContext;
+import org.misty.smooth.api.error.SmoothModuleNotFoundException;
+import org.misty.smooth.api.error.SmoothServiceNotFoundException;
 import org.misty.smooth.api.service.vo.SmoothServiceRequest;
 import org.misty.smooth.api.service.vo.SmoothServiceResponseResult;
 
@@ -28,11 +30,13 @@ public class SmoothServiceInvoker {
         this.description = String.format(Format.DESCRIPTION, moduleName, serviceKey);
     }
 
-    public Future<SmoothServiceResponseResult> invoke(SmoothServiceRequest serviceRequest) {
+    public Future<SmoothServiceResponseResult> invoke(SmoothServiceRequest serviceRequest)
+            throws SmoothModuleNotFoundException, SmoothServiceNotFoundException {
         return this.smoothContext.invokeService(this.moduleName, this.serviceKey, serviceRequest);
     }
 
-    public void invoke(SmoothServiceRequest serviceRequest, Consumer<SmoothServiceResponseResult> resultProcessor) {
+    public void invoke(SmoothServiceRequest serviceRequest, Consumer<SmoothServiceResponseResult> resultProcessor)
+            throws SmoothModuleNotFoundException, SmoothServiceNotFoundException {
         this.smoothContext.invokeService(this.moduleName, this.serviceKey, serviceRequest, resultProcessor);
     }
 

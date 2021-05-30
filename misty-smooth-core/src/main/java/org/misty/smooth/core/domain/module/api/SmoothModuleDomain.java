@@ -3,6 +3,7 @@ package org.misty.smooth.core.domain.module.api;
 import org.misty.smooth.api.error.SmoothServiceNotFoundException;
 import org.misty.smooth.api.service.vo.SmoothServiceRequestOrigin;
 import org.misty.smooth.api.service.vo.SmoothServiceResponseResult;
+import org.misty.smooth.api.vo.SmoothModuleId;
 import org.misty.smooth.api.vo.SmoothServiceId;
 import org.misty.smooth.core.domain.api.SmoothDomain;
 
@@ -11,7 +12,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
-public interface SmoothModuleDomain extends SmoothDomain {
+public interface SmoothModuleDomain extends SmoothDomain<SmoothModuleId> {
 
     Set<SmoothServiceId> listServices();
 

@@ -1,5 +1,8 @@
 package org.misty.smooth.api.vo;
 
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
+
 public final class SmoothServiceId implements SmoothId<SmoothServiceId> {
 
     public static class Format {
@@ -10,17 +13,21 @@ public final class SmoothServiceId implements SmoothId<SmoothServiceId> {
 
     private final String serviceName;
 
-    private final String description;
+    private final AtomicReference<Supplier<String>> description = new AtomicReference<>();
 
     public SmoothServiceId(String serviceKey, String serviceName) {
         this.serviceKey = serviceKey;
         this.serviceName = serviceName;
-        this.description = String.format(Format.DESCRIPTION, this.serviceKey, this.serviceName);
+        this.description.set(() -> {
+            String description = String.format(Format.DESCRIPTION, this.serviceKey, this.serviceName);
+            this.description.set(() -> description);
+            return description;
+        });
     }
 
     @Override
     public String toString() {
-        return this.description;
+        return this.description.get().get();
     }
 
     @Override
@@ -54,7 +61,7 @@ public final class SmoothServiceId implements SmoothId<SmoothServiceId> {
 
     @Override
     public String getDescription() {
-        return description;
+        return description.get().get();
     }
 
 }

@@ -8,6 +8,6 @@ public interface SmoothDomainLoadTypeController<SmoothIdType extends SmoothId<Sm
 
     SmoothLoadType prepareLoading(SmoothLoaderArgument loaderArgument, SmoothIdType smoothId);
 
-    void release(SmoothIdType smoothId);
+    boolean releaseWaitForOnline(SmoothIdType smoothId);
 
 }

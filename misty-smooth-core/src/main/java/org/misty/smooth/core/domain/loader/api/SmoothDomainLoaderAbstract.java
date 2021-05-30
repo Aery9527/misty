@@ -50,7 +50,7 @@ public abstract class SmoothDomainLoaderAbstract<
     /**
      * thread context classloader is smooth-core's classloader
      */
-    private ExecutorService launchThread;
+    private ExecutorService launchThread; // FIXME 要在載入完成後, 或載入失敗後要關閉
 
     private SmoothLoadType loadType;
 

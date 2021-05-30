@@ -3,6 +3,8 @@ package org.misty.smooth.manager;
 import org.misty.smooth.api.vo.SmoothId;
 
 import java.time.Instant;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 
 public class SmoothManagerId implements SmoothId<SmoothManagerId> {
 
@@ -17,7 +19,7 @@ public class SmoothManagerId implements SmoothId<SmoothManagerId> {
 
     private final Instant launchTime;
 
-    private final String description;
+    private final AtomicReference<Supplier<String>> description = new AtomicReference<>();
 
     private String descriptionWithLaunchTime;
 
@@ -29,7 +31,11 @@ public class SmoothManagerId implements SmoothId<SmoothManagerId> {
         this.managerName = managerName;
         this.managerVersion = managerVersion;
         this.launchTime = launchTime;
-        this.description = String.format(SmoothManagerId.Format.DESCRIPTION, this.managerName, this.managerVersion);
+        this.description.set(() -> {
+            String description = String.format(Format.DESCRIPTION, this.managerName, this.managerVersion);
+            this.description.set(() -> description);
+            return description;
+        });
     }
 
     @Override
@@ -39,13 +45,16 @@ public class SmoothManagerId implements SmoothId<SmoothManagerId> {
 
     @Override
     public int hashCode() {
-        return this.description.hashCode();
+        String desc = this.description.get().get();
+        return desc.hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof SmoothManagerId) {
-            return ((SmoothManagerId) obj).description.equals(this.description);
+            String desc1 = ((SmoothManagerId) obj).description.get().get();
+            String desc2 = this.description.get().get();
+            return desc1.equals(desc2);
         } else {
             return false;
         }
@@ -60,7 +69,7 @@ public class SmoothManagerId implements SmoothId<SmoothManagerId> {
 
     public String toStringWithLaunchTime() {
         if (this.descriptionWithLaunchTime == null) {
-            this.descriptionWithLaunchTime = String.format(SmoothManagerId.Format.DESCRIPTION_WITH_LAUNCH_TIME,
+            this.descriptionWithLaunchTime = String.format(Format.DESCRIPTION_WITH_LAUNCH_TIME,
                     this.managerName, this.managerVersion, this.launchTime);
         }
 
@@ -77,7 +86,7 @@ public class SmoothManagerId implements SmoothId<SmoothManagerId> {
 
     @Override
     public String getDescription() {
-        return description;
+        return description.get().get();
     }
 
     public Instant getLaunchTime() {

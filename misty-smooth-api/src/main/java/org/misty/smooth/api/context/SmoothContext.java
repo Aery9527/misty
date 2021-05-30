@@ -10,7 +10,9 @@ import org.misty.smooth.api.vo.SmoothModuleId;
 import org.misty.smooth.api.vo.SmoothServiceId;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
@@ -28,34 +30,17 @@ public interface SmoothContext {
 
     Set<SmoothModuleId> listModuleWithSet();
 
-    default Map<String, String> listModuleWithMap() {
-        Set<SmoothModuleId> set = listModuleWithSet();
-        return set.stream().reduce(new TreeMap<>(), (map, moduleId) -> {
-            map.put(moduleId.getModuleName(), moduleId.getModuleVersion());
-            return map;
-        }, (m1, m2) -> {
-            m1.putAll(m2);
-            return m1;
-        });
-    }
+    Map<String, Set<String>> listModuleWithMap();
+
+    Optional<String> getModulePresetVersion(String moduleName);
 
     Optional<Set<SmoothServiceId>> listServiceWithSet(String moduleName);
 
-    default Optional<Map<String, String>> listServiceWithMap(String moduleName) {
-        Optional<Set<SmoothServiceId>> op = listServiceWithSet(moduleName);
-        if (!op.isPresent()) {
-            return Optional.empty();
-        }
+    Optional<Set<SmoothServiceId>> listServiceWithSet(String moduleName, String moduleVersion);
 
-        Set<SmoothServiceId> set = op.get();
-        return Optional.of(set.stream().reduce(new HashMap<>(), (map, serviceId) -> {
-            map.put(serviceId.getServiceKey(), serviceId.getServiceName());
-            return map;
-        }, (m1, m2) -> {
-            m1.putAll(m2);
-            return m1;
-        }));
-    }
+    Optional<Map<String, String>> listServiceWithMap(String moduleName);
+
+    Optional<Map<String, String>> listServiceWithMap(String moduleName, String moduleVersion);
 
     Future<SmoothServiceResponseResult> invokeService(String moduleName, String serviceKey, SmoothServiceRequest serviceRequest)
             throws SmoothModuleNotFoundException, SmoothServiceNotFoundException;
@@ -63,8 +48,6 @@ public interface SmoothContext {
     void invokeService(String moduleName, String serviceKey, SmoothServiceRequest serviceRequest, Consumer<SmoothServiceResponseResult> resultProcessor)
             throws SmoothModuleNotFoundException, SmoothServiceNotFoundException;
 
-    default SmoothServiceInvoker buildServiceInvoker(String moduleName, String serviceKey) {
-        return new SmoothServiceInvoker(moduleName, serviceKey, this);
-    }
+    SmoothServiceInvoker buildServiceInvoker(String moduleName, String serviceKey);
 
 }

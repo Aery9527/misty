@@ -42,6 +42,11 @@ public class SmoothModuleDomainPreset implements SmoothModuleDomain {
     private Map<String, Tuple> map;
 
     @Override
+    public SmoothModuleId getSmoothId() {
+        return null;
+    }
+
+    @Override
     public Set<SmoothServiceId> listServices() {
         return this.map.values().stream()
                 .map((tuple) -> tuple.serviceId)

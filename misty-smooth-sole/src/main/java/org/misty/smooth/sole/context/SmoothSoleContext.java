@@ -2,6 +2,9 @@ package org.misty.smooth.sole.context;
 
 import org.misty.smooth.api.context.SmoothContext;
 import org.misty.smooth.api.context.SmoothEnvironment;
+import org.misty.smooth.api.error.SmoothModuleNotFoundException;
+import org.misty.smooth.api.error.SmoothServiceNotFoundException;
+import org.misty.smooth.api.service.SmoothServiceInvoker;
 import org.misty.smooth.api.service.vo.SmoothServiceRequest;
 import org.misty.smooth.api.service.vo.SmoothServiceResponseResult;
 import org.misty.smooth.api.vo.SmoothModuleId;
@@ -31,7 +34,17 @@ public class SmoothSoleContext implements SmoothContext {
 
     @Override
     public Set<SmoothModuleId> listModuleWithSet() {
-        return Collections.emptySet();
+        return null;
+    }
+
+    @Override
+    public Map<String, Set<String>> listModuleWithMap() {
+        return null;
+    }
+
+    @Override
+    public Optional<String> getModulePresetVersion(String moduleName) {
+        return Optional.empty();
     }
 
     @Override
@@ -40,12 +53,32 @@ public class SmoothSoleContext implements SmoothContext {
     }
 
     @Override
-    public Future<SmoothServiceResponseResult> invokeService(String moduleName, String serviceKey, SmoothServiceRequest serviceRequest) {
+    public Optional<Set<SmoothServiceId>> listServiceWithSet(String moduleName, String moduleVersion) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Map<String, String>> listServiceWithMap(String moduleName) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Map<String, String>> listServiceWithMap(String moduleName, String moduleVersion) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Future<SmoothServiceResponseResult> invokeService(String moduleName, String serviceKey, SmoothServiceRequest serviceRequest) throws SmoothModuleNotFoundException, SmoothServiceNotFoundException {
         return null;
     }
 
     @Override
-    public void invokeService(String moduleName, String serviceKey, SmoothServiceRequest serviceRequest, Consumer<SmoothServiceResponseResult> resultProcessor) {
+    public void invokeService(String moduleName, String serviceKey, SmoothServiceRequest serviceRequest, Consumer<SmoothServiceResponseResult> resultProcessor) throws SmoothModuleNotFoundException, SmoothServiceNotFoundException {
 
+    }
+
+    @Override
+    public SmoothServiceInvoker buildServiceInvoker(String moduleName, String serviceKey) {
+        return null;
     }
 }
