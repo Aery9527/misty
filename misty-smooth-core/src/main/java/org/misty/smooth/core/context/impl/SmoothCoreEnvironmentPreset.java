@@ -45,6 +45,15 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
     }
 
     @Override
+    public boolean containsExactlyFlags(String... flags) {
+        if (flags == null) {
+            return containsExactlyFlags((Collection<String>) null);
+        } else {
+            return containsExactlyFlags(Arrays.asList(flags));
+        }
+    }
+
+    @Override
     public boolean containsAllFlags(Collection<String> flags) {
         Examiner.refuseNullAndEmpty("flags", flags, SmoothCoreError.ARGUMENT_ERROR);
 
@@ -59,6 +68,15 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
     }
 
     @Override
+    public boolean containsAllFlags(String... flags) {
+        if (flags == null) {
+            return containsAllFlags((Collection<String>) null);
+        } else {
+            return containsAllFlags(Arrays.asList(flags));
+        }
+    }
+
+    @Override
     public boolean containsAnyFlags(Collection<String> flags) {
         Examiner.refuseNullAndEmpty("flags", flags, SmoothCoreError.ARGUMENT_ERROR);
 
@@ -70,6 +88,15 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
             containsAny |= this.flags.contains(f);
         }
         return containsAny;
+    }
+
+    @Override
+    public boolean containsAnyFlags(String... flags) {
+        if (flags == null) {
+            return containsAnyFlags((Collection<String>) null);
+        } else {
+            return containsAnyFlags(Arrays.asList(flags));
+        }
     }
 
     @Override
@@ -96,6 +123,15 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
     }
 
     @Override
+    public boolean containsExactlyKeys(String... keys) {
+        if (keys == null) {
+            return containsExactlyKeys((Collection<String>) null);
+        } else {
+            return containsExactlyKeys(Arrays.asList(keys));
+        }
+    }
+
+    @Override
     public boolean containsAllKeys(Collection<String> keys) {
         Examiner.refuseNullAndEmpty("keys", keys, SmoothCoreError.ARGUMENT_ERROR);
 
@@ -110,6 +146,15 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
     }
 
     @Override
+    public boolean containsAllKeys(String... keys) {
+        if (keys == null) {
+            return containsAllKeys((Collection<String>) null);
+        } else {
+            return containsAllKeys(Arrays.asList(keys));
+        }
+    }
+
+    @Override
     public boolean containsAnyKeys(Collection<String> keys) {
         Examiner.refuseNullAndEmpty("keys", keys, SmoothCoreError.ARGUMENT_ERROR);
 
@@ -121,6 +166,15 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
             containsAny |= this.arguments.containsKey(k);
         }
         return containsAny;
+    }
+
+    @Override
+    public boolean containsAnyKeys(String... keys) {
+        if (keys == null) {
+            return containsAnyKeys((Collection<String>) null);
+        } else {
+            return containsAnyKeys(Arrays.asList(keys));
+        }
     }
 
     @Override
@@ -153,9 +207,23 @@ public class SmoothCoreEnvironmentPreset implements SmoothCoreEnvironment {
     }
 
     @Override
+    public boolean equalsAnyValues(String key, String... values) {
+        if (values == null) {
+            return equalsAnyValues(key, (Collection<String>) null);
+        } else {
+            return equalsAnyValues(key, Arrays.asList(values));
+        }
+    }
+
+    @Override
     public <Type> Type getValue(String key, Function<String, Type> transformer) {
         String value = this.arguments.get(key);
         return transformer.apply(value);
+    }
+
+    @Override
+    public String getValue(String key) {
+        return getValue(key, (v) -> v);
     }
 
     @Override

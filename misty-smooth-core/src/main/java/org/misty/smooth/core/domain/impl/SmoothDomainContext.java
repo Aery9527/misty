@@ -11,6 +11,7 @@ import org.misty.smooth.api.service.vo.SmoothServiceResponseResult;
 import org.misty.smooth.api.vo.SmoothId;
 import org.misty.smooth.api.vo.SmoothModuleId;
 import org.misty.smooth.api.vo.SmoothServiceId;
+import org.misty.smooth.core.context.impl.SmoothEnvironmentCrosser;
 
 import java.time.Instant;
 import java.util.Map;
@@ -43,7 +44,7 @@ public class SmoothDomainContext implements SmoothContext {
 
     @Override
     public SmoothEnvironment getEnvironment() {
-        return this.parentContext.getEnvironment();
+        return new SmoothEnvironmentCrosser(this.parentContext.getEnvironment());
     }
 
     @Override

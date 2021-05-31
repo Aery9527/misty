@@ -5,7 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.misty.smooth.api.context.SmoothEnvironment;
-import org.misty.smooth.core.context.api.SmoothCoreEnvironment;
 import org.misty.ut.common.CrosserTest;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -17,16 +16,13 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
-/**
- * only test {@link SmoothEnvironment} method
- */
 @ExtendWith(MockitoExtension.class)
-class SmoothCoreEnvironmentCrosserTest {
+class SmoothEnvironmentCrosserTest {
 
     private static final ClassLoader CL = new URLClassLoader(new URL[]{}, ClassLoader.getSystemClassLoader());
 
     @Mock
-    private SmoothCoreEnvironment environment;
+    private SmoothEnvironment environment;
 
     @BeforeEach
     void setUp() {
@@ -47,7 +43,7 @@ class SmoothCoreEnvironmentCrosserTest {
             return returned;
         }, this.environment).containsFlag(Mockito.any());
 
-        SmoothCoreEnvironmentCrosser crosser = new SmoothCoreEnvironmentCrosser(CL, this.environment);
+        SmoothEnvironmentCrosser crosser = new SmoothEnvironmentCrosser(CL, this.environment);
         Assertions.assertThat(crosser.containsFlag(flag)).isEqualTo(returned);
 
         Assertions.assertThat(crosserTest.getExecuteClassLoader()).isNotNull().isEqualTo(CL);
@@ -68,7 +64,7 @@ class SmoothCoreEnvironmentCrosserTest {
             return returned;
         }, this.environment).containsExactlyFlags((Collection<String>) Mockito.any());
 
-        SmoothCoreEnvironmentCrosser crosser = new SmoothCoreEnvironmentCrosser(CL, this.environment);
+        SmoothEnvironmentCrosser crosser = new SmoothEnvironmentCrosser(CL, this.environment);
         Assertions.assertThat(crosser.containsExactlyFlags(flags)).isEqualTo(returned);
 
         Assertions.assertThat(crosserTest.getExecuteClassLoader()).isNotNull().isEqualTo(CL);
@@ -89,7 +85,7 @@ class SmoothCoreEnvironmentCrosserTest {
             return returned;
         }, this.environment).containsAllFlags((Collection<String>) Mockito.any());
 
-        SmoothCoreEnvironmentCrosser crosser = new SmoothCoreEnvironmentCrosser(CL, this.environment);
+        SmoothEnvironmentCrosser crosser = new SmoothEnvironmentCrosser(CL, this.environment);
         Assertions.assertThat(crosser.containsAllFlags(flags)).isEqualTo(returned);
 
         Assertions.assertThat(crosserTest.getExecuteClassLoader()).isNotNull().isEqualTo(CL);
@@ -110,7 +106,7 @@ class SmoothCoreEnvironmentCrosserTest {
             return returned;
         }, this.environment).containsAnyFlags((Collection<String>) Mockito.any());
 
-        SmoothCoreEnvironmentCrosser crosser = new SmoothCoreEnvironmentCrosser(CL, this.environment);
+        SmoothEnvironmentCrosser crosser = new SmoothEnvironmentCrosser(CL, this.environment);
         Assertions.assertThat(crosser.containsAnyFlags(flags)).isEqualTo(returned);
 
         Assertions.assertThat(crosserTest.getExecuteClassLoader()).isNotNull().isEqualTo(CL);
@@ -124,7 +120,7 @@ class SmoothCoreEnvironmentCrosserTest {
         CrosserTest crosserTest = new CrosserTest();
         crosserTest.mock((invocationOnMock) -> flags, this.environment).getFlags();
 
-        SmoothCoreEnvironmentCrosser crosser = new SmoothCoreEnvironmentCrosser(CL, this.environment);
+        SmoothEnvironmentCrosser crosser = new SmoothEnvironmentCrosser(CL, this.environment);
         Assertions.assertThat(crosser.getFlags()).isEqualTo(flags);
 
         Assertions.assertThat(crosserTest.getExecuteClassLoader()).isNotNull().isEqualTo(CL);
@@ -144,7 +140,7 @@ class SmoothCoreEnvironmentCrosserTest {
             return returned;
         }, this.environment).containsKey(Mockito.any());
 
-        SmoothCoreEnvironmentCrosser crosser = new SmoothCoreEnvironmentCrosser(CL, this.environment);
+        SmoothEnvironmentCrosser crosser = new SmoothEnvironmentCrosser(CL, this.environment);
         Assertions.assertThat(crosser.containsKey(key)).isEqualTo(returned);
 
         Assertions.assertThat(crosserTest.getExecuteClassLoader()).isNotNull().isEqualTo(CL);
@@ -165,7 +161,7 @@ class SmoothCoreEnvironmentCrosserTest {
             return returned;
         }, this.environment).containsExactlyKeys((Collection<String>) Mockito.any());
 
-        SmoothCoreEnvironmentCrosser crosser = new SmoothCoreEnvironmentCrosser(CL, this.environment);
+        SmoothEnvironmentCrosser crosser = new SmoothEnvironmentCrosser(CL, this.environment);
         Assertions.assertThat(crosser.containsExactlyKeys(keys)).isEqualTo(returned);
 
         Assertions.assertThat(crosserTest.getExecuteClassLoader()).isNotNull().isEqualTo(CL);
@@ -186,7 +182,7 @@ class SmoothCoreEnvironmentCrosserTest {
             return returned;
         }, this.environment).containsAllKeys((Collection<String>) Mockito.any());
 
-        SmoothCoreEnvironmentCrosser crosser = new SmoothCoreEnvironmentCrosser(CL, this.environment);
+        SmoothEnvironmentCrosser crosser = new SmoothEnvironmentCrosser(CL, this.environment);
         Assertions.assertThat(crosser.containsAllKeys(keys)).isEqualTo(returned);
 
         Assertions.assertThat(crosserTest.getExecuteClassLoader()).isNotNull().isEqualTo(CL);
@@ -207,7 +203,7 @@ class SmoothCoreEnvironmentCrosserTest {
             return returned;
         }, this.environment).containsAnyKeys((Collection<String>) Mockito.any());
 
-        SmoothCoreEnvironmentCrosser crosser = new SmoothCoreEnvironmentCrosser(CL, this.environment);
+        SmoothEnvironmentCrosser crosser = new SmoothEnvironmentCrosser(CL, this.environment);
         Assertions.assertThat(crosser.containsAnyKeys(keys)).isEqualTo(returned);
 
         Assertions.assertThat(crosserTest.getExecuteClassLoader()).isNotNull().isEqualTo(CL);
@@ -231,7 +227,7 @@ class SmoothCoreEnvironmentCrosserTest {
             return returned;
         }, this.environment).equalsValue(Mockito.any(), Mockito.any());
 
-        SmoothCoreEnvironmentCrosser crosser = new SmoothCoreEnvironmentCrosser(CL, this.environment);
+        SmoothEnvironmentCrosser crosser = new SmoothEnvironmentCrosser(CL, this.environment);
         Assertions.assertThat(crosser.equalsValue(key, value)).isEqualTo(returned);
 
         Assertions.assertThat(crosserTest.getExecuteClassLoader()).isNotNull().isEqualTo(CL);
@@ -256,7 +252,7 @@ class SmoothCoreEnvironmentCrosserTest {
             return returned;
         }, this.environment).equalsAnyValues(Mockito.any(), (Collection<String>) Mockito.any());
 
-        SmoothCoreEnvironmentCrosser crosser = new SmoothCoreEnvironmentCrosser(CL, this.environment);
+        SmoothEnvironmentCrosser crosser = new SmoothEnvironmentCrosser(CL, this.environment);
         Assertions.assertThat(crosser.equalsAnyValues(key, values)).isEqualTo(returned);
 
         Assertions.assertThat(crosserTest.getExecuteClassLoader()).isNotNull().isEqualTo(CL);
@@ -282,7 +278,7 @@ class SmoothCoreEnvironmentCrosserTest {
             return returned;
         }, this.environment).getValue(Mockito.any(), (Function<String, String>) Mockito.any());
 
-        SmoothCoreEnvironmentCrosser crosser = new SmoothCoreEnvironmentCrosser(CL, this.environment);
+        SmoothEnvironmentCrosser crosser = new SmoothEnvironmentCrosser(CL, this.environment);
         Assertions.assertThat(crosser.getValue(key, transformer)).isEqualTo(returned);
 
         Assertions.assertThat(crosserTest.getExecuteClassLoader()).isNotNull().isEqualTo(CL);
@@ -297,7 +293,7 @@ class SmoothCoreEnvironmentCrosserTest {
         CrosserTest crosserTest = new CrosserTest();
         crosserTest.mock((invocationOnMock) -> returned, this.environment).getKeys();
 
-        SmoothCoreEnvironmentCrosser crosser = new SmoothCoreEnvironmentCrosser(CL, this.environment);
+        SmoothEnvironmentCrosser crosser = new SmoothEnvironmentCrosser(CL, this.environment);
         Assertions.assertThat(crosser.getKeys()).isEqualTo(returned);
 
         Assertions.assertThat(crosserTest.getExecuteClassLoader()).isNotNull().isEqualTo(CL);
@@ -310,7 +306,7 @@ class SmoothCoreEnvironmentCrosserTest {
         CrosserTest crosserTest = new CrosserTest();
         crosserTest.mock((invocationOnMock) -> returned, this.environment).getArguments();
 
-        SmoothCoreEnvironmentCrosser crosser = new SmoothCoreEnvironmentCrosser(CL, this.environment);
+        SmoothEnvironmentCrosser crosser = new SmoothEnvironmentCrosser(CL, this.environment);
         Assertions.assertThat(crosser.getArguments()).isEqualTo(returned);
 
         Assertions.assertThat(crosserTest.getExecuteClassLoader()).isNotNull().isEqualTo(CL);

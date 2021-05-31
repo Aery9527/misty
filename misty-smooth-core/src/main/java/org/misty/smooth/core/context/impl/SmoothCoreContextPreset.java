@@ -203,7 +203,7 @@ public class SmoothCoreContextPreset implements SmoothCoreContext {
     }
 
     public void setEnvironment(SmoothCoreEnvironment environment) {
-        this.environment = new SmoothCoreEnvironmentCrosser(environment);
+        this.environment = environment;
     }
 
     public void setExecutorService(ExecutorService executorService) {
