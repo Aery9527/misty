@@ -1,6 +1,6 @@
 package org.misty.smooth.api.context;
 
-import org.misty.smooth.api.mark.Guide;
+import org.misty.smooth.api.mark.SmoothGuide;
 import org.misty.smooth.api.service.SmoothServiceCallbackInvoker;
 import org.misty.smooth.api.service.SmoothServiceFutureInvoker;
 import org.misty.smooth.api.service.SmoothServiceInvoker;
@@ -12,9 +12,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-@Guide(needCross = true,
-        implementationBy = Guide.Scope.CORE,
-        usedBy = Guide.Scope.ANY
+@SmoothGuide(needCross = true,
+        implementationBy = SmoothGuide.Domain.CORE,
+        usedBy = SmoothGuide.Domain.ANY
 )
 public interface SmoothContext extends SmoothServiceFutureInvoker, SmoothServiceCallbackInvoker {
 

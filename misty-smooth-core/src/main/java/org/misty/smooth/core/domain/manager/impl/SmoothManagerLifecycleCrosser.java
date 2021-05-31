@@ -5,6 +5,8 @@ import org.misty.smooth.manager.context.SmoothManagerContext;
 import org.misty.smooth.manager.lifecycle.SmoothManagerLifecycle;
 import org.misty.smooth.manager.lifecycle.SmoothManagerRegister;
 
+import java.util.Set;
+
 public class SmoothManagerLifecycleCrosser extends SmoothCrossWrapper<SmoothManagerLifecycle> implements SmoothManagerLifecycle {
 
     public SmoothManagerLifecycleCrosser(ClassLoader wrapClassLoader, SmoothManagerLifecycle smoothManagerLifecycle) {
@@ -19,6 +21,22 @@ public class SmoothManagerLifecycleCrosser extends SmoothCrossWrapper<SmoothMana
     @Override
     public String getVersion() {
         return null;
+    }
+
+
+    @Override
+    public Set<String> getAttachment() {
+        return null;
+    }
+
+    @Override
+    public void online() {
+
+    }
+
+    @Override
+    public void destroy() {
+
     }
 
     @Override

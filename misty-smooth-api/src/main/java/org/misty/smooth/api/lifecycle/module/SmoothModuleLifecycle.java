@@ -2,11 +2,11 @@ package org.misty.smooth.api.lifecycle.module;
 
 import org.misty.smooth.api.context.SmoothContext;
 import org.misty.smooth.api.lifecycle.SmoothLifecycle;
-import org.misty.smooth.api.mark.Guide;
+import org.misty.smooth.api.mark.SmoothGuide;
 
-@Guide(
-        implementationBy = Guide.Scope.MODULE,
-        usedBy = Guide.Scope.CORE
+@SmoothGuide(needCross = true,
+        implementationBy = SmoothGuide.Domain.MODULE,
+        usedBy = SmoothGuide.Domain.CORE
 )
 public interface SmoothModuleLifecycle extends SmoothLifecycle {
 

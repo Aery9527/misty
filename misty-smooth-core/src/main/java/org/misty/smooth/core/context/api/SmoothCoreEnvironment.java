@@ -1,13 +1,13 @@
 package org.misty.smooth.core.context.api;
 
 import org.misty.smooth.api.context.SmoothEnvironment;
-import org.misty.smooth.api.mark.Guide;
+import org.misty.smooth.api.mark.SmoothGuide;
 
 import java.util.*;
 
-@Guide(needCross = false
-        , implementationBy = Guide.Scope.CORE
-        , usedBy = Guide.Scope.CORE
+@SmoothGuide(needCross = false
+        , implementationBy = SmoothGuide.Domain.CORE
+        , usedBy = SmoothGuide.Domain.CORE
 )
 public interface SmoothCoreEnvironment extends SmoothEnvironment {
 

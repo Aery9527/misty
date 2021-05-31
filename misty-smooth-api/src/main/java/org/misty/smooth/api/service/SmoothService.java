@@ -1,12 +1,12 @@
 package org.misty.smooth.api.service;
 
-import org.misty.smooth.api.mark.Guide;
+import org.misty.smooth.api.mark.SmoothGuide;
 import org.misty.smooth.api.service.vo.SmoothServiceRequestOrigin;
 import org.misty.smooth.api.service.vo.SmoothServiceResponse;
 
-@Guide(
-        implementationBy = Guide.Scope.MODULE,
-        usedBy = Guide.Scope.ANY
+@SmoothGuide(
+        implementationBy = SmoothGuide.Domain.MODULE,
+        usedBy = SmoothGuide.Domain.ANY
 )
 public interface SmoothService {
 

@@ -1,15 +1,15 @@
 package org.misty.smooth.api.context;
 
-import org.misty.smooth.api.mark.Guide;
+import org.misty.smooth.api.mark.SmoothGuide;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-@Guide(needCross = true,
-        implementationBy = Guide.Scope.CORE,
-        usedBy = Guide.Scope.ANY
+@SmoothGuide(needCross = true,
+        implementationBy = SmoothGuide.Domain.CORE,
+        usedBy = SmoothGuide.Domain.ANY
 )
 public interface SmoothEnvironment {
 

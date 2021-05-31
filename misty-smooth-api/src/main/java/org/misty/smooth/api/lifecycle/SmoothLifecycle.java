@@ -1,13 +1,12 @@
 package org.misty.smooth.api.lifecycle;
 
-import org.misty.smooth.api.mark.Guide;
+import org.misty.smooth.api.mark.SmoothGuide;
 
-import java.util.Collections;
 import java.util.Set;
 
-@Guide(
-        implementationBy = {Guide.Scope.MANAGER, Guide.Scope.MODULE},
-        usedBy = Guide.Scope.CORE
+@SmoothGuide(needCross = true,
+        implementationBy = {SmoothGuide.Domain.MANAGER, SmoothGuide.Domain.MODULE},
+        usedBy = SmoothGuide.Domain.CORE
 )
 public interface SmoothLifecycle {
 
@@ -15,17 +14,10 @@ public interface SmoothLifecycle {
 
     String getVersion();
 
-    /**
-     * module attached message
-     */
-    default Set<String> getAttachment() {
-        return Collections.emptySet();
-    }
+    Set<String> getAttachment();
 
-    default void online() {
-    }
+    void online();
 
-    default void destroy() {
-    }
+    void destroy();
 
 }

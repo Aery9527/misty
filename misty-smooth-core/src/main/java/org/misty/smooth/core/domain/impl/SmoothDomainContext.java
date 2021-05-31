@@ -4,7 +4,7 @@ import org.misty.smooth.api.context.SmoothContext;
 import org.misty.smooth.api.context.SmoothEnvironment;
 import org.misty.smooth.api.error.SmoothModuleNotFoundException;
 import org.misty.smooth.api.error.SmoothServiceNotFoundException;
-import org.misty.smooth.api.mark.Guide;
+import org.misty.smooth.api.mark.SmoothGuide;
 import org.misty.smooth.api.service.SmoothServiceInvoker;
 import org.misty.smooth.api.service.vo.SmoothServiceRequest;
 import org.misty.smooth.api.service.vo.SmoothServiceResponseResult;
@@ -20,9 +20,9 @@ import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
-@Guide(needCross = false,
-        implementationBy = Guide.Scope.CORE,
-        usedBy = Guide.Scope.MODULE
+@SmoothGuide(needCross = false,
+        implementationBy = SmoothGuide.Domain.CORE,
+        usedBy = SmoothGuide.Domain.MODULE
 )
 public class SmoothDomainContext implements SmoothContext {
 

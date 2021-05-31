@@ -1,7 +1,7 @@
 package org.misty.smooth.api.service.vo;
 
 import org.misty.smooth.api.cross.SmoothCrossWrapper;
-import org.misty.smooth.api.mark.Guide;
+import org.misty.smooth.api.mark.SmoothGuide;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -11,7 +11,7 @@ public class SmoothOutputStreamCrosser extends OutputStream {
     private final SmoothCrossWrapper<OutputStream> wrapper;
 
     public SmoothOutputStreamCrosser(
-            @Guide(implementationBy = Guide.Scope.ANY, usedBy = Guide.Scope.MODULE) OutputStream outputStream
+            @SmoothGuide(implementationBy = SmoothGuide.Domain.ANY, usedBy = SmoothGuide.Domain.MODULE) OutputStream outputStream
     ) {
         this.wrapper = new SmoothCrossWrapper<>(outputStream.getClass().getClassLoader(), outputStream);
     }
