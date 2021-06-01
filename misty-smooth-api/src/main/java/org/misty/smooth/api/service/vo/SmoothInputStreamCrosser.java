@@ -6,11 +6,8 @@ import org.misty.smooth.api.mark.SmoothGuide;
 import java.io.IOException;
 import java.io.InputStream;
 
-@SmoothGuide(
-        implementationBy = {SmoothGuide.Domain.CORE, SmoothGuide.Domain.MANAGER},
-        usedBy = SmoothGuide.Domain.MODULE
-)
 public class SmoothInputStreamCrosser extends InputStream {
+
 
     private final SmoothCrossWrapper<InputStream> wrapper;
 

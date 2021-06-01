@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 public class SmoothManagerId implements SmoothId<SmoothManagerId> {
 
     public static class Format {
-        public static final String DESCRIPTION = "SmoothManagerId(%s)(%s)";
+        public static final String DESCRIPTION = "SmoothManager(%s)(%s)";
         public static final String DESCRIPTION_WITH_LAUNCH_TIME = DESCRIPTION + "(%s)";
     }
 

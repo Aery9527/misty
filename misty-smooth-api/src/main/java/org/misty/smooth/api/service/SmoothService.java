@@ -4,7 +4,7 @@ import org.misty.smooth.api.mark.SmoothGuide;
 import org.misty.smooth.api.service.vo.SmoothServiceRequestOrigin;
 import org.misty.smooth.api.service.vo.SmoothServiceResponse;
 
-@SmoothGuide(
+@SmoothGuide(needCross = true,
         implementationBy = SmoothGuide.Domain.MODULE,
         usedBy = SmoothGuide.Domain.ANY
 )

@@ -9,15 +9,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.function.BiConsumer;
 
-@SmoothGuide(
+@SmoothGuide(needCross = true,
         implementationBy = SmoothGuide.Domain.CORE,
         usedBy = SmoothGuide.Domain.MODULE
 )
 public interface SmoothModuleRegister extends SmoothRegister {
 
-    default void registerService(SmoothService... services) throws SmoothActionRegisterException {
-        registerService(Arrays.asList(services));
-    }
+    void registerService(SmoothService... services) throws SmoothActionRegisterException;
 
     void registerService(Collection<SmoothService> services) throws SmoothActionRegisterException;
 

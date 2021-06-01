@@ -4,7 +4,9 @@ import org.misty.smooth.api.vo.SmoothId;
 
 public final class SmoothServiceRequestOrigin {
 
-    public static final String STRING_FORMAT = SmoothServiceRequestOrigin.class.getSimpleName() + "[from:%s]";
+    public static class Format {
+        public static final String DESCRIPTION = "ServiceOrigin:%s";
+    }
 
     private final SmoothId<?> invoker;
 
@@ -15,7 +17,7 @@ public final class SmoothServiceRequestOrigin {
     public SmoothServiceRequestOrigin(SmoothId<?> invoker, SmoothServiceRequest request) {
         this.invoker = invoker;
         this.request = request;
-        this.toString = String.format(STRING_FORMAT, this.invoker.getDescription());
+        this.toString = String.format(Format.DESCRIPTION, this.invoker.getDescription());
     }
 
     @Override

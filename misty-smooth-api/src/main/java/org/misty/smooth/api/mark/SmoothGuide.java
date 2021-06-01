@@ -3,7 +3,7 @@ package org.misty.smooth.api.mark;
 import java.lang.annotation.*;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER})
+@Target({ElementType.TYPE, ElementType.PARAMETER, ElementType.FIELD})
 @Documented
 public @interface SmoothGuide {
 
