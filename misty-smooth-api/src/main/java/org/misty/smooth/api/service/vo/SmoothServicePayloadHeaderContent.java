@@ -1,6 +1,10 @@
 package org.misty.smooth.api.service.vo;
 
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
 
 public final class SmoothServicePayloadHeaderContent implements List<String> {
 
@@ -138,5 +142,40 @@ public final class SmoothServicePayloadHeaderContent implements List<String> {
     @Override
     public List<String> subList(int fromIndex, int toIndex) {
         return this.list.subList(fromIndex, toIndex);
+    }
+
+    @Override
+    public void replaceAll(UnaryOperator<String> operator) {
+        this.list.replaceAll(operator);
+    }
+
+    @Override
+    public void sort(Comparator<? super String> c) {
+        this.list.sort(c);
+    }
+
+    @Override
+    public Spliterator<String> spliterator() {
+        return this.list.spliterator();
+    }
+
+    @Override
+    public boolean removeIf(Predicate<? super String> filter) {
+        return this.list.removeIf(filter);
+    }
+
+    @Override
+    public Stream<String> stream() {
+        return this.list.stream();
+    }
+
+    @Override
+    public Stream<String> parallelStream() {
+        return this.list.parallelStream();
+    }
+
+    @Override
+    public void forEach(Consumer<? super String> action) {
+        this.list.forEach(action);
     }
 }
