@@ -1,10 +1,9 @@
 package org.misty.smooth.manager;
 
+import org.misty.smooth.api.tool.LazyInitializer;
 import org.misty.smooth.api.vo.SmoothId;
 
 import java.time.Instant;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Supplier;
 
 public class SmoothManagerId implements SmoothId<SmoothManagerId> {
 
@@ -19,7 +18,7 @@ public class SmoothManagerId implements SmoothId<SmoothManagerId> {
 
     private final Instant launchTime;
 
-    private final AtomicReference<Supplier<String>> description = new AtomicReference<>();
+    private final LazyInitializer<String> description;
 
     private String descriptionWithLaunchTime;
 
@@ -27,15 +26,14 @@ public class SmoothManagerId implements SmoothId<SmoothManagerId> {
         this(managerName, managerVersion, Instant.now());
     }
 
+    @SuppressWarnings("CodeBlock2Expr")
     public SmoothManagerId(String managerName, String managerVersion, Instant launchTime) {
         this.managerName = managerName;
         this.managerVersion = managerVersion;
         this.launchTime = launchTime;
-        this.description.set(() -> {
-            String description = String.format(Format.DESCRIPTION, this.managerName, this.managerVersion);
-            this.description.set(() -> description);
-            return description;
-        });
+        this.description = new LazyInitializer<>(() -> {
+            return String.format(Format.DESCRIPTION, this.managerName, this.managerVersion);
+        }, false);
     }
 
     @Override
@@ -45,15 +43,15 @@ public class SmoothManagerId implements SmoothId<SmoothManagerId> {
 
     @Override
     public int hashCode() {
-        String desc = this.description.get().get();
+        String desc = this.description.get();
         return desc.hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof SmoothManagerId) {
-            String desc1 = ((SmoothManagerId) obj).description.get().get();
-            String desc2 = this.description.get().get();
+            String desc1 = ((SmoothManagerId) obj).description.get();
+            String desc2 = this.description.get();
             return desc1.equals(desc2);
         } else {
             return false;
@@ -86,7 +84,7 @@ public class SmoothManagerId implements SmoothId<SmoothManagerId> {
 
     @Override
     public String getDescription() {
-        return description.get().get();
+        return description.get();
     }
 
     public Instant getLaunchTime() {

@@ -1,5 +1,6 @@
 package org.misty.smooth.api.service.vo;
 
+import org.misty.smooth.api.tool.LazyInitializer;
 import org.misty.smooth.api.vo.SmoothModuleId;
 import org.misty.smooth.api.vo.SmoothServiceId;
 
@@ -9,28 +10,31 @@ public final class SmoothServiceResponseResult {
         public static final String DESCRIPTION = "ServiceResult:%s:%s";
     }
 
-    private final SmoothModuleId serviceModule;
+    private final SmoothModuleId responder;
 
     private final SmoothServiceId serviceId;
 
     private final SmoothServiceResponse response;
 
-    private final String toString;
+    private final LazyInitializer<String> description;
 
-    public SmoothServiceResponseResult(SmoothModuleId moduleId, SmoothServiceId serviceId, SmoothServiceResponse response) {
-        this.serviceModule = moduleId;
+    @SuppressWarnings("CodeBlock2Expr")
+    public SmoothServiceResponseResult(SmoothModuleId responder, SmoothServiceId serviceId, SmoothServiceResponse response) {
+        this.responder = responder;
         this.serviceId = serviceId;
         this.response = response;
-        this.toString = String.format(Format.DESCRIPTION, this.serviceModule.getDescription(), this.serviceId.toString());
+        this.description = new LazyInitializer<>(() -> {
+            return String.format(Format.DESCRIPTION, this.responder.getDescription(), this.serviceId.toString());
+        }, false);
     }
 
     @Override
     public String toString() {
-        return this.toString;
+        return this.description.get();
     }
 
-    public SmoothModuleId getServiceModule() {
-        return serviceModule;
+    public SmoothModuleId getResponder() {
+        return responder;
     }
 
     public SmoothServiceId getServiceId() {

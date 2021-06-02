@@ -1,13 +1,14 @@
-package org.misty.util.tool;
+package org.misty.smooth.api.tool;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.misty.util.fi.FiConsumer;
+import org.misty.util.tool.ThreadSleep;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
-class LazySupplierTest {
+class LazyInitializerTest {
 
     @Test
     void supplierInvokeOneTimes() {
@@ -15,13 +16,13 @@ class LazySupplierTest {
 
         AtomicInteger checkPoint = new AtomicInteger(0);
 
-        LazySupplier<String> lazySupplier = new LazySupplier<>(() -> { // here only execute 1 times
+        LazyInitializer<String> lazyInitializer = new LazyInitializer<>(() -> { // here only execute 1 times
             checkPoint.incrementAndGet();
             return result;
         });
 
-        Assertions.assertThat(lazySupplier.get()).isEqualTo(result);
-        Assertions.assertThat(lazySupplier.get()).isEqualTo(result);
+        Assertions.assertThat(lazyInitializer.get()).isEqualTo(result);
+        Assertions.assertThat(lazyInitializer.get()).isEqualTo(result);
         Assertions.assertThat(checkPoint.get()).isEqualTo(1);
     }
 
@@ -31,7 +32,7 @@ class LazySupplierTest {
         CountDownLatch latch1 = new CountDownLatch(1);
         CountDownLatch latch2 = new CountDownLatch(2);
 
-        LazySupplier<String> lazySupplier = new LazySupplier<>(() -> { // here only execute 1 times
+        LazyInitializer<String> lazyInitializer = new LazyInitializer<>(() -> { // here only execute 1 times
             ThreadSleep.withMillis(100);
             checkPoint.incrementAndGet();
             return "9527";
@@ -41,7 +42,7 @@ class LazySupplierTest {
 
         Runnable testAction = () -> {
             await.acceptOrHandle(latch1);
-            lazySupplier.get();
+            lazyInitializer.get();
             latch2.countDown();
         };
         new Thread(testAction).start();
@@ -61,7 +62,7 @@ class LazySupplierTest {
         CountDownLatch latch1 = new CountDownLatch(1);
         CountDownLatch latch2 = new CountDownLatch(2);
 
-        LazySupplier<String> lazySupplier = new LazySupplier<>(() -> { // here may not execute only 1 times
+        LazyInitializer<String> lazyInitializer = new LazyInitializer<>(() -> { // here may not execute only 1 times
             ThreadSleep.withMillis(100);
             checkPoint.incrementAndGet();
             return "9527";
@@ -71,7 +72,7 @@ class LazySupplierTest {
 
         Runnable testAction = () -> {
             await.acceptOrHandle(latch1);
-            lazySupplier.get();
+            lazyInitializer.get();
             latch2.countDown();
         };
         new Thread(testAction).start();

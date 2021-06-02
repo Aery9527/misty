@@ -1,22 +1,20 @@
-package org.misty.util.tool;
-
-import org.misty.util.fi.FiSupplier;
+package org.misty.smooth.api.tool;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
-public class LazySupplier<Type> {
+public class LazyInitializer<Type> {
 
     private final AtomicReference<Supplier<Type>> supplier = new AtomicReference<>();
 
-    public LazySupplier(FiSupplier<Type> supplier) {
+    public LazyInitializer(Supplier<Type> supplier) {
         this(supplier, true);
     }
 
-    public LazySupplier(FiSupplier<Type> supplier, boolean atomicity) {
+    public LazyInitializer(Supplier<Type> supplier, boolean atomicity) {
         Runnable initialAction = () -> {
-            Type type = supplier.getOrHandle();
+            Type type = supplier.get();
             this.supplier.set(() -> type);
         };
 

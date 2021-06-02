@@ -1,8 +1,7 @@
 package org.misty.smooth.api.cross;
 
-import org.misty.smooth.api.error.SmoothCrossException;
-
-import java.util.function.Supplier;
+import org.misty.smooth.api.passable.SmoothPassableRunnable;
+import org.misty.smooth.api.passable.SmoothPassableSupplier;
 
 public class SmoothCrosser {
 
@@ -16,36 +15,26 @@ public class SmoothCrosser {
         this.wrapClassLoader = wrapClassLoader;
     }
 
-    public void wrap(SmoothCrossRunnable action) throws SmoothCrossException {
+    public void wrap(SmoothPassableRunnable action) {
         wrap(() -> {
-            action.run();
+            action.runOrThrow();
             return null;
         });
     }
 
-    public <ReturnType> ReturnType wrap(SmoothCrossSupplier<ReturnType> action) throws SmoothCrossException {
+    public <ReturnType> ReturnType wrap(SmoothPassableSupplier<ReturnType> action) {
         Thread currentThread = Thread.currentThread();
-        ClassLoader contextClassLoader = currentThread.getContextClassLoader();
+        ClassLoader originalContextClassLoader = currentThread.getContextClassLoader();
 
-        Supplier<ReturnType> newAction = () -> {
-            try {
-                return action.get();
-            } catch (RuntimeException e) {
-                throw e;
-            } catch (Exception e) {
-                throw new SmoothCrossException(e);
-            }
-        };
-
-        if (contextClassLoader == this.wrapClassLoader) {
-            return newAction.get();
+        if (originalContextClassLoader == this.wrapClassLoader) {
+            return action.getOrHandle();
         }
 
         try {
             currentThread.setContextClassLoader(this.wrapClassLoader);
-            return newAction.get();
+            return action.getOrHandle();
         } finally {
-            currentThread.setContextClassLoader(contextClassLoader);
+            currentThread.setContextClassLoader(originalContextClassLoader);
         }
     }
 

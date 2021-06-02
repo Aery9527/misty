@@ -23,6 +23,7 @@ public class SmoothCrossWrapper<WrappedTarget> extends SmoothCrosser {
         return wrap(this.wrappedTarget::hashCode);
     }
 
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     @Override
     public boolean equals(Object obj) {
         return wrap(() -> this.wrappedTarget.equals(obj));

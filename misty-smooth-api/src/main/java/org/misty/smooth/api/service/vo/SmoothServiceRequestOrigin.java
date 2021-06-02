@@ -1,5 +1,6 @@
 package org.misty.smooth.api.service.vo;
 
+import org.misty.smooth.api.tool.LazyInitializer;
 import org.misty.smooth.api.vo.SmoothId;
 
 public final class SmoothServiceRequestOrigin {
@@ -8,30 +9,32 @@ public final class SmoothServiceRequestOrigin {
         public static final String DESCRIPTION = "ServiceOrigin:%s";
     }
 
-    private final SmoothId<?> invoker;
+    private final SmoothId<?> caller;
 
     private final SmoothServiceRequest request;
 
-    private final String toString;
+    private final LazyInitializer<String> description;
 
-    public SmoothServiceRequestOrigin(SmoothId<?> invoker, SmoothServiceRequest request) {
-        this.invoker = invoker;
+    @SuppressWarnings("CodeBlock2Expr")
+    public SmoothServiceRequestOrigin(SmoothId<?> caller, SmoothServiceRequest request) {
+        this.caller = caller;
         this.request = request;
-        this.toString = String.format(Format.DESCRIPTION, this.invoker.getDescription());
+        this.description = new LazyInitializer<>(() -> {
+            return String.format(Format.DESCRIPTION, this.caller.getDescription());
+        }, false);
     }
 
     @Override
     public String toString() {
-        return this.toString;
+        return this.description.get();
     }
 
-    public SmoothId<?> getInvoker() {
-        return invoker;
+    public SmoothId<?> getCaller() {
+        return caller;
     }
 
     public SmoothServiceRequest getRequest() {
         return request;
     }
-
 
 }
