@@ -3,179 +3,119 @@ package org.misty.smooth.api.service.vo;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
-public final class SmoothServicePayloadHeaderContent implements List<String> {
+public final class SmoothServicePayloadHeaderContent implements Set<String> {
 
-    private final List<String> list;
+    private final Set<String> set;
 
     public SmoothServicePayloadHeaderContent() {
-        this.list = new ArrayList<>();
+        this(false);
     }
 
-    public SmoothServicePayloadHeaderContent(Collection<String> initCollection) {
-        this.list = new ArrayList<>(initCollection);
-    }
-
-    public SmoothServicePayloadHeaderContent(int initialCapacity) {
-        this.list = new ArrayList<>(initialCapacity);
+    public SmoothServicePayloadHeaderContent(boolean sequential) {
+        this.set = sequential ? new TreeSet<>() : new HashSet<>();
     }
 
     /**
      * for unit test
      */
-    protected SmoothServicePayloadHeaderContent(List<String> list) {
-        this.list = list;
+    protected SmoothServicePayloadHeaderContent(Set<String> set) {
+        this.set = set;
+    }
+
+    @Override
+    public String toString() {
+        return this.set.toString();
     }
 
     @Override
     public int size() {
-        return this.list.size();
+        return this.set.size();
     }
 
     @Override
     public boolean isEmpty() {
-        return this.list.isEmpty();
+        return this.set.isEmpty();
     }
 
     @Override
     public boolean contains(Object o) {
-        return this.list.contains(o);
+        return this.set.contains(o);
     }
 
     @Override
     public Iterator<String> iterator() {
-        return this.list.iterator();
+        return this.set.iterator();
     }
 
     @Override
     public Object[] toArray() {
-        return this.list.toArray();
+        return this.set.toArray();
     }
 
     @Override
     public <T> T[] toArray(T[] a) {
-        return this.list.toArray(a);
+        return this.set.toArray(a);
     }
 
     @Override
     public boolean add(String s) {
-        return this.list.add(s);
+        return this.set.add(s);
     }
 
     @Override
     public boolean remove(Object o) {
-        return this.list.remove(o);
+        return this.set.remove(o);
     }
 
     @Override
     public boolean containsAll(Collection<?> c) {
-        return this.list.containsAll(c);
+        return this.set.containsAll(c);
     }
 
     @Override
     public boolean addAll(Collection<? extends String> c) {
-        return this.list.addAll(c);
-    }
-
-    @Override
-    public boolean addAll(int index, Collection<? extends String> c) {
-        return this.list.addAll(index, c);
-    }
-
-    @Override
-    public boolean removeAll(Collection<?> c) {
-        return this.list.removeAll(c);
+        return this.set.addAll(c);
     }
 
     @Override
     public boolean retainAll(Collection<?> c) {
-        return this.list.retainAll(c);
+        return this.set.retainAll(c);
+    }
+
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        return this.set.removeAll(c);
     }
 
     @Override
     public void clear() {
-        this.list.clear();
-    }
-
-    @Override
-    public String get(int index) {
-        return this.list.get(index);
-    }
-
-    @Override
-    public String set(int index, String element) {
-        return this.list.set(index, element);
-    }
-
-    @Override
-    public void add(int index, String element) {
-        this.list.add(index, element);
-    }
-
-    @Override
-    public String remove(int index) {
-        return this.list.remove(index);
-    }
-
-    @Override
-    public int indexOf(Object o) {
-        return this.list.indexOf(o);
-    }
-
-    @Override
-    public int lastIndexOf(Object o) {
-        return this.list.lastIndexOf(o);
-    }
-
-    @Override
-    public ListIterator<String> listIterator() {
-        return this.list.listIterator();
-    }
-
-    @Override
-    public ListIterator<String> listIterator(int index) {
-        return this.list.listIterator(index);
-    }
-
-    @Override
-    public List<String> subList(int fromIndex, int toIndex) {
-        return this.list.subList(fromIndex, toIndex);
-    }
-
-    @Override
-    public void replaceAll(UnaryOperator<String> operator) {
-        this.list.replaceAll(operator);
-    }
-
-    @Override
-    public void sort(Comparator<? super String> c) {
-        this.list.sort(c);
+        this.set.clear();
     }
 
     @Override
     public Spliterator<String> spliterator() {
-        return this.list.spliterator();
+        return this.set.spliterator();
     }
 
     @Override
     public boolean removeIf(Predicate<? super String> filter) {
-        return this.list.removeIf(filter);
+        return this.set.removeIf(filter);
     }
 
     @Override
     public Stream<String> stream() {
-        return this.list.stream();
+        return this.set.stream();
     }
 
     @Override
     public Stream<String> parallelStream() {
-        return this.list.parallelStream();
+        return this.set.parallelStream();
     }
 
     @Override
     public void forEach(Consumer<? super String> action) {
-        this.list.forEach(action);
+        this.set.forEach(action);
     }
 }
