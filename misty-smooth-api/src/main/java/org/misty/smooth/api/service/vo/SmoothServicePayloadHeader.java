@@ -17,118 +17,143 @@ public final class SmoothServicePayloadHeader implements Map<String, SmoothServi
         this.map = sequential ? new TreeMap<>() : new HashMap<>();
     }
 
+    /**
+     * for unit test
+     */
+    protected SmoothServicePayloadHeader(Map<String, SmoothServicePayloadHeaderContent> map) {
+        this.map = map;
+    }
+
+    public SmoothServicePayloadHeaderContent getOrDefault(Object key) {
+        return getOrDefault(key, false);
+    }
+
+    public SmoothServicePayloadHeaderContent getOrDefault(Object key, boolean sequential) {
+        SmoothServicePayloadHeaderContent content = this.map.get(key);
+        if (content == null) {
+            content = new SmoothServicePayloadHeaderContent(sequential);
+            this.map.put((String) key, content);
+        }
+        return content;
+    }
+
+    @Override
+    public String toString() {
+        return this.map.toString();
+    }
+
     @Override
     public int size() {
-        return 0;
+        return this.map.size();
     }
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return this.map.isEmpty();
     }
 
     @Override
     public boolean containsKey(Object key) {
-        return false;
+        return this.map.containsKey(key);
     }
 
     @Override
     public boolean containsValue(Object value) {
-        return false;
+        return this.map.containsValue(value);
     }
 
     @Override
     public SmoothServicePayloadHeaderContent get(Object key) {
-        return null;
+        return this.map.get(key);
     }
 
     @Override
     public SmoothServicePayloadHeaderContent put(String key, SmoothServicePayloadHeaderContent value) {
-        return null;
+        return this.map.put(key, value);
     }
 
     @Override
     public SmoothServicePayloadHeaderContent remove(Object key) {
-        return null;
+        return this.map.remove(key);
     }
 
     @Override
     public void putAll(Map<? extends String, ? extends SmoothServicePayloadHeaderContent> m) {
-
+        this.map.putAll(m);
     }
 
     @Override
     public void clear() {
-
+        this.map.clear();
     }
 
     @Override
     public Set<String> keySet() {
-        return null;
+        return this.map.keySet();
     }
 
     @Override
     public Collection<SmoothServicePayloadHeaderContent> values() {
-        return null;
+        return this.map.values();
     }
 
     @Override
     public Set<Entry<String, SmoothServicePayloadHeaderContent>> entrySet() {
-        return null;
+        return this.map.entrySet();
     }
 
     @Override
     public SmoothServicePayloadHeaderContent getOrDefault(Object key, SmoothServicePayloadHeaderContent defaultValue) {
-        return Map.super.getOrDefault(key, defaultValue);
+        return this.map.getOrDefault(key, defaultValue);
     }
 
     @Override
     public void forEach(BiConsumer<? super String, ? super SmoothServicePayloadHeaderContent> action) {
-        Map.super.forEach(action);
+        this.map.forEach(action);
     }
 
     @Override
     public void replaceAll(BiFunction<? super String, ? super SmoothServicePayloadHeaderContent, ? extends SmoothServicePayloadHeaderContent> function) {
-        Map.super.replaceAll(function);
+        this.map.replaceAll(function);
     }
 
     @Override
     public SmoothServicePayloadHeaderContent putIfAbsent(String key, SmoothServicePayloadHeaderContent value) {
-        return Map.super.putIfAbsent(key, value);
+        return this.map.putIfAbsent(key, value);
     }
 
     @Override
     public boolean remove(Object key, Object value) {
-        return Map.super.remove(key, value);
+        return this.map.remove(key, value);
     }
 
     @Override
     public boolean replace(String key, SmoothServicePayloadHeaderContent oldValue, SmoothServicePayloadHeaderContent newValue) {
-        return Map.super.replace(key, oldValue, newValue);
+        return this.map.replace(key, oldValue, newValue);
     }
 
     @Override
     public SmoothServicePayloadHeaderContent replace(String key, SmoothServicePayloadHeaderContent value) {
-        return Map.super.replace(key, value);
+        return this.map.replace(key, value);
     }
 
     @Override
     public SmoothServicePayloadHeaderContent computeIfAbsent(String key, Function<? super String, ? extends SmoothServicePayloadHeaderContent> mappingFunction) {
-        return Map.super.computeIfAbsent(key, mappingFunction);
+        return this.map.computeIfAbsent(key, mappingFunction);
     }
 
     @Override
     public SmoothServicePayloadHeaderContent computeIfPresent(String key, BiFunction<? super String, ? super SmoothServicePayloadHeaderContent, ? extends SmoothServicePayloadHeaderContent> remappingFunction) {
-        return Map.super.computeIfPresent(key, remappingFunction);
+        return this.map.computeIfPresent(key, remappingFunction);
     }
 
     @Override
     public SmoothServicePayloadHeaderContent compute(String key, BiFunction<? super String, ? super SmoothServicePayloadHeaderContent, ? extends SmoothServicePayloadHeaderContent> remappingFunction) {
-        return Map.super.compute(key, remappingFunction);
+        return this.map.compute(key, remappingFunction);
     }
 
     @Override
     public SmoothServicePayloadHeaderContent merge(String key, SmoothServicePayloadHeaderContent value, BiFunction<? super SmoothServicePayloadHeaderContent, ? super SmoothServicePayloadHeaderContent, ? extends SmoothServicePayloadHeaderContent> remappingFunction) {
-        return Map.super.merge(key, value, remappingFunction);
+        return this.map.merge(key, value, remappingFunction);
     }
 }
