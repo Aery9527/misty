@@ -1,8 +1,6 @@
 package org.misty.smooth.api.service.vo;
 
 import java.io.OutputStream;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public final class SmoothServiceResponse extends SmoothServicePayload {
@@ -16,13 +14,8 @@ public final class SmoothServiceResponse extends SmoothServicePayload {
         this.attachment = null;
     }
 
-    public SmoothServiceResponse(Map<String, List<String>> header) {
-        super(header);
-        this.attachment = null;
-    }
-
-    public SmoothServiceResponse(Map<String, List<String>> header, Map<String, String> body) {
-        super(header, body);
+    public SmoothServiceResponse(String body) {
+        super(body);
         this.attachment = null;
     }
 
@@ -30,13 +23,8 @@ public final class SmoothServiceResponse extends SmoothServicePayload {
         this.attachment = new SmoothOutputStreamCrosser(attachment);
     }
 
-    public SmoothServiceResponse(Map<String, List<String>> header, OutputStream attachment) {
-        super(header);
-        this.attachment = new SmoothOutputStreamCrosser(attachment);
-    }
-
-    public SmoothServiceResponse(Map<String, List<String>> header, Map<String, String> body, OutputStream attachment) {
-        super(header, body);
+    public SmoothServiceResponse(String body, OutputStream attachment) {
+        super(body);
         this.attachment = new SmoothOutputStreamCrosser(attachment);
     }
 

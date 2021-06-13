@@ -1,25 +1,18 @@
 package org.misty.smooth.api.service.vo;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 class SmoothServicePayload {
 
-    private Map<String, List<String>> header;
+    private SmoothServicePayloadHeader header;
 
-    private Map<String, String> body;
+    private final String body;
 
     public SmoothServicePayload() {
-        this(new HashMap<>());
+        this(null);
     }
 
-    public SmoothServicePayload(Map<String, List<String>> header) {
-        this(header, new HashMap<>());
-    }
-
-    public SmoothServicePayload(Map<String, List<String>> header, Map<String, String> body) {
-        this.header = header;
+    public SmoothServicePayload(String body) {
         this.body = body;
     }
 
@@ -35,32 +28,25 @@ class SmoothServicePayload {
         if (this.header == null) {
             return false;
         } else {
-            List<String> values = this.header.get(key);
-            return values != null && values.contains(value);
+            SmoothServicePayloadHeaderContent content = this.header.get(key);
+            return content != null && content.contains(value);
         }
     }
 
-    public boolean containsBody(String key) {
-        if (this.body == null) {
-            return false;
-        } else {
-            return this.body.containsKey(key);
+    public Optional<SmoothServicePayloadHeader> getHeader() {
+        return Optional.ofNullable(this.header);
+    }
+
+    public SmoothServicePayloadHeader getHeaderOrCreate() {
+        if (this.header == null) {
+            this.header = new SmoothServicePayloadHeader();
         }
+
+        return this.header;
     }
 
-    public Map<String, List<String>> getHeader() {
-        return header;
+    public Optional<String> getBody() {
+        return Optional.ofNullable(this.body);
     }
 
-    public void setHeader(Map<String, List<String>> header) {
-        this.header = header;
-    }
-
-    public Map<String, String> getBody() {
-        return body;
-    }
-
-    public void setBody(Map<String, String> body) {
-        this.body = body;
-    }
 }

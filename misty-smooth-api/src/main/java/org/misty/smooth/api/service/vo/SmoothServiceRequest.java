@@ -3,8 +3,6 @@ package org.misty.smooth.api.service.vo;
 import org.misty.smooth.api.mark.SmoothGuide;
 
 import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public final class SmoothServiceRequest extends SmoothServicePayload {
@@ -22,13 +20,8 @@ public final class SmoothServiceRequest extends SmoothServicePayload {
         this.attachment = null;
     }
 
-    public SmoothServiceRequest(Map<String, List<String>> header) {
-        super(header);
-        this.attachment = null;
-    }
-
-    public SmoothServiceRequest(Map<String, List<String>> header, Map<String, String> body) {
-        super(header, body);
+    public SmoothServiceRequest(String body) {
+        super(body);
         this.attachment = null;
     }
 
@@ -36,13 +29,8 @@ public final class SmoothServiceRequest extends SmoothServicePayload {
         this.attachment = new SmoothInputStreamCrosser(attachment);
     }
 
-    public SmoothServiceRequest(Map<String, List<String>> header, InputStream attachment) {
-        super(header);
-        this.attachment = new SmoothInputStreamCrosser(attachment);
-    }
-
-    public SmoothServiceRequest(Map<String, List<String>> header, Map<String, String> body, InputStream attachment) {
-        super(header, body);
+    public SmoothServiceRequest(String body, InputStream attachment) {
+        super(body);
         this.attachment = new SmoothInputStreamCrosser(attachment);
     }
 

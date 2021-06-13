@@ -11,7 +11,9 @@ import org.misty.smooth.api.vo.SmoothModuleId;
 import org.misty.smooth.api.vo.SmoothServiceId;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
@@ -68,17 +70,23 @@ public class SmoothSoleContext implements SmoothContext {
     }
 
     @Override
-    public Future<SmoothServiceResponseResult> invokeService(String moduleName, String serviceKey, SmoothServiceRequest serviceRequest) throws SmoothModuleNotFoundException, SmoothServiceNotFoundException {
+    public SmoothServiceInvoker buildServiceInvoker(String moduleName, String moduleVersion, String serviceKey) {
         return null;
     }
 
     @Override
-    public void invokeService(String moduleName, String serviceKey, SmoothServiceRequest serviceRequest, Consumer<SmoothServiceResponseResult> resultProcessor) throws SmoothModuleNotFoundException, SmoothServiceNotFoundException {
+    public void invoke(SmoothModuleId id, String serviceKey, SmoothServiceRequest serviceRequest, Consumer<SmoothServiceResponseResult> resultProcessor) throws SmoothModuleNotFoundException, SmoothServiceNotFoundException {
 
+    }
+
+    @Override
+    public Future<SmoothServiceResponseResult> invoke(SmoothModuleId id, String serviceKey, SmoothServiceRequest serviceRequest) throws SmoothModuleNotFoundException, SmoothServiceNotFoundException {
+        return null;
     }
 
     @Override
     public SmoothServiceInvoker buildServiceInvoker(String moduleName, String serviceKey) {
         return null;
     }
+
 }
