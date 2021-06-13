@@ -24,15 +24,15 @@ public final class SmoothServicePayloadHeader implements Map<String, SmoothServi
         this.map = map;
     }
 
-    public SmoothServicePayloadHeaderContent getOrDefault(Object key) {
-        return getOrDefault(key, false);
+    public SmoothServicePayloadHeaderContent getOrPutDefault(String key) {
+        return getOrPutDefault(key, false);
     }
 
-    public SmoothServicePayloadHeaderContent getOrDefault(Object key, boolean sequential) {
+    public SmoothServicePayloadHeaderContent getOrPutDefault(String key, boolean sequential) {
         SmoothServicePayloadHeaderContent content = this.map.get(key);
         if (content == null) {
             content = new SmoothServicePayloadHeaderContent(sequential);
-            this.map.put((String) key, content);
+            this.map.put(key, content);
         }
         return content;
     }
