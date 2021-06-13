@@ -4,12 +4,12 @@ import org.misty.smooth.api.context.SmoothLoadType;
 import org.misty.smooth.api.cross.SmoothCrossWrapper;
 import org.misty.smooth.api.cross.SmoothCrosser;
 import org.misty.smooth.api.vo.SmoothModuleId;
+import org.misty.smooth.api.vo.SmoothUnscalableMap;
 import org.misty.smooth.core.domain.loader.api.SmoothDomainLoadTypeController;
 import org.misty.smooth.manager.error.SmoothLoadException;
 import org.misty.smooth.manager.loader.SmoothModuleLoader;
 import org.misty.smooth.manager.loader.enums.SmoothLoadFinishState;
 import org.misty.smooth.manager.loader.enums.SmoothLoadState;
-import org.misty.smooth.manager.loader.vo.SmoothLoaderArgument;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -47,7 +47,7 @@ public class SmoothModuleDomainLoaderCrosser
     }
 
     @Override
-    public SmoothLoaderArgument getLoaderArgument() {
+    public SmoothUnscalableMap getLoaderArgument() {
         return super.wrap(() -> super.getWrappedTarget().getLoaderArgument());
     }
 

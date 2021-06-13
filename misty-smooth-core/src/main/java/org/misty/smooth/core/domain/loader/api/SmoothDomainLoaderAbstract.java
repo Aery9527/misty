@@ -5,12 +5,12 @@ import org.misty.smooth.api.context.SmoothLoadType;
 import org.misty.smooth.api.cross.SmoothCrosser;
 import org.misty.smooth.api.lifecycle.SmoothLifecycle;
 import org.misty.smooth.api.vo.SmoothId;
+import org.misty.smooth.api.vo.SmoothUnscalableMap;
 import org.misty.smooth.core.error.SmoothDomainLoadError;
 import org.misty.smooth.manager.error.SmoothLoadException;
 import org.misty.smooth.manager.loader.SmoothLoader;
 import org.misty.smooth.manager.loader.enums.SmoothLoadFinishState;
 import org.misty.smooth.manager.loader.enums.SmoothLoadState;
-import org.misty.smooth.manager.loader.vo.SmoothLoaderArgument;
 import org.misty.util.tool.AtomicUpdater;
 import org.misty.util.verify.Examiner;
 import org.slf4j.Logger;
@@ -39,7 +39,7 @@ public abstract class SmoothDomainLoaderAbstract<
 
     private SmoothIdType smoothId;
 
-    private SmoothLoaderArgument loaderArgument;
+    private SmoothUnscalableMap loaderArgument;
 
     private LifecycleType domainLifecycle;
 
@@ -231,11 +231,11 @@ public abstract class SmoothDomainLoaderAbstract<
     }
 
     @Override
-    public SmoothLoaderArgument getLoaderArgument() {
+    public SmoothUnscalableMap getLoaderArgument() {
         return loaderArgument;
     }
 
-    public void setLoaderArgument(SmoothLoaderArgument loaderArgument) {
+    public void setLoaderArgument(SmoothUnscalableMap loaderArgument) {
         this.loaderArgument = loaderArgument;
     }
 

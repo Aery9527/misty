@@ -1,10 +1,13 @@
 package org.misty.smooth.api.service.vo;
 
+import org.misty.smooth.api.vo.SmoothUnscalableMap;
+import org.misty.smooth.api.vo.SmoothUnscalableSet;
+
 import java.util.Optional;
 
 class SmoothServicePayload {
 
-    private SmoothServicePayloadHeader header;
+    private SmoothUnscalableMap header;
 
     private final String body;
 
@@ -28,18 +31,18 @@ class SmoothServicePayload {
         if (this.header == null) {
             return false;
         } else {
-            SmoothServicePayloadHeaderContent content = this.header.get(key);
+            SmoothUnscalableSet content = this.header.get(key);
             return content != null && content.contains(value);
         }
     }
 
-    public Optional<SmoothServicePayloadHeader> getHeader() {
+    public Optional<SmoothUnscalableMap> getHeader() {
         return Optional.ofNullable(this.header);
     }
 
-    public SmoothServicePayloadHeader getHeaderOrCreate() {
+    public SmoothUnscalableMap getHeaderOrCreate() {
         if (this.header == null) {
-            this.header = new SmoothServicePayloadHeader();
+            this.header = new SmoothUnscalableMap();
         }
 
         return this.header;

@@ -9,6 +9,7 @@ import org.misty.smooth.api.service.vo.SmoothServiceRequestOrigin;
 import org.misty.smooth.api.service.vo.SmoothServiceResponseResult;
 import org.misty.smooth.api.vo.SmoothModuleId;
 import org.misty.smooth.api.vo.SmoothServiceId;
+import org.misty.smooth.api.vo.SmoothUnscalableMap;
 import org.misty.smooth.core.context.api.SmoothCoreContext;
 import org.misty.smooth.core.context.api.SmoothCoreEnvironment;
 import org.misty.smooth.core.context.api.SmoothModuleDomainCamp;
@@ -23,7 +24,6 @@ import org.misty.smooth.manager.error.SmoothCloseException;
 import org.misty.smooth.manager.error.SmoothLoadException;
 import org.misty.smooth.manager.loader.SmoothManagerLoader;
 import org.misty.smooth.manager.loader.SmoothModuleLoader;
-import org.misty.smooth.manager.loader.vo.SmoothLoaderArgument;
 import org.misty.util.fi.FiRunnable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -141,23 +141,21 @@ public class SmoothCoreContextPreset implements SmoothCoreContext {
 
     @Override
     public SmoothManagerLoader loadSmoothManager(URL... sources) throws SmoothLoadException {
-        return loadSmoothManager(new SmoothLoaderArgument(), sources);
+        return loadSmoothManager(new SmoothUnscalableMap(), sources);
     }
 
     @Override
-    public SmoothManagerLoader loadSmoothManager(SmoothLoaderArgument loaderArgument, URL... sources) throws SmoothLoadException {
+    public SmoothManagerLoader loadSmoothManager(SmoothUnscalableMap loaderArgument, URL... sources) throws SmoothLoadException {
         return loadSmoothManager(loaderArgument, Arrays.asList(sources));
     }
 
     @Override
     public SmoothManagerLoader loadSmoothManager(Collection<URL> sources) throws SmoothLoadException {
-        return loadSmoothManager(new SmoothLoaderArgument(), sources);
+        return loadSmoothManager(new SmoothUnscalableMap(), sources);
     }
 
     @Override
-    public SmoothManagerLoader loadSmoothManager(SmoothLoaderArgument loaderArgument, Collection<URL> sources) throws SmoothLoadException {
-        loaderArgument.lock();
-
+    public SmoothManagerLoader loadSmoothManager(SmoothUnscalableMap loaderArgument, Collection<URL> sources) throws SmoothLoadException {
         SmoothManagerDomainLoader managerLoader = this.domainLoaderFactory.buildManagerLoader(loaderArgument, sources);
 //        managerLoader.setLoadTypeController();
         // TODO
@@ -168,23 +166,21 @@ public class SmoothCoreContextPreset implements SmoothCoreContext {
 
     @Override
     public SmoothModuleLoader loadSmoothModule(URL... sources) throws SmoothLoadException {
-        return loadSmoothModule(new SmoothLoaderArgument(), sources);
+        return loadSmoothModule(new SmoothUnscalableMap(), sources);
     }
 
     @Override
-    public SmoothModuleLoader loadSmoothModule(SmoothLoaderArgument loaderArgument, URL... sources) throws SmoothLoadException {
+    public SmoothModuleLoader loadSmoothModule(SmoothUnscalableMap loaderArgument, URL... sources) throws SmoothLoadException {
         return loadSmoothModule(loaderArgument, Arrays.asList(sources));
     }
 
     @Override
     public SmoothModuleLoader loadSmoothModule(Collection<URL> sources) throws SmoothLoadException {
-        return loadSmoothModule(new SmoothLoaderArgument(), sources);
+        return loadSmoothModule(new SmoothUnscalableMap(), sources);
     }
 
     @Override
-    public SmoothModuleLoader loadSmoothModule(SmoothLoaderArgument loaderArgument, Collection<URL> sources) throws SmoothLoadException {
-        loaderArgument.lock();
-
+    public SmoothModuleLoader loadSmoothModule(SmoothUnscalableMap loaderArgument, Collection<URL> sources) throws SmoothLoadException {
         SmoothModuleDomainLoader moduleLoader = this.domainLoaderFactory.buildModuleLoader(loaderArgument, sources);
         moduleLoader.setLoadTypeController(this.domainCamp);
         // TODO

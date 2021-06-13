@@ -3,9 +3,9 @@ package org.misty.smooth.core.domain.loader.preset.impl;
 import org.misty.smooth.api.cross.SmoothCrossWrapper;
 import org.misty.smooth.api.cross.SmoothCrosser;
 import org.misty.smooth.api.lifecycle.module.SmoothModuleLifecycle;
+import org.misty.smooth.api.vo.SmoothUnscalableMap;
 import org.misty.smooth.core.domain.loader.preset.api.SmoothDomainLifecycleFactory;
 import org.misty.smooth.manager.lifecycle.SmoothManagerLifecycle;
-import org.misty.smooth.manager.loader.vo.SmoothLoaderArgument;
 
 public class SmoothDomainLifecycleFactoryWrapper
         extends SmoothCrossWrapper<SmoothDomainLifecycleFactory>
@@ -16,12 +16,12 @@ public class SmoothDomainLifecycleFactoryWrapper
     }
 
     @Override
-    public SmoothManagerLifecycle findManagerLifecycle(SmoothLoaderArgument loaderArgument, SmoothCrosser domainCrosser) {
+    public SmoothManagerLifecycle findManagerLifecycle(SmoothUnscalableMap loaderArgument, SmoothCrosser domainCrosser) {
         return null;
     }
 
     @Override
-    public SmoothModuleLifecycle findModuleLifecycle(SmoothLoaderArgument loaderArgument, SmoothCrosser domainCrosser) {
+    public SmoothModuleLifecycle findModuleLifecycle(SmoothUnscalableMap loaderArgument, SmoothCrosser domainCrosser) {
         return null;
     }
 

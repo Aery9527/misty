@@ -4,11 +4,11 @@ import org.misty.smooth.api.context.SmoothContext;
 import org.misty.smooth.api.cross.SmoothCrosser;
 import org.misty.smooth.api.lifecycle.SmoothLifecycle;
 import org.misty.smooth.api.vo.SmoothId;
+import org.misty.smooth.api.vo.SmoothUnscalableMap;
 import org.misty.smooth.core.domain.classloader.SmoothDomainClassLoader;
 import org.misty.smooth.core.domain.loader.api.SmoothDomainLaunchThreadFactory;
 import org.misty.smooth.core.domain.loader.api.SmoothDomainLoaderAbstract;
 import org.misty.smooth.manager.error.SmoothLoadException;
-import org.misty.smooth.manager.loader.vo.SmoothLoaderArgument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,9 +26,9 @@ public class SmoothDomainLoaderBuilder<
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private BiFunction<SmoothLoaderArgument, Collection<URL>, SmoothDomainClassLoader> classLoaderFactory;
+    private BiFunction<SmoothUnscalableMap, Collection<URL>, SmoothDomainClassLoader> classLoaderFactory;
 
-    private BiFunction<SmoothLoaderArgument, SmoothCrosser, LifecycleType> lifecycleFactory;
+    private BiFunction<SmoothUnscalableMap, SmoothCrosser, LifecycleType> lifecycleFactory;
 
     private BiFunction<String, String, SmoothIdType> smoothIdFactory;
 
@@ -38,7 +38,7 @@ public class SmoothDomainLoaderBuilder<
 
     private SmoothContext parentContext;
 
-    public DomainLoaderType build(SmoothLoaderArgument loaderArgument, Collection<URL> sources) throws SmoothLoadException {
+    public DomainLoaderType build(SmoothUnscalableMap loaderArgument, Collection<URL> sources) throws SmoothLoadException {
         SmoothDomainClassLoader classloader = null;
         try {
             classloader = this.classLoaderFactory.apply(loaderArgument, sources);
@@ -75,19 +75,19 @@ public class SmoothDomainLoaderBuilder<
         }
     }
 
-    public BiFunction<SmoothLoaderArgument, Collection<URL>, SmoothDomainClassLoader> getClassLoaderFactory() {
+    public BiFunction<SmoothUnscalableMap, Collection<URL>, SmoothDomainClassLoader> getClassLoaderFactory() {
         return classLoaderFactory;
     }
 
-    public void setClassLoaderFactory(BiFunction<SmoothLoaderArgument, Collection<URL>, SmoothDomainClassLoader> classLoaderFactory) {
+    public void setClassLoaderFactory(BiFunction<SmoothUnscalableMap, Collection<URL>, SmoothDomainClassLoader> classLoaderFactory) {
         this.classLoaderFactory = classLoaderFactory;
     }
 
-    public BiFunction<SmoothLoaderArgument, SmoothCrosser, LifecycleType> getLifecycleFactory() {
+    public BiFunction<SmoothUnscalableMap, SmoothCrosser, LifecycleType> getLifecycleFactory() {
         return lifecycleFactory;
     }
 
-    public void setLifecycleFactory(BiFunction<SmoothLoaderArgument, SmoothCrosser, LifecycleType> lifecycleFactory) {
+    public void setLifecycleFactory(BiFunction<SmoothUnscalableMap, SmoothCrosser, LifecycleType> lifecycleFactory) {
         this.lifecycleFactory = lifecycleFactory;
     }
 

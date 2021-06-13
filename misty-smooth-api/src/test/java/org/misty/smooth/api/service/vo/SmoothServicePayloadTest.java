@@ -1,6 +1,8 @@
 package org.misty.smooth.api.service.vo;
 
 import org.assertj.core.api.Assertions;
+import org.misty.smooth.api.vo.SmoothUnscalableMap;
+import org.misty.smooth.api.vo.SmoothUnscalableSet;
 
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -19,10 +21,10 @@ class SmoothServicePayloadTest {
         Assertions.assertThat(payload.containsHeader("")).isFalse();
         Assertions.assertThat(payload.containsHeader("", "")).isFalse();
 
-        SmoothServicePayloadHeader header = payload.getHeaderOrCreate();
+        SmoothUnscalableMap header = payload.getHeaderOrCreate();
         Assertions.assertThat(payload.getHeader()).isNotEmpty().get().isEqualTo(header);
 
-        SmoothServicePayloadHeaderContent content = new SmoothServicePayloadHeaderContent();
+        SmoothUnscalableSet content = new SmoothUnscalableSet();
         content.add("9527");
         header.put("aaa", content);
         Assertions.assertThat(payload.containsHeader("aaa")).isTrue();

@@ -6,11 +6,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.misty.smooth.api.context.SmoothLoadType;
 import org.misty.smooth.api.vo.SmoothModuleId;
+import org.misty.smooth.api.vo.SmoothUnscalableMap;
 import org.misty.smooth.core.domain.loader.api.SmoothDomainLoadTypeController;
 import org.misty.smooth.manager.loader.SmoothModuleLoader;
 import org.misty.smooth.manager.loader.enums.SmoothLoadFinishState;
 import org.misty.smooth.manager.loader.enums.SmoothLoadState;
-import org.misty.smooth.manager.loader.vo.SmoothLoaderArgument;
 import org.misty.ut.common.CrosserTest;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -92,7 +92,7 @@ class SmoothModuleDomainLoaderCrosserTest {
 
     @Test
     public void getLoaderArgument() {
-        SmoothLoaderArgument loaderArgument = new SmoothLoaderArgument();
+        SmoothUnscalableMap loaderArgument = new SmoothUnscalableMap();
 
         CrosserTest crosserTest = new CrosserTest();
         crosserTest.mock((invocationOnMock) -> loaderArgument, this.loader).getLoaderArgument();

@@ -1,28 +1,29 @@
-package org.misty.smooth.api.service.vo;
+package org.misty.smooth.api.vo;
 
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public final class SmoothServicePayloadHeaderContent implements Set<String> {
+public final class SmoothUnscalableSet implements Set<String> {
 
     private final Set<String> set;
 
-    public SmoothServicePayloadHeaderContent() {
+    public SmoothUnscalableSet() {
         this(false);
     }
 
-    public SmoothServicePayloadHeaderContent(boolean sequential) {
+    public SmoothUnscalableSet(boolean sequential) {
         this.set = sequential ? new TreeSet<>() : new HashSet<>();
     }
 
     /**
      * for unit test
      */
-    protected SmoothServicePayloadHeaderContent(Set<String> set) {
+    protected SmoothUnscalableSet(Set<String> set) {
         this.set = set;
     }
+
 
     @Override
     public String toString() {
@@ -118,4 +119,5 @@ public final class SmoothServicePayloadHeaderContent implements Set<String> {
     public void forEach(Consumer<? super String> action) {
         this.set.forEach(action);
     }
+
 }

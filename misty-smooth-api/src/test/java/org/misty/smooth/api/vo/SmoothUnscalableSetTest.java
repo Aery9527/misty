@@ -1,4 +1,4 @@
-package org.misty.smooth.api.service.vo;
+package org.misty.smooth.api.vo;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,9 +17,8 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-@SuppressWarnings({"unchecked", "ConstantConditions", "SuspiciousMethodCalls", "rawtypes"})
 @ExtendWith(MockitoExtension.class)
-class SmoothServicePayloadHeaderContentTest {
+class SmoothUnscalableSetTest {
 
     @Mock
     private Set<String> set;
@@ -31,7 +30,7 @@ class SmoothServicePayloadHeaderContentTest {
 
     @Test
     void constructor() throws NoSuchFieldException {
-        SmoothServicePayloadHeaderContent content = new SmoothServicePayloadHeaderContent();
+        SmoothUnscalableSet content = new SmoothUnscalableSet();
         FieldExtractor fieldExtractor = new FieldExtractor(content);
         FieldObjectGetter<Set> getter = fieldExtractor.buildGetter("set", Set.class);
         Set<String> set = getter.get();
@@ -40,7 +39,7 @@ class SmoothServicePayloadHeaderContentTest {
 
     @Test
     void constructor_true() throws NoSuchFieldException {
-        SmoothServicePayloadHeaderContent content = new SmoothServicePayloadHeaderContent(true);
+        SmoothUnscalableSet content = new SmoothUnscalableSet(true);
         FieldExtractor fieldExtractor = new FieldExtractor(content);
         FieldObjectGetter<Set> getter = fieldExtractor.buildGetter("set", Set.class);
         Set<String> set = getter.get();
@@ -49,7 +48,7 @@ class SmoothServicePayloadHeaderContentTest {
 
     @Test
     void testToString() throws NoSuchFieldException {
-        SmoothServicePayloadHeaderContent content = new SmoothServicePayloadHeaderContent(true);
+        SmoothUnscalableSet content = new SmoothUnscalableSet(true);
         FieldExtractor fieldExtractor = new FieldExtractor(content);
         FieldObjectGetter<Set> getter = fieldExtractor.buildGetter("set", Set.class);
         Set<String> set = getter.get();
@@ -70,7 +69,7 @@ class SmoothServicePayloadHeaderContentTest {
             return returned;
         }).when(this.set).size();
 
-        SmoothServicePayloadHeaderContent content = new SmoothServicePayloadHeaderContent(this.set);
+        SmoothUnscalableSet content = new SmoothUnscalableSet(this.set);
         Assertions.assertThat(content.size()).isEqualTo(returned);
         Assertions.assertThat(checkPoint.get()).isTrue();
     }
@@ -86,7 +85,7 @@ class SmoothServicePayloadHeaderContentTest {
             return returned;
         }).when(this.set).isEmpty();
 
-        SmoothServicePayloadHeaderContent content = new SmoothServicePayloadHeaderContent(this.set);
+        SmoothUnscalableSet content = new SmoothUnscalableSet(this.set);
         Assertions.assertThat(content.isEmpty()).isEqualTo(returned);
         Assertions.assertThat(checkPoint.get()).isTrue();
     }
@@ -104,7 +103,7 @@ class SmoothServicePayloadHeaderContentTest {
             return returned;
         }).when(this.set).contains(Mockito.anyString());
 
-        SmoothServicePayloadHeaderContent content = new SmoothServicePayloadHeaderContent(this.set);
+        SmoothUnscalableSet content = new SmoothUnscalableSet(this.set);
         Assertions.assertThat(content.contains(arg1)).isEqualTo(returned);
         Assertions.assertThat(checkPoint1.get()).isEqualTo(arg1);
     }
@@ -120,7 +119,7 @@ class SmoothServicePayloadHeaderContentTest {
             return returned;
         }).when(this.set).iterator();
 
-        SmoothServicePayloadHeaderContent content = new SmoothServicePayloadHeaderContent(this.set);
+        SmoothUnscalableSet content = new SmoothUnscalableSet(this.set);
         Assertions.assertThat(content.iterator()).isEqualTo(returned);
         Assertions.assertThat(checkPoint.get()).isTrue();
     }
@@ -136,7 +135,7 @@ class SmoothServicePayloadHeaderContentTest {
             return returned;
         }).when(this.set).toArray();
 
-        SmoothServicePayloadHeaderContent content = new SmoothServicePayloadHeaderContent(this.set);
+        SmoothUnscalableSet content = new SmoothUnscalableSet(this.set);
         Assertions.assertThat(content.toArray()).isEqualTo(returned);
         Assertions.assertThat(checkPoint.get()).isTrue();
     }
@@ -152,7 +151,7 @@ class SmoothServicePayloadHeaderContentTest {
             return a;
         }).when(this.set).toArray(Mockito.any());
 
-        SmoothServicePayloadHeaderContent content = new SmoothServicePayloadHeaderContent(this.set);
+        SmoothUnscalableSet content = new SmoothUnscalableSet(this.set);
         Assertions.assertThat(content.toArray(a)).isEqualTo(a);
         Assertions.assertThat(checkPoint1.get()).isEqualTo(a);
     }
@@ -170,7 +169,7 @@ class SmoothServicePayloadHeaderContentTest {
             return returned;
         }).when(this.set).add(Mockito.anyString());
 
-        SmoothServicePayloadHeaderContent content = new SmoothServicePayloadHeaderContent(this.set);
+        SmoothUnscalableSet content = new SmoothUnscalableSet(this.set);
         Assertions.assertThat(content.add(arg1)).isEqualTo(returned);
         Assertions.assertThat(checkPoint1.get()).isEqualTo(arg1);
     }
@@ -188,7 +187,7 @@ class SmoothServicePayloadHeaderContentTest {
             return returned;
         }).when(this.set).remove(Mockito.anyString());
 
-        SmoothServicePayloadHeaderContent content = new SmoothServicePayloadHeaderContent(this.set);
+        SmoothUnscalableSet content = new SmoothUnscalableSet(this.set);
         Assertions.assertThat(content.remove(arg1)).isEqualTo(returned);
         Assertions.assertThat(checkPoint1.get()).isEqualTo(arg1);
     }
@@ -206,7 +205,7 @@ class SmoothServicePayloadHeaderContentTest {
             return returned;
         }).when(this.set).containsAll(Mockito.anyCollection());
 
-        SmoothServicePayloadHeaderContent content = new SmoothServicePayloadHeaderContent(this.set);
+        SmoothUnscalableSet content = new SmoothUnscalableSet(this.set);
         Assertions.assertThat(content.containsAll(arg1)).isEqualTo(returned);
         Assertions.assertThat(checkPoint1.get()).isEqualTo(arg1);
     }
@@ -224,7 +223,7 @@ class SmoothServicePayloadHeaderContentTest {
             return returned;
         }).when(this.set).addAll(Mockito.anyCollection());
 
-        SmoothServicePayloadHeaderContent content = new SmoothServicePayloadHeaderContent(this.set);
+        SmoothUnscalableSet content = new SmoothUnscalableSet(this.set);
         Assertions.assertThat(content.addAll(arg1)).isEqualTo(returned);
         Assertions.assertThat(checkPoint1.get()).isEqualTo(arg1);
     }
@@ -242,7 +241,7 @@ class SmoothServicePayloadHeaderContentTest {
             return returned;
         }).when(this.set).removeAll(Mockito.anyCollection());
 
-        SmoothServicePayloadHeaderContent content = new SmoothServicePayloadHeaderContent(this.set);
+        SmoothUnscalableSet content = new SmoothUnscalableSet(this.set);
         Assertions.assertThat(content.removeAll(arg1)).isEqualTo(returned);
         Assertions.assertThat(checkPoint1.get()).isEqualTo(arg1);
     }
@@ -260,7 +259,7 @@ class SmoothServicePayloadHeaderContentTest {
             return returned;
         }).when(this.set).retainAll(Mockito.anyCollection());
 
-        SmoothServicePayloadHeaderContent content = new SmoothServicePayloadHeaderContent(this.set);
+        SmoothUnscalableSet content = new SmoothUnscalableSet(this.set);
         Assertions.assertThat(content.retainAll(arg1)).isEqualTo(returned);
         Assertions.assertThat(checkPoint1.get()).isEqualTo(arg1);
     }
@@ -274,7 +273,7 @@ class SmoothServicePayloadHeaderContentTest {
             return null;
         }).when(this.set).clear();
 
-        SmoothServicePayloadHeaderContent content = new SmoothServicePayloadHeaderContent(this.set);
+        SmoothUnscalableSet content = new SmoothUnscalableSet(this.set);
         content.clear();
         Assertions.assertThat(checkPoint.get()).isTrue();
     }
@@ -290,7 +289,7 @@ class SmoothServicePayloadHeaderContentTest {
             return returned;
         }).when(this.set).spliterator();
 
-        SmoothServicePayloadHeaderContent content = new SmoothServicePayloadHeaderContent(this.set);
+        SmoothUnscalableSet content = new SmoothUnscalableSet(this.set);
         Assertions.assertThat(content.spliterator()).isEqualTo(returned);
         Assertions.assertThat(checkPoint.get()).isTrue();
     }
@@ -308,7 +307,7 @@ class SmoothServicePayloadHeaderContentTest {
             return returned;
         }).when(this.set).removeIf(Mockito.any());
 
-        SmoothServicePayloadHeaderContent content = new SmoothServicePayloadHeaderContent(this.set);
+        SmoothUnscalableSet content = new SmoothUnscalableSet(this.set);
         Assertions.assertThat(content.removeIf(arg1)).isEqualTo(returned);
         Assertions.assertThat(checkPoint1.get()).isEqualTo(arg1);
     }
@@ -324,7 +323,7 @@ class SmoothServicePayloadHeaderContentTest {
             return returned;
         }).when(this.set).stream();
 
-        SmoothServicePayloadHeaderContent content = new SmoothServicePayloadHeaderContent(this.set);
+        SmoothUnscalableSet content = new SmoothUnscalableSet(this.set);
         Assertions.assertThat(content.stream()).isEqualTo(returned);
         Assertions.assertThat(checkPoint.get()).isTrue();
     }
@@ -340,7 +339,7 @@ class SmoothServicePayloadHeaderContentTest {
             return returned;
         }).when(this.set).parallelStream();
 
-        SmoothServicePayloadHeaderContent content = new SmoothServicePayloadHeaderContent(this.set);
+        SmoothUnscalableSet content = new SmoothUnscalableSet(this.set);
         Assertions.assertThat(content.parallelStream()).isEqualTo(returned);
         Assertions.assertThat(checkPoint.get()).isTrue();
     }
@@ -359,7 +358,7 @@ class SmoothServicePayloadHeaderContentTest {
             return returned;
         }).when(this.set).forEach(Mockito.any());
 
-        SmoothServicePayloadHeaderContent content = new SmoothServicePayloadHeaderContent(this.set);
+        SmoothUnscalableSet content = new SmoothUnscalableSet(this.set);
         content.forEach(arg1);
         Assertions.assertThat(checkPoint1.get()).isEqualTo(arg1);
     }

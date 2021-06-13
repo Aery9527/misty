@@ -9,6 +9,7 @@ import org.misty.smooth.api.service.vo.SmoothServiceRequest;
 import org.misty.smooth.api.service.vo.SmoothServiceResponseResult;
 import org.misty.smooth.api.vo.SmoothModuleId;
 import org.misty.smooth.api.vo.SmoothServiceId;
+import org.misty.smooth.api.vo.SmoothUnscalableMap;
 import org.misty.smooth.core.context.api.SmoothCoreContext;
 import org.misty.smooth.core.domain.manager.loader.SmoothManagerDomainLoaderPreset;
 import org.misty.smooth.core.domain.module.loader.SmoothModuleDomainLoaderPreset;
@@ -16,7 +17,6 @@ import org.misty.smooth.manager.error.SmoothCloseException;
 import org.misty.smooth.manager.error.SmoothLoadException;
 import org.misty.smooth.manager.loader.SmoothManagerLoader;
 import org.misty.smooth.manager.loader.SmoothModuleLoader;
-import org.misty.smooth.manager.loader.vo.SmoothLoaderArgument;
 import org.misty.ut.common.CrosserTest;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -179,11 +179,11 @@ class SmoothCoreContextCrosserTest {
     @SuppressWarnings("unchecked")
     @Test
     void loadSmoothManager() {
-        SmoothLoaderArgument loaderArgument = new SmoothLoaderArgument();
+        SmoothUnscalableMap loaderArgument = new SmoothUnscalableMap();
         Collection<URL> sources = new ArrayList<>();
         SmoothManagerLoader loader = new SmoothManagerDomainLoaderPreset();
 
-        AtomicReference<SmoothLoaderArgument> checkPoint1 = new AtomicReference<>();
+        AtomicReference<SmoothUnscalableMap> checkPoint1 = new AtomicReference<>();
         AtomicReference<Collection<URL>> checkPoint2 = new AtomicReference<>();
 
         CrosserTest crosserTest = new CrosserTest();
@@ -216,11 +216,11 @@ class SmoothCoreContextCrosserTest {
     @SuppressWarnings("unchecked")
     @Test
     void loadSmoothModule() {
-        SmoothLoaderArgument loaderArgument = new SmoothLoaderArgument();
+        SmoothUnscalableMap loaderArgument = new SmoothUnscalableMap();
         Collection<URL> sources = new ArrayList<>();
         SmoothModuleLoader loader = new SmoothModuleDomainLoaderPreset();
 
-        AtomicReference<SmoothLoaderArgument> checkPoint1 = new AtomicReference<>();
+        AtomicReference<SmoothUnscalableMap> checkPoint1 = new AtomicReference<>();
         AtomicReference<Collection<URL>> checkPoint2 = new AtomicReference<>();
 
         CrosserTest crosserTest = new CrosserTest();

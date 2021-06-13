@@ -10,12 +10,12 @@ import org.misty.smooth.api.service.vo.SmoothServiceRequest;
 import org.misty.smooth.api.service.vo.SmoothServiceResponseResult;
 import org.misty.smooth.api.vo.SmoothModuleId;
 import org.misty.smooth.api.vo.SmoothServiceId;
+import org.misty.smooth.api.vo.SmoothUnscalableMap;
 import org.misty.smooth.core.context.api.SmoothCoreContext;
 import org.misty.smooth.manager.error.SmoothCloseException;
 import org.misty.smooth.manager.error.SmoothLoadException;
 import org.misty.smooth.manager.loader.SmoothManagerLoader;
 import org.misty.smooth.manager.loader.SmoothModuleLoader;
-import org.misty.smooth.manager.loader.vo.SmoothLoaderArgument;
 
 import java.net.URL;
 import java.time.Instant;
@@ -125,7 +125,7 @@ public class SmoothCoreContextCrosser extends SmoothCrossWrapper<SmoothCoreConte
     }
 
     @Override
-    public SmoothManagerLoader loadSmoothManager(SmoothLoaderArgument loaderArgument, URL... sources) throws SmoothLoadException {
+    public SmoothManagerLoader loadSmoothManager(SmoothUnscalableMap loaderArgument, URL... sources) throws SmoothLoadException {
         return super.wrap(() -> {
             try {
                 return super.getWrappedTarget().loadSmoothManager(loaderArgument, sources);
@@ -147,7 +147,7 @@ public class SmoothCoreContextCrosser extends SmoothCrossWrapper<SmoothCoreConte
     }
 
     @Override
-    public SmoothManagerLoader loadSmoothManager(SmoothLoaderArgument loaderArgument, Collection<URL> sources) throws SmoothLoadException {
+    public SmoothManagerLoader loadSmoothManager(SmoothUnscalableMap loaderArgument, Collection<URL> sources) throws SmoothLoadException {
         return super.wrap(() -> {
             try {
                 return super.getWrappedTarget().loadSmoothManager(loaderArgument, sources);
@@ -169,7 +169,7 @@ public class SmoothCoreContextCrosser extends SmoothCrossWrapper<SmoothCoreConte
     }
 
     @Override
-    public SmoothModuleLoader loadSmoothModule(SmoothLoaderArgument loaderArgument, URL... sources) throws SmoothLoadException {
+    public SmoothModuleLoader loadSmoothModule(SmoothUnscalableMap loaderArgument, URL... sources) throws SmoothLoadException {
         return super.wrap(() -> {
             try {
                 return super.getWrappedTarget().loadSmoothModule(loaderArgument, sources);
@@ -191,7 +191,7 @@ public class SmoothCoreContextCrosser extends SmoothCrossWrapper<SmoothCoreConte
     }
 
     @Override
-    public SmoothModuleLoader loadSmoothModule(SmoothLoaderArgument loaderArgument, Collection<URL> sources) throws SmoothLoadException {
+    public SmoothModuleLoader loadSmoothModule(SmoothUnscalableMap loaderArgument, Collection<URL> sources) throws SmoothLoadException {
         return super.wrap(() -> {
             try {
                 return super.getWrappedTarget().loadSmoothModule(loaderArgument, sources);
