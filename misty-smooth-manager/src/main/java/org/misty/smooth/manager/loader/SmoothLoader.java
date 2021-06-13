@@ -10,7 +10,10 @@ import org.misty.smooth.manager.loader.vo.SmoothLoaderArgument;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
-public interface SmoothLoader<SmoothIdType extends SmoothId<SmoothIdType>, LoadType extends SmoothLoader<SmoothIdType, LoadType>> {
+public interface SmoothLoader<
+        SmoothIdType extends SmoothId<SmoothIdType>,
+        LoadType extends SmoothLoader<SmoothIdType, LoadType>
+        > {
 
     SmoothIdType getSmoothId();
 

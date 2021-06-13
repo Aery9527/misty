@@ -142,7 +142,7 @@ public abstract class SmoothDomainLoaderAbstract<
             }
         };
 
-        boolean firstSet = this.loadFinishAction.compareAndSet(null, actionWrapper); // FIXME action要cross
+        boolean firstSet = this.loadFinishAction.compareAndSet(null, actionWrapper);
         if (!firstSet) {
             throw SmoothDomainLoadError.LOAD_FINISH_ACTION_REGISTER.thrown("loadFinishAction can't set again.");
         }
@@ -198,9 +198,11 @@ public abstract class SmoothDomainLoaderAbstract<
 
         BiConsumer<SmoothLoadFinishState, LoaderType> action = this.loadFinishAction.get();
         if (action == null) {
-            // FIXME loader要cross過
-            action.accept(loadFinishState.get(), (LoaderType) this);
+            return;
         }
+
+        // FIXME loader要cross過
+        action.accept(loadFinishState.get(), (LoaderType) this);
     }
 
     public SmoothCrosser getDomainCrosser() {
