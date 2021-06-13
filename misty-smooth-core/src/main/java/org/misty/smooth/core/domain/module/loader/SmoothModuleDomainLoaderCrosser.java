@@ -80,13 +80,18 @@ public class SmoothModuleDomainLoaderCrosser
     }
 
     @Override
-    public void retryLoading() throws SmoothLoadException {
-        super.wrap(() -> super.getWrappedTarget().retryLoading());
+    public void retryLoad() throws SmoothLoadException {
+        super.wrap(() -> super.getWrappedTarget().retryLoad());
     }
 
     @Override
     public void retryOnline() throws SmoothLoadException {
         super.wrap(() -> super.getWrappedTarget().retryOnline());
+    }
+
+    @Override
+    public void destroy() throws SmoothLoadException {
+        super.wrap(() -> super.getWrappedTarget().destroy());
     }
 
     @Override

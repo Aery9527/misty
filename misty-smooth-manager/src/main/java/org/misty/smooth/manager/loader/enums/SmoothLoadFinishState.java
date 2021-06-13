@@ -23,7 +23,7 @@ public enum SmoothLoadFinishState {
         return this.equals(LOAD_IGNORE);
     }
 
-    public boolean isFAILED() {
+    public boolean isFailed() {
         return this.equals(LOAD_FAILED);
     }
 

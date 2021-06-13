@@ -160,10 +160,10 @@ class SmoothModuleDomainLoaderCrosserTest {
     @Test
     public void retryLoading() {
         CrosserTest crosserTest = new CrosserTest();
-        crosserTest.mock((invocationOnMock) -> null, this.loader).retryLoading();
+        crosserTest.mock((invocationOnMock) -> null, this.loader).retryLoad();
 
         SmoothModuleDomainLoaderCrosser crosser = new SmoothModuleDomainLoaderCrosser(CL, this.loader);
-        crosser.retryLoading();
+        crosser.retryLoad();
 
         Assertions.assertThat(crosserTest.getExecuteClassLoader()).isNotNull().isEqualTo(CL);
     }

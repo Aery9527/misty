@@ -15,6 +15,7 @@ class SmoothLoadStateTest {
         Set<SmoothLoadState> testSet = new HashSet<>();
         testSet.add(SmoothLoadState.INITIAL);
         testSet.add(SmoothLoadState.LOADING);
+        testSet.add(SmoothLoadState.LOAD_IGNORE);
         testSet.add(SmoothLoadState.LOAD_FAILED);
         testSet.add(SmoothLoadState.WAITING_ONLINE);
         testSet.add(SmoothLoadState.GOING_ONLINE);
@@ -38,7 +39,13 @@ class SmoothLoadStateTest {
     @Test
     public void LOADING_AllowNextState() {
         Assertions.assertThat(SmoothLoadState.LOADING.getAllowedNextStates())
-                .containsExactlyInAnyOrder(SmoothLoadState.WAITING_ONLINE, SmoothLoadState.LOAD_FAILED);
+                .containsExactlyInAnyOrder(SmoothLoadState.WAITING_ONLINE, SmoothLoadState.LOAD_FAILED, SmoothLoadState.LOAD_IGNORE);
+    }
+
+    @Test
+    public void LOAD_IGNORE_AllowNextState() {
+        Assertions.assertThat(SmoothLoadState.LOAD_IGNORE.getAllowedNextStates())
+                .containsExactlyInAnyOrder(SmoothLoadState.DESTROYING);
     }
 
     @Test

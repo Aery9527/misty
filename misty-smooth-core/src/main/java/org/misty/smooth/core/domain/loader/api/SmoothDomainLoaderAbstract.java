@@ -84,6 +84,7 @@ public abstract class SmoothDomainLoaderAbstract<
             this.loadType = loadType;
             if (this.loadType.isIgnore()) {
                 changeState(SmoothLoadState.LOAD_IGNORE);
+                destroy();
                 return;
             }
 
@@ -119,13 +120,20 @@ public abstract class SmoothDomainLoaderAbstract<
     }
 
     @Override
-    public void retryLoading() throws SmoothLoadException {
+    public void retryLoad() throws SmoothLoadException {
 
     }
 
     @Override
     public void retryOnline() throws SmoothLoadException {
 
+    }
+
+    @Override
+    public void destroy() {
+        changeState(SmoothLoadState.DESTROYING);
+        // TODO
+        changeState(SmoothLoadState.DESTROYED);
     }
 
     @Override

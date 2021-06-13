@@ -23,13 +23,37 @@ public interface SmoothLoader<
 
     Optional<SmoothLoadType> getLoadType();
 
+    /**
+     * Can only be registered once
+     *
+     * @param action
+     * @return
+     * @throws SmoothLoadException
+     */
     LoadType registerLoadFinishAction(BiConsumer<SmoothLoadFinishState, LoadType> action) throws SmoothLoadException;
 
+    /**
+     * invoke to move on next stage when {@link #getLoadState()} return {@link SmoothLoadState#WAITING_ONLINE}
+     *
+     * @throws SmoothLoadException
+     */
     void online() throws SmoothLoadException;
 
-    void retryLoading() throws SmoothLoadException;
+    /**
+     * invoke to retry load when {@link #getLoadState()} return {@link SmoothLoadState#LOAD_FAILED}
+     *
+     * @throws SmoothLoadException
+     */
+    void retryLoad() throws SmoothLoadException;
 
+    /**
+     * invoke to retry online when {@link #getLoadState()} return {@link SmoothLoadState#ONLINE_FAILED}
+     *
+     * @throws SmoothLoadException
+     */
     void retryOnline() throws SmoothLoadException;
+
+    void destroy() throws SmoothLoadException;
 
     Optional<Throwable> getCurrentError();
 
