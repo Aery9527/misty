@@ -2,6 +2,7 @@ package org.misty.smooth.core.domain.impl;
 
 import org.misty.smooth.api.context.SmoothContext;
 import org.misty.smooth.api.context.SmoothEnvironment;
+import org.misty.smooth.api.context.SmoothLoadType;
 import org.misty.smooth.api.error.SmoothModuleNotFoundException;
 import org.misty.smooth.api.error.SmoothServiceNotFoundException;
 import org.misty.smooth.api.mark.SmoothGuide;
@@ -30,6 +31,8 @@ public class SmoothDomainContext implements SmoothContext {
 
     private Instant launchInstant;
 
+    private SmoothLoadType loadType;
+
     private SmoothContext parentContext;
 
     @Override
@@ -40,6 +43,11 @@ public class SmoothDomainContext implements SmoothContext {
     @Override
     public Instant getLaunchInstant() {
         return this.launchInstant;
+    }
+
+    @Override
+    public SmoothLoadType getLoadType() {
+        return this.loadType;
     }
 
     @Override

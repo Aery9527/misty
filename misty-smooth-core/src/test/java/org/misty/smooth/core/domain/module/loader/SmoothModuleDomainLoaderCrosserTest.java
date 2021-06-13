@@ -4,11 +4,12 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.misty.smooth.api.context.SmoothLoadType;
 import org.misty.smooth.api.vo.SmoothModuleId;
 import org.misty.smooth.core.domain.loader.api.SmoothDomainLoadTypeController;
 import org.misty.smooth.manager.loader.SmoothModuleLoader;
+import org.misty.smooth.manager.loader.enums.SmoothLoadFinishState;
 import org.misty.smooth.manager.loader.enums.SmoothLoadState;
-import org.misty.smooth.manager.loader.enums.SmoothLoadType;
 import org.misty.smooth.manager.loader.vo.SmoothLoaderArgument;
 import org.misty.ut.common.CrosserTest;
 import org.mockito.Mock;
@@ -19,7 +20,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 @ExtendWith(MockitoExtension.class)
 class SmoothModuleDomainLoaderCrosserTest {
@@ -117,9 +118,10 @@ class SmoothModuleDomainLoaderCrosserTest {
     @SuppressWarnings("unchecked")
     @Test
     public void registerLoadFinishAction() {
-        Consumer<SmoothModuleLoader> action = Mockito.mock(Consumer.class);
+        SmoothLoadFinishState loadFinishState = SmoothLoadFinishState.LOAD_FAILED;
+        BiConsumer<SmoothLoadFinishState, SmoothModuleLoader> action = Mockito.mock(BiConsumer.class);
 
-        AtomicReference<Consumer<SmoothModuleLoader>> temp = new AtomicReference<>();
+        AtomicReference<BiConsumer<SmoothLoadFinishState, SmoothModuleLoader>> temp = new AtomicReference<>();
 
         CrosserTest crosserTest1 = new CrosserTest();
         crosserTest1.mock((invocationOnMock) -> {
@@ -128,7 +130,7 @@ class SmoothModuleDomainLoaderCrosserTest {
         }, this.loader).registerLoadFinishAction(Mockito.any());
 
         CrosserTest crosserTest2 = new CrosserTest();
-        crosserTest2.mock((invocationOnMock) -> null, action).accept(Mockito.any());
+        crosserTest2.mock((invocationOnMock) -> null, action).accept(Mockito.any(), Mockito.any());
 
         SmoothModuleDomainLoaderCrosser crosser = new SmoothModuleDomainLoaderCrosser(CL, this.loader);
 
@@ -138,7 +140,7 @@ class SmoothModuleDomainLoaderCrosserTest {
         Assertions.assertThat(crosser.registerLoadFinishAction(action)).isEqualTo(crosser);
         Thread.currentThread().setContextClassLoader(originalCl);
 
-        temp.get().accept(null);
+        temp.get().accept(loadFinishState, null);
 
         Assertions.assertThat(crosserTest1.getExecuteClassLoader()).isNotNull().isEqualTo(CL);
         Assertions.assertThat(crosserTest2.getExecuteClassLoader()).isNotNull().isEqualTo(tempCl);

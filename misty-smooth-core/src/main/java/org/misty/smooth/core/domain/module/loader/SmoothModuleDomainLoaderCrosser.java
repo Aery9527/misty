@@ -1,17 +1,18 @@
 package org.misty.smooth.core.domain.module.loader;
 
+import org.misty.smooth.api.context.SmoothLoadType;
 import org.misty.smooth.api.cross.SmoothCrossWrapper;
 import org.misty.smooth.api.cross.SmoothCrosser;
 import org.misty.smooth.api.vo.SmoothModuleId;
 import org.misty.smooth.core.domain.loader.api.SmoothDomainLoadTypeController;
 import org.misty.smooth.manager.error.SmoothLoadException;
 import org.misty.smooth.manager.loader.SmoothModuleLoader;
+import org.misty.smooth.manager.loader.enums.SmoothLoadFinishState;
 import org.misty.smooth.manager.loader.enums.SmoothLoadState;
-import org.misty.smooth.manager.loader.enums.SmoothLoadType;
 import org.misty.smooth.manager.loader.vo.SmoothLoaderArgument;
 
 import java.util.Optional;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 public class SmoothModuleDomainLoaderCrosser
         extends SmoothCrossWrapper<SmoothModuleDomainLoader>
@@ -56,14 +57,14 @@ public class SmoothModuleDomainLoaderCrosser
     }
 
     @Override
-    public SmoothModuleLoader registerLoadFinishAction(Consumer<SmoothModuleLoader> action) throws SmoothLoadException {
+    public SmoothModuleLoader registerLoadFinishAction(BiConsumer<SmoothLoadFinishState, SmoothModuleLoader> action) throws SmoothLoadException {
         Thread currentThread = Thread.currentThread();
         ClassLoader currentContextClassLoader = currentThread.getContextClassLoader();
         SmoothCrosser actionCrosser = new SmoothCrosser(currentContextClassLoader);
 
-        Consumer<SmoothModuleLoader> wrapAction = (loader) -> {
+        BiConsumer<SmoothLoadFinishState, SmoothModuleLoader> wrapAction = (loadFinishState, loader) -> {
             actionCrosser.wrap(() -> {
-                action.accept(loader);
+                action.accept(loadFinishState, loader);
             });
         };
 

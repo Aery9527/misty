@@ -2,6 +2,7 @@ package org.misty.smooth.sole.context;
 
 import org.misty.smooth.api.context.SmoothContext;
 import org.misty.smooth.api.context.SmoothEnvironment;
+import org.misty.smooth.api.context.SmoothLoadType;
 import org.misty.smooth.api.error.SmoothModuleNotFoundException;
 import org.misty.smooth.api.error.SmoothServiceNotFoundException;
 import org.misty.smooth.api.service.SmoothServiceInvoker;
@@ -26,6 +27,11 @@ public class SmoothSoleContext implements SmoothContext {
 
     @Override
     public Instant getLaunchInstant() {
+        return null;
+    }
+
+    @Override
+    public SmoothLoadType getLoadType() {
         return null;
     }
 

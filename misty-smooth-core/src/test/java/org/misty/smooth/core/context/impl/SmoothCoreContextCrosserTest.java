@@ -117,13 +117,13 @@ class SmoothCoreContextCrosserTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    void invokeService_Future() {
-        String moduleName = "9527";
+    void invoke_Future() {
+        SmoothModuleId id = new SmoothModuleId("kerker", "9527");
         String serviceKey = "9487";
         SmoothServiceRequest request = new SmoothServiceRequest();
         Future<SmoothServiceResponseResult> future = Mockito.mock(Future.class);
 
-        AtomicReference<String> checkPoint1 = new AtomicReference<>();
+        AtomicReference<SmoothModuleId> checkPoint1 = new AtomicReference<>();
         AtomicReference<String> checkPoint2 = new AtomicReference<>();
         AtomicReference<SmoothServiceRequest> checkPoint3 = new AtomicReference<>();
 
@@ -133,26 +133,26 @@ class SmoothCoreContextCrosserTest {
             checkPoint2.set(invocationOnMock.getArgument(1));
             checkPoint3.set(invocationOnMock.getArgument(2));
             return future;
-        }, this.context).invokeService(Mockito.any(), Mockito.any(), Mockito.any());
+        }, this.context).invoke(Mockito.any(), Mockito.any(), Mockito.any());
 
         SmoothCoreContextCrosser crosser = new SmoothCoreContextCrosser(CL, this.context);
-        Assertions.assertThat(crosser.invokeService(moduleName, serviceKey, request)).isEqualTo(future);
+        Assertions.assertThat(crosser.invoke(id, serviceKey, request)).isEqualTo(future);
 
         Assertions.assertThat(crosserTest.getExecuteClassLoader()).isNotNull().isEqualTo(CL);
-        Assertions.assertThat(checkPoint1.get()).isNotNull().isEqualTo(moduleName);
+        Assertions.assertThat(checkPoint1.get()).isNotNull().isEqualTo(id);
         Assertions.assertThat(checkPoint2.get()).isNotNull().isEqualTo(serviceKey);
         Assertions.assertThat(checkPoint3.get()).isNotNull().isEqualTo(request);
     }
 
     @SuppressWarnings("unchecked")
     @Test
-    void invokeService_resultProcessor() {
-        String moduleName = "9527";
+    void invoke_resultProcessor() {
+        SmoothModuleId id = new SmoothModuleId("kerker", "9527");
         String serviceKey = "9487";
         SmoothServiceRequest request = new SmoothServiceRequest();
         Consumer<SmoothServiceResponseResult> resultProcessor = Mockito.mock(Consumer.class);
 
-        AtomicReference<String> checkPoint1 = new AtomicReference<>();
+        AtomicReference<SmoothModuleId> checkPoint1 = new AtomicReference<>();
         AtomicReference<String> checkPoint2 = new AtomicReference<>();
         AtomicReference<SmoothServiceRequest> checkPoint3 = new AtomicReference<>();
         AtomicReference<Consumer<SmoothServiceResponseResult>> checkPoint4 = new AtomicReference<>();
@@ -164,13 +164,13 @@ class SmoothCoreContextCrosserTest {
             checkPoint3.set(invocationOnMock.getArgument(2));
             checkPoint4.set(invocationOnMock.getArgument(3));
             return null;
-        }, this.context).invokeService(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
+        }, this.context).invoke(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
 
         SmoothCoreContextCrosser crosser = new SmoothCoreContextCrosser(CL, this.context);
-        crosser.invokeService(moduleName, serviceKey, request, resultProcessor);
+        crosser.invoke(id, serviceKey, request, resultProcessor);
 
         Assertions.assertThat(crosserTest.getExecuteClassLoader()).isNotNull().isEqualTo(CL);
-        Assertions.assertThat(checkPoint1.get()).isNotNull().isEqualTo(moduleName);
+        Assertions.assertThat(checkPoint1.get()).isNotNull().isEqualTo(id);
         Assertions.assertThat(checkPoint2.get()).isNotNull().isEqualTo(serviceKey);
         Assertions.assertThat(checkPoint3.get()).isNotNull().isEqualTo(request);
         Assertions.assertThat(checkPoint4.get()).isNotNull().isEqualTo(resultProcessor);

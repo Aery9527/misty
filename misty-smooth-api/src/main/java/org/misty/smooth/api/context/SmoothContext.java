@@ -22,6 +22,8 @@ public interface SmoothContext extends SmoothServiceFutureInvoker, SmoothService
 
     Instant getLaunchInstant();
 
+    SmoothLoadType getLoadType();
+
     SmoothEnvironment getEnvironment();
 
     Set<SmoothModuleId> listModuleWithSet();

@@ -1,6 +1,7 @@
 package org.misty.smooth.core.context.impl;
 
 import org.misty.smooth.api.context.SmoothEnvironment;
+import org.misty.smooth.api.context.SmoothLoadType;
 import org.misty.smooth.api.cross.SmoothCrossWrapper;
 import org.misty.smooth.api.error.SmoothModuleNotFoundException;
 import org.misty.smooth.api.error.SmoothServiceNotFoundException;
@@ -43,6 +44,11 @@ public class SmoothCoreContextCrosser extends SmoothCrossWrapper<SmoothCoreConte
     @Override
     public Instant getLaunchInstant() {
         return super.wrap(() -> super.getWrappedTarget().getLaunchInstant());
+    }
+
+    @Override
+    public SmoothLoadType getLoadType() {
+        return super.wrap(() -> super.getWrappedTarget().getLoadType());
     }
 
     @Override

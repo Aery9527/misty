@@ -12,7 +12,6 @@ public class SmoothDomainClassLoader extends URLClassLoader {
 
     private final AtomicReference<SmoothId<?>> smoothId = new AtomicReference<>();
 
-
     public SmoothDomainClassLoader(URL[] urls, ClassLoader parent) {
         super(urls, parent);
     }

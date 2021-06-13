@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 public enum SmoothLoadState {
     INITIAL,
     LOADING,
+    LOAD_IGNORE,
     LOAD_FAILED,
     WAITING_ONLINE,
     GOING_ONLINE,
@@ -19,7 +20,8 @@ public enum SmoothLoadState {
 
     static {
         INITIAL.allowedNextState = collect(LOADING);
-        LOADING.allowedNextState = collect(WAITING_ONLINE, LOAD_FAILED);
+        LOADING.allowedNextState = collect(LOAD_IGNORE, LOAD_FAILED, WAITING_ONLINE);
+        LOAD_IGNORE.allowedNextState = collect(DESTROYING);
         LOAD_FAILED.allowedNextState = collect(LOADING, DESTROYING);
         WAITING_ONLINE.allowedNextState = collect(GOING_ONLINE, DESTROYING);
         GOING_ONLINE.allowedNextState = collect(ONLINE, ONLINE_FAILED);

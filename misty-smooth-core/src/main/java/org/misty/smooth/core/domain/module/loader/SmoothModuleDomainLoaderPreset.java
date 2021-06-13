@@ -1,5 +1,6 @@
 package org.misty.smooth.core.domain.module.loader;
 
+import org.misty.smooth.api.context.SmoothLoadType;
 import org.misty.smooth.api.lifecycle.module.SmoothModuleLifecycle;
 import org.misty.smooth.api.lifecycle.module.SmoothModuleRegister;
 import org.misty.smooth.api.vo.SmoothModuleId;
@@ -12,7 +13,7 @@ public class SmoothModuleDomainLoaderPreset
         implements SmoothModuleDomainLoader {
 
     @Override
-    protected void initialLifecycle(SmoothModuleLifecycle domainLifecycle) {
+    protected void initialLifecycle(SmoothModuleLifecycle domainLifecycle, SmoothLoadType loadType) {
         SmoothDomainContext context = new SmoothDomainContext();
         context.setSmoothId(super.getSmoothId());
         context.setLaunchInstant(super.getSmoothId().getLaunchTime());

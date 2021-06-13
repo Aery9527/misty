@@ -1,5 +1,6 @@
 package org.misty.smooth.core.context.impl;
 
+import org.misty.smooth.api.context.SmoothLoadType;
 import org.misty.smooth.api.error.SmoothModuleNotFoundException;
 import org.misty.smooth.api.error.SmoothServiceNotFoundException;
 import org.misty.smooth.api.service.SmoothServiceInvoker;
@@ -66,6 +67,11 @@ public class SmoothCoreContextPreset implements SmoothCoreContext {
     @Override
     public Instant getLaunchInstant() {
         return this.coreId.getLaunchTime();
+    }
+
+    @Override
+    public SmoothLoadType getLoadType() {
+        return SmoothLoadType.NEW;
     }
 
     @Override

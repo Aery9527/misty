@@ -1,14 +1,15 @@
 package org.misty.smooth.core.domain.loader.api;
 
 import org.misty.smooth.api.context.SmoothContext;
+import org.misty.smooth.api.context.SmoothLoadType;
 import org.misty.smooth.api.cross.SmoothCrosser;
 import org.misty.smooth.api.lifecycle.SmoothLifecycle;
 import org.misty.smooth.api.vo.SmoothId;
 import org.misty.smooth.core.error.SmoothDomainLoadError;
 import org.misty.smooth.manager.error.SmoothLoadException;
 import org.misty.smooth.manager.loader.SmoothLoader;
+import org.misty.smooth.manager.loader.enums.SmoothLoadFinishState;
 import org.misty.smooth.manager.loader.enums.SmoothLoadState;
-import org.misty.smooth.manager.loader.enums.SmoothLoadType;
 import org.misty.smooth.manager.loader.vo.SmoothLoaderArgument;
 import org.misty.util.tool.AtomicUpdater;
 import org.misty.util.verify.Examiner;
@@ -19,19 +20,20 @@ import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public abstract class SmoothDomainLoaderAbstract<
         SmoothIdType extends SmoothId<SmoothIdType>,
-        LoadType extends SmoothLoader<SmoothIdType, LoadType>,
+        LoaderType extends SmoothLoader<SmoothIdType, LoaderType>,
         LifecycleType extends SmoothLifecycle
-        > implements SmoothLoader<SmoothIdType, LoadType>, SmoothDomainLoader<SmoothIdType> {
+        > implements SmoothLoader<SmoothIdType, LoaderType>, SmoothDomainLoader<SmoothIdType> {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final AtomicUpdater<SmoothLoadState> loadState = new AtomicUpdater<>(SmoothLoadState.INITIAL);
 
-    private final AtomicReference<Consumer<LoadType>> loadFinishAction = new AtomicReference<>();
+    private final AtomicReference<BiConsumer<SmoothLoadFinishState, LoaderType>> loadFinishAction = new AtomicReference<>();
 
     private SmoothCrosser domainCrosser;
 
@@ -80,11 +82,12 @@ public abstract class SmoothDomainLoaderAbstract<
             Examiner.refuseNullAndEmpty("loadType", this.domainCrosser, SmoothDomainLoadError.UNEXPECTED);
 
             this.loadType = loadType;
-            if (this.loadType.equals(SmoothLoadType.DUPLICATE)) {
-                throw SmoothDomainLoadError.LOAD_TYPE_DUPLICATE.thrown();
+            if (this.loadType.isIgnore()) {
+                changeState(SmoothLoadState.LOAD_IGNORE);
+                return;
             }
 
-            initialLifecycle(this.domainLifecycle);
+            initialLifecycle(this.domainLifecycle, this.loadType);
             changeState(SmoothLoadState.WAITING_ONLINE);
         };
 
@@ -126,20 +129,30 @@ public abstract class SmoothDomainLoaderAbstract<
     }
 
     @Override
-    public LoadType registerLoadFinishAction(Consumer<LoadType> action) throws SmoothLoadException {
+    public LoaderType registerLoadFinishAction(BiConsumer<SmoothLoadFinishState, LoaderType> action) throws SmoothLoadException {
         Examiner.refuseNullAndEmpty("loadFinishAction", action, SmoothDomainLoadError.UNEXPECTED);
 
-        boolean firstSet = this.loadFinishAction.compareAndSet(null, action); // FIXME action要cross
+        ClassLoader wrapClassLoader = Thread.currentThread().getContextClassLoader();
+        SmoothCrosser crosser = new SmoothCrosser(wrapClassLoader);
+        BiConsumer<SmoothLoadFinishState, LoaderType> actionWrapper = (finishState, loader) -> {
+            try {
+                crosser.wrap(() -> action.accept(finishState, loader));
+            } catch (Throwable t) {
+                this.logger.error(this.smoothId + " loadFinishAction error.", t);
+            }
+        };
+
+        boolean firstSet = this.loadFinishAction.compareAndSet(null, actionWrapper); // FIXME action要cross
         if (!firstSet) {
             throw SmoothDomainLoadError.LOAD_FINISH_ACTION_REGISTER.thrown("loadFinishAction can't set again.");
         }
 
-        // TODO 若register的時候已經載完(或失敗), 就要調用action了
+        this.launchThread.execute(this::doLoadFinishAction);
 
-        return (LoadType) this;
+        return (LoaderType) this;
     }
 
-    protected abstract void initialLifecycle(LifecycleType domainLifecycle);
+    protected abstract void initialLifecycle(LifecycleType domainLifecycle, SmoothLoadType loadType);
 
     private void checkLaunchField() {
         Examiner.refuseNullAndEmpty("domainCrosser", this.domainCrosser, SmoothDomainLoadError.UNEXPECTED);
@@ -172,6 +185,22 @@ public abstract class SmoothDomainLoaderAbstract<
             String msg = "can't change state from " + currentState + " to " + nextState;
             throw SmoothDomainLoadError.LOAD_STATE_WRONG.thrown(msg);
         }));
+
+        doLoadFinishAction();
+    }
+
+    private void doLoadFinishAction() {
+        SmoothLoadState loadState = this.loadState.get();
+        Optional<SmoothLoadFinishState> loadFinishState = SmoothLoadFinishState.fromLoadState(loadState);
+        if (!loadFinishState.isPresent()) {
+            return;
+        }
+
+        BiConsumer<SmoothLoadFinishState, LoaderType> action = this.loadFinishAction.get();
+        if (action == null) {
+            // FIXME loader要cross過
+            action.accept(loadFinishState.get(), (LoaderType) this);
+        }
     }
 
     public SmoothCrosser getDomainCrosser() {

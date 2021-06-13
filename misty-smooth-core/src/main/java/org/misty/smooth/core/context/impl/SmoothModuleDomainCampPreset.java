@@ -1,11 +1,11 @@
 package org.misty.smooth.core.context.impl;
 
+import org.misty.smooth.api.context.SmoothLoadType;
 import org.misty.smooth.api.error.SmoothModuleNotFoundException;
 import org.misty.smooth.api.vo.SmoothModuleId;
 import org.misty.smooth.api.vo.SmoothServiceId;
 import org.misty.smooth.core.context.api.SmoothModuleDomainCamp;
 import org.misty.smooth.core.domain.module.api.SmoothModuleDomain;
-import org.misty.smooth.manager.loader.enums.SmoothLoadType;
 import org.misty.smooth.manager.loader.vo.SmoothLoaderArgument;
 import org.misty.util.verify.Judge;
 import org.slf4j.Logger;

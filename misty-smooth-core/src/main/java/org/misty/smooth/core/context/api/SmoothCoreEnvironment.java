@@ -1,14 +1,9 @@
 package org.misty.smooth.core.context.api;
 
 import org.misty.smooth.api.context.SmoothEnvironment;
-import org.misty.smooth.api.mark.SmoothGuide;
 
 import java.util.*;
 
-@SmoothGuide(needCross = false
-        , implementationBy = SmoothGuide.Domain.CORE
-        , usedBy = SmoothGuide.Domain.CORE
-)
 public interface SmoothCoreEnvironment extends SmoothEnvironment {
 
     /**

@@ -43,7 +43,7 @@ public class SmoothModuleDomainPreset implements SmoothModuleDomain {
 
     @Override
     public SmoothModuleId getSmoothId() {
-        return null;
+        return this.moduleId;
     }
 
     @Override
