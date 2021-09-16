@@ -30,8 +30,8 @@ public class ColumnarMessengerTest {
     public void all_with() {
         printWithTest(new ColumnarMessenger()
                 .withNewlineFirst()
-                .withBeginning("kerker")
-                .withEnding("GGG")
+                .withBeginning("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
+                .withEnding("eeeeee" + System.lineSeparator() + "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
                 .withColumnarPrefix(": ")
                 .withBoundary()
                 .withBoundaryLength(3)

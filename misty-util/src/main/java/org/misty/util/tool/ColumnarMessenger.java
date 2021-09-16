@@ -6,6 +6,10 @@ import java.util.function.BiConsumer;
 
 public class ColumnarMessenger {
 
+    public static ColumnarMessenger create() {
+        return new ColumnarMessenger();
+    }
+
     class ItemPrinter {
 
         private final Collection<String> items;
@@ -226,7 +230,7 @@ public class ColumnarMessenger {
         printBeginningAndEnding(sb, this.beginning, this.ending);
 
         if (this.boundaryUsable) {
-            printBoundary(sb, itemPrinter, this.boundaryLength, this.boundaryChar);
+            printBoundary(sb, itemPrinter, this.boundaryLength, this.boundaryChar, this.beginning, this.ending);
         }
 
         if (this.newlineFirst) {
@@ -247,11 +251,26 @@ public class ColumnarMessenger {
         }
     }
 
-    protected void printBoundary(StringBuilder sb, ItemPrinter itemPrinter, int boundaryLength, char boundaryChar) {
+    protected void printBoundary(StringBuilder sb, ItemPrinter itemPrinter, int boundaryLength, char boundaryChar,
+                                 String beginning, String ending) {
         boolean isAdaptiveBoundaryLength = isAdaptiveBoundaryLength(boundaryLength);
         if (isAdaptiveBoundaryLength) {
             boundaryLength = itemPrinter.getItemMaxLength();
             boundaryLength += itemPrinter.getPrefixLength();
+
+            if (beginning.length() > boundaryLength || ending.length() > boundaryLength) {
+                String target = beginning.length() > ending.length() ? beginning : ending;
+                String[] targetEachLines = target.split(System.lineSeparator());
+
+                int maxLength = 0;
+                for (String targetEachLine : targetEachLines) {
+                    if (targetEachLine.length() > maxLength) {
+                        maxLength = targetEachLine.length();
+                    }
+                }
+
+                boundaryLength = maxLength;
+            }
         }
 
         StringBuilder sb2 = new StringBuilder();
