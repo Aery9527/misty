@@ -16,9 +16,7 @@ public class AtomicUpdater<TargetType> {
     private final AtomicReference<TargetType> target = new AtomicReference<>();
 
     public AtomicUpdater(TargetType target) {
-        this(target, (newTarget) -> {
-            Examiner.refuseNullAndEmpty("target", newTarget);
-        });
+        this(target, (newTarget) -> Examiner.refuseNullAndEmpty("target", newTarget));
     }
 
     public AtomicUpdater(TargetType target, Consumer<TargetType> targetChecker) {

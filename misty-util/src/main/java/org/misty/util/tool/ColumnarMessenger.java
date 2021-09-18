@@ -3,6 +3,7 @@ package org.misty.util.tool;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
+import java.util.function.IntUnaryOperator;
 
 public class ColumnarMessenger {
 
@@ -258,18 +259,11 @@ public class ColumnarMessenger {
             boundaryLength = itemPrinter.getItemMaxLength();
             boundaryLength += itemPrinter.getPrefixLength();
 
-            if (beginning.length() > boundaryLength || ending.length() > boundaryLength) {
-                String target = beginning.length() > ending.length() ? beginning : ending;
-                String[] targetEachLines = target.split(System.lineSeparator());
+            int beginningLineMaxLength = findMaxLengthEachLine(beginning);
+            int endingMaxLength = findMaxLengthEachLine(ending);
 
-                int maxLength = 0;
-                for (String targetEachLine : targetEachLines) {
-                    if (targetEachLine.length() > maxLength) {
-                        maxLength = targetEachLine.length();
-                    }
-                }
-
-                boundaryLength = maxLength;
+            if (beginningLineMaxLength > boundaryLength || endingMaxLength > boundaryLength) {
+                boundaryLength = Math.max(beginningLineMaxLength, endingMaxLength);
             }
         }
 
@@ -292,6 +286,30 @@ public class ColumnarMessenger {
 
     protected void printNewline(StringBuilder sb) {
         sb.append(System.lineSeparator());
+    }
+
+    protected int findMaxLengthEachLine(String target) {
+        IntUnaryOperator indexOf = (formIndex) -> target.indexOf(System.lineSeparator(), formIndex);
+
+        int index = indexOf.applyAsInt(0);
+        if (index <= 0) {
+            return target.length();
+        }
+
+        int length = index;
+        while (index > 0) {
+            int earlierIndex = index;
+            index = indexOf.applyAsInt(index + 1);
+
+            int intervalLength = index < 0 ? target.length() - earlierIndex : index - earlierIndex;
+            intervalLength -= System.lineSeparator().length();
+
+            if (intervalLength > length) {
+                length = intervalLength;
+            }
+        }
+
+        return length;
     }
 
 }
