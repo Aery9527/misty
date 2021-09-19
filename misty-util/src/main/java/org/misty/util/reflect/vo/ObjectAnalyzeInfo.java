@@ -2,13 +2,13 @@ package org.misty.util.reflect.vo;
 
 import java.util.Optional;
 
-public class ObjectGenericInfo {
+public class ObjectAnalyzeInfo {
 
     private final Class<?> ownerClass;
 
     private final ObjectGenericDetail[] genericDetails;
 
-    public ObjectGenericInfo(Class<?> ownerClass, ObjectGenericDetail[] genericDetails) {
+    public ObjectAnalyzeInfo(Class<?> ownerClass, ObjectGenericDetail[] genericDetails) {
         this.ownerClass = ownerClass;
         this.genericDetails = genericDetails;
     }

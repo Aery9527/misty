@@ -32,7 +32,7 @@ public class FieldExtractor {
         this.clazz = clazz;
     }
 
-    public <Type1, Type2 extends Type1> FieldExtractor(Class<Type1> accessibleType, Type2 target) {
+    public <Type1, Type2 extends Type1> FieldExtractor(Class<? super Type1> accessibleType, Type2 target) {
         Objects.requireNonNull(target);
         Objects.requireNonNull(accessibleType);
 

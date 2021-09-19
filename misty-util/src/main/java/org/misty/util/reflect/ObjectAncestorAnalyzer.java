@@ -1,6 +1,6 @@
 package org.misty.util.reflect;
 
-import org.misty.util.reflect.vo.ObjectGenericInfo;
+import org.misty.util.reflect.vo.ObjectAnalyzeInfo;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -17,9 +17,9 @@ public class ObjectAncestorAnalyzer {
 
     private final Class<?> target;
 
-    private final Map<Class<?>, ObjectGenericInfo> superClassesGenericInfo;
+    private final Map<Class<?>, ObjectAnalyzeInfo> superClassesAnalyzeInfo;
 
-    private final Map<Class<?>, ObjectGenericInfo> interfacesGenericInfo;
+    private final Map<Class<?>, ObjectAnalyzeInfo> interfacesAnalyzeInfo;
 
     private final AtomicReference<List<Class<?>>> superClasses = new AtomicReference<>();
 
@@ -28,22 +28,22 @@ public class ObjectAncestorAnalyzer {
     public ObjectAncestorAnalyzer(Class<?> target) {
         this.target = target;
 
-        Map<Class<?>, ObjectGenericAnalyzer> superClassesGenericInfo = new LinkedHashMap<>();
-        Map<Class<?>, ObjectGenericAnalyzer> interfacesGenericInfo = new HashMap<>();
-        analyze(target, superClassesGenericInfo, interfacesGenericInfo);
+        Map<Class<?>, ObjectAncestorAnalyzeProcessor> superClassesAnalyzeProcessor = new LinkedHashMap<>();
+        Map<Class<?>, ObjectAncestorAnalyzeProcessor> interfacesAnalyzeProcessor = new HashMap<>();
+        analyze(target, superClassesAnalyzeProcessor, interfacesAnalyzeProcessor);
 
-        Function<Map<Class<?>, ObjectGenericAnalyzer>, Map<Class<?>, ObjectGenericInfo>> toGenericInfo = (map) -> {
+        Function<Map<Class<?>, ObjectAncestorAnalyzeProcessor>, Map<Class<?>, ObjectAnalyzeInfo>> toGenericInfo = (processorMap) -> {
             return Collections.unmodifiableMap(
-                    map.entrySet().stream()
+                    processorMap.entrySet().stream()
                             .reduce(new HashMap<>(), (result, entry) -> {
-                                result.put(entry.getKey(), entry.getValue().analyze());
+                                result.put(entry.getKey(), entry.getValue().analyze(processorMap));
                                 return result;
                             }, (result1, result2) -> null)
             );
         };
 
-        this.superClassesGenericInfo = toGenericInfo.apply(superClassesGenericInfo);
-        this.interfacesGenericInfo = toGenericInfo.apply(interfacesGenericInfo);
+        this.superClassesAnalyzeInfo = toGenericInfo.apply(superClassesAnalyzeProcessor);
+        this.interfacesAnalyzeInfo = toGenericInfo.apply(interfacesAnalyzeProcessor);
     }
 
     public Class<?> getTarget() {
@@ -51,11 +51,11 @@ public class ObjectAncestorAnalyzer {
     }
 
     public List<Class<?>> getAllSuperClass() {
-        return this.superClasses.updateAndGet((last) -> updateFirst(last, this.superClassesGenericInfo));
+        return this.superClasses.updateAndGet((last) -> updateFirst(last, this.superClassesAnalyzeInfo));
     }
 
     public List<Class<?>> getAllInterface() {
-        return this.interfaces.updateAndGet((last) -> updateFirst(last, this.interfacesGenericInfo));
+        return this.interfaces.updateAndGet((last) -> updateFirst(last, this.interfacesAnalyzeInfo));
     }
 
 //    public Optional<ObjectGenericInfo> getGenericInfo(Class<?> searchClass) {
@@ -64,38 +64,38 @@ public class ObjectAncestorAnalyzer {
 //    public Optional<ObjectGenericDetail> getGenericAtIndex(Class<?> searchClass, int index) {
 //    }
 
-    public Map<Class<?>, ObjectGenericInfo> getAllSuperClassGenericInfo() {
-        return this.superClassesGenericInfo;
+    public Map<Class<?>, ObjectAnalyzeInfo> getAllSuperClassAnalyzeInfo() {
+        return this.superClassesAnalyzeInfo;
     }
 
-    public Map<Class<?>, ObjectGenericInfo> getAllInterfaceGenericInfo() {
-        return this.interfacesGenericInfo;
+    public Map<Class<?>, ObjectAnalyzeInfo> getAllInterfaceAnalyzeInfo() {
+        return this.interfacesAnalyzeInfo;
     }
 
-    protected List<Class<?>> updateFirst(List<Class<?>> target, Map<Class<?>, ObjectGenericInfo> genericInfo) {
+    protected List<Class<?>> updateFirst(List<Class<?>> target, Map<Class<?>, ObjectAnalyzeInfo> genericInfo) {
         return target == null ? Collections.unmodifiableList(new ArrayList<>(genericInfo.keySet())) : target;
     }
 
     protected void analyze(Class<?> target,
-                           Map<Class<?>, ObjectGenericAnalyzer> superClassesGenericInfo,
-                           Map<Class<?>, ObjectGenericAnalyzer> interfacesGenericInfo) {
-        analyzeSuperClass(target, superClassesGenericInfo);
-        analyzeInterface(target, interfacesGenericInfo);
+                           Map<Class<?>, ObjectAncestorAnalyzeProcessor> superClassesAnalyzeProcessor,
+                           Map<Class<?>, ObjectAncestorAnalyzeProcessor> interfacesAnalyzeProcessor) {
+        analyzeSuperClassGeneric(target, superClassesAnalyzeProcessor);
+        analyzeInterfaceGeneric(target, interfacesAnalyzeProcessor);
 
         Class<?> superclass = target.getSuperclass();
         if (!superclass.equals(Object.class)) {
-            analyze(superclass, superClassesGenericInfo, interfacesGenericInfo);
+            analyze(superclass, superClassesAnalyzeProcessor, interfacesAnalyzeProcessor);
         }
     }
 
-    private void analyzeSuperClass(Class<?> target, Map<Class<?>, ObjectGenericAnalyzer> superClassesGenericInfo) {
+    private void analyzeSuperClassGeneric(Class<?> target, Map<Class<?>, ObjectAncestorAnalyzeProcessor> superClassesAnalyzeProcessor) {
         Class<?> superClass = target.getSuperclass();
         if (superClass.equals(Object.class)) {
             return;
         }
 
-        ObjectGenericAnalyzer analyzer = new ObjectGenericAnalyzer(superClass);
-        superClassesGenericInfo.put(superClass, analyzer);
+        ObjectAncestorAnalyzeProcessor analyzeProcessor = new ObjectAncestorAnalyzeProcessor(target, superClass);
+        superClassesAnalyzeProcessor.put(superClass, analyzeProcessor);
 
         Type genericSuperclass = target.getGenericSuperclass();
         if (!(genericSuperclass instanceof ParameterizedType)) {
@@ -107,14 +107,14 @@ public class ObjectAncestorAnalyzer {
         for (int i = 0; i < arguments.length; i++) {
             Type argument = arguments[i];
             if (argument instanceof Class) {
-                analyzer.put(i, (Class<?>) argument);
+                analyzeProcessor.add((Class<?>) argument);
             } else {
-                analyzer.put(i, (TypeVariable<?>) argument);
+                analyzeProcessor.add(new TypeVariableDecorator<>((TypeVariable<?>) argument, parameterizedType));
             }
         }
     }
 
-    private void analyzeInterface(Class<?> target, Map<Class<?>, ObjectGenericAnalyzer> interfacesGenericInfo) {
+    private void analyzeInterfaceGeneric(Class<?> target, Map<Class<?>, ObjectAncestorAnalyzeProcessor> interfacesAnalyzeProcessor) {
         Class<?>[] interfaces = target.getInterfaces();
         Type[] genericInterfaces = target.getGenericInterfaces();
 
