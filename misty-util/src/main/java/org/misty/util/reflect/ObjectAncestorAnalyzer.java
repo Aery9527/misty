@@ -1,11 +1,12 @@
 package org.misty.util.reflect;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
+import org.misty.util.fi.FiSupplier;
+import sun.reflect.generics.repository.ClassRepository;
+
+import java.lang.reflect.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 public class ObjectAncestorAnalyzer {
 
@@ -85,12 +86,14 @@ public class ObjectAncestorAnalyzer {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             GenericCertainType that = (GenericCertainType) o;
-            return Objects.equals(certainType, that.certainType) && Objects.equals(that.getOwnerClass(), super.getOwnerClass());
+            return Objects.equals(certainType, that.certainType) &&
+                    Objects.equals(super.getOwnerClass(), that.getOwnerClass()) &&
+                    Objects.equals(super.getIndex(), that.getIndex());
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(certainType, super.getOwnerClass());
+            return Objects.hash(certainType, super.getOwnerClass(), super.getIndex());
         }
 
         @Override
@@ -127,12 +130,14 @@ public class ObjectAncestorAnalyzer {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             GenericUncertainType that = (GenericUncertainType) o;
-            return Objects.equals(typeVariable, that.typeVariable) && Objects.equals(that.getOwnerClass(), super.getOwnerClass());
+            return Objects.equals(typeVariable, that.typeVariable) &&
+                    Objects.equals(super.getOwnerClass(), that.getOwnerClass()) &&
+                    Objects.equals(super.getIndex(), that.getIndex());
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(typeVariable, super.getOwnerClass());
+            return Objects.hash(typeVariable, super.getOwnerClass(), super.getIndex());
         }
 
         @Override
@@ -145,7 +150,7 @@ public class ObjectAncestorAnalyzer {
         }
     }
 
-    public static class Processor {
+    private static class Processor {
         private final Class<?> ownerClass;
 
         private final List<GenericType> genericTypes = new ArrayList<>();
@@ -164,22 +169,74 @@ public class ObjectAncestorAnalyzer {
             this.genericTypes.add(new GenericUncertainType(ownerClass, index, argument));
         }
 
-        public Info analyze(Map<Class<?>, Processor> processorMap) {
-            System.out.println(this.ownerClass);
-//            processorMap.entrySet().forEach(System.out::println);
-            this.genericTypes.forEach(System.out::println);
-            System.out.println();
+        public Info analyze(Map<GenericType, GenericLink> genericRelationship) {
+            boolean needFindGenericRelationship = this.genericTypes.stream()
+                    .reduce(false, (result, genericType) -> {
+                        return result || genericType.isUncertainType();
+                    }, (result1, result2) -> result1 || result2);
 
+            List<GenericType> generics;
+            if (needFindGenericRelationship) {
+                generics = withGenericRelationship(genericRelationship);
+            } else {
+                generics = this.genericTypes;
+            }
 
+            return new Info(this.ownerClass, Collections.unmodifiableList(generics));
+        }
 
-
+        protected List<GenericType> withGenericRelationship(Map<GenericType, GenericLink> genericRelationship) {
             List<GenericType> generics = new ArrayList<>();
-            // TODO
-            return new Info(this.ownerClass, generics);
+
+            this.genericTypes.forEach(genericType -> {
+                if (genericRelationship.containsKey(genericType)) {
+                    GenericLink link = genericRelationship.get(genericType);
+                    Class<?> ownerClass = genericType.getOwnerClass();
+                    int index = genericType.getIndex();
+
+                    GenericType to = link.getTo();
+                    if (to.isCertainType()) {
+                        Class<?> certainType = link.getTo().getCertainType();
+                        generics.add(new GenericCertainType(ownerClass, index, certainType));
+                    } else {
+                        generics.add(genericType);
+                    }
+                } else {
+                    generics.add(genericType);
+                }
+            });
+
+            return generics;
+        }
+
+        public List<GenericType> getGenericTypes() {
+            return Collections.unmodifiableList(this.genericTypes);
         }
     }
 
-    //
+    private static class GenericLink {
+        private final GenericType from;
+
+        private final GenericType to;
+
+        public GenericLink(GenericType from, GenericType to) {
+            this.from = from;
+            this.to = to;
+        }
+
+        @Override
+        public String toString() {
+            return GenericLink.class.getSimpleName() + "{" + this.from + "}-{" + this.to + "}";
+        }
+
+        public GenericType getFrom() {
+            return from;
+        }
+
+        public GenericType getTo() {
+            return to;
+        }
+    }
 
     public static ObjectAncestorAnalyzer analyze(Class<?> target) {
         return new ObjectAncestorAnalyzer(target);
@@ -202,18 +259,22 @@ public class ObjectAncestorAnalyzer {
         Map<Class<?>, Processor> interfacesAnalyzeProcessor = new HashMap<>();
         analyze(target, superClassesAnalyzeProcessor, interfacesAnalyzeProcessor);
 
-        Function<Map<Class<?>, Processor>, Map<Class<?>, Info>> toGenericInfo = (processorMap) -> {
+        BiFunction<Map<Class<?>, Processor>, Map<Class<?>, Info>, Map<Class<?>, Info>> toGenericInfo = (processorMap, identity) -> {
+            Map<GenericType, GenericLink> genericRelationship = buildGenericRelationship(processorMap);
             return Collections.unmodifiableMap(
                     processorMap.entrySet().stream()
-                            .reduce(new HashMap<>(), (result, entry) -> {
-                                result.put(entry.getKey(), entry.getValue().analyze(processorMap));
+                            .reduce(identity, (result, entry) -> {
+                                Class<?> clazz = entry.getKey();
+                                Processor processor = entry.getValue();
+                                Info info = processor.analyze(genericRelationship);
+                                result.put(clazz, info);
                                 return result;
                             }, (result1, result2) -> null)
             );
         };
 
-        this.superClassesAnalyzeInfo = toGenericInfo.apply(superClassesAnalyzeProcessor);
-        this.interfacesAnalyzeInfo = toGenericInfo.apply(interfacesAnalyzeProcessor);
+        this.superClassesAnalyzeInfo = toGenericInfo.apply(superClassesAnalyzeProcessor, new LinkedHashMap<>());
+        this.interfacesAnalyzeInfo = toGenericInfo.apply(interfacesAnalyzeProcessor, new HashMap<>());
     }
 
     public Class<?> getTarget() {
@@ -228,11 +289,28 @@ public class ObjectAncestorAnalyzer {
         return this.interfaces.updateAndGet((last) -> updateFirst(last, this.interfacesAnalyzeInfo));
     }
 
-//    public Optional<ObjectGenericInfo> getGenericInfo(Class<?> searchClass) {
-//    }
+    public Optional<Info> getGenericInfo(Class<?> searchClass) {
+        if (searchClass.isInterface()) {
+            return Optional.ofNullable(this.interfacesAnalyzeInfo.get(searchClass));
+        } else {
+            return Optional.ofNullable(this.superClassesAnalyzeInfo.get(searchClass));
+        }
+    }
 
-//    public Optional<ObjectGenericDetail> getGenericAtIndex(Class<?> searchClass, int index) {
-//    }
+    public Optional<GenericType> getGenericAtIndex(Class<?> searchClass, int index) {
+        Optional<Info> infoOptional = getGenericInfo(searchClass);
+        if (infoOptional.isPresent()) {
+            Info info = infoOptional.get();
+            List<GenericType> generics = info.getGenerics();
+            if (index >= 0 && index < generics.size()) {
+                return Optional.of(generics.get(index));
+            } else {
+                return Optional.empty();
+            }
+        } else {
+            return Optional.empty();
+        }
+    }
 
     public Map<Class<?>, Info> getAllSuperClassAnalyzeInfo() {
         return this.superClassesAnalyzeInfo;
@@ -272,7 +350,34 @@ public class ObjectAncestorAnalyzer {
             return;
         }
 
-        ParameterizedType parameterizedType = (ParameterizedType) genericSuperclass;
+        putIntoProcessor(processor, (ParameterizedType) genericSuperclass);
+    }
+
+    private void analyzeInterfaceGeneric(Class<?> target, Map<Class<?>, Processor> interfacesAnalyzeProcessor) {
+        Type[] genericInterfaces = target.getGenericInterfaces();
+
+        for (Type genericInterface : genericInterfaces) {
+            Class<?> type;
+            if (genericInterface instanceof ParameterizedType) {
+                type = (Class<?>) ((ParameterizedType) genericInterface).getRawType();
+            } else {
+                type = (Class<?>) genericInterface;
+            }
+
+            Processor processor = new Processor(type);
+            interfacesAnalyzeProcessor.put(type, processor);
+
+            if (!(genericInterface instanceof ParameterizedType)) {
+                continue;
+            }
+
+            putIntoProcessor(processor, (ParameterizedType) genericInterface);
+
+            analyzeInterfaceGeneric(type, interfacesAnalyzeProcessor);
+        }
+    }
+
+    protected void putIntoProcessor(Processor processor, ParameterizedType parameterizedType) {
         Type[] arguments = parameterizedType.getActualTypeArguments();
         for (Type argument : arguments) {
             if (argument instanceof Class) {
@@ -283,11 +388,69 @@ public class ObjectAncestorAnalyzer {
         }
     }
 
-    private void analyzeInterfaceGeneric(Class<?> target, Map<Class<?>, Processor> interfacesAnalyzeProcessor) {
-        Class<?>[] interfaces = target.getInterfaces();
-        Type[] genericInterfaces = target.getGenericInterfaces();
+    protected Map<GenericType, GenericLink> buildGenericRelationship(Map<Class<?>, Processor> processorMap) {
+        Map<GenericType, GenericLink> genericRelationship = new HashMap<>();
 
-        System.out.println();
+        Map<Class<?>, Map<Integer, GenericType>> allNodeMap = new HashMap<>();
+        processorMap.values().forEach(processor -> {
+            List<GenericType> genericTypes = processor.getGenericTypes();
+            genericTypes.forEach(genericType -> {
+                Class<?> ownerClass = genericType.getOwnerClass();
+                int index = genericType.getIndex();
+                allNodeMap.computeIfAbsent(ownerClass, (oc) -> new HashMap<>()).put(index, genericType);
+            });
+        });
+
+        processorMap.values().forEach(processor -> {
+            List<GenericType> genericTypes = processor.getGenericTypes();
+            genericTypes.forEach(genericType -> {
+                if (genericType.isUncertainType()) {
+                    addLink(genericRelationship, allNodeMap, (GenericUncertainType) genericType);
+                }
+            });
+        });
+
+        return genericRelationship;
+    }
+
+    protected void addLink(Map<GenericType, GenericLink> genericRelationship,
+                           Map<Class<?>, Map<Integer, GenericType>> allNodeMap,
+                           GenericUncertainType genericUncertainType) {
+        TypeVariable<?> typeVariable = genericUncertainType.typeVariable;
+        String genericName = typeVariable.getName();
+
+        int index = -1;
+        GenericDeclaration genericDeclaration = typeVariable.getGenericDeclaration();
+        ClassRepository genericInfo = extractGenericInfo((Class<?>) genericDeclaration);
+        TypeVariable<?>[] typeParameters = genericInfo.getTypeParameters();
+        for (int i = 0; i < typeParameters.length; i++) {
+            TypeVariable<?> typeVariable1 = typeParameters[i];
+            if (genericName.equals(typeVariable1.getName())) {
+                index = i;
+                break;
+            }
+        }
+
+        if (index != -1) {
+            GenericType from = allNodeMap.get(genericUncertainType.getOwnerClass()).get(genericUncertainType.getIndex());
+            Map<Integer, GenericType> nodeMap = allNodeMap.get(genericDeclaration);
+            if (nodeMap != null) {
+                GenericType to = allNodeMap.get(genericDeclaration).get(index);
+                GenericLink genericLink = new GenericLink(from, to);
+                genericRelationship.put(from, genericLink);
+            }
+        }
+    }
+
+    protected ClassRepository extractGenericInfo(Class<?> clazz) {
+        FiSupplier<ClassRepository> extractor = () -> {
+            Method method = Class.class.getDeclaredMethod("getGenericInfo");
+            method.setAccessible(true);
+            ClassRepository classRepository = (ClassRepository) method.invoke(clazz);
+            method.setAccessible(false);
+            return classRepository;
+        };
+        return extractor.getOrHandle();
     }
 
 }
