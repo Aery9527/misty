@@ -48,7 +48,6 @@ public class ObjectAncestorAnalyzerTest {
 //        ObjectAncestorAnalyzer analyze1 = ObjectAncestorAnalyzer.analyze(Implement.class);
         ObjectAncestorAnalyzer analyze2 = ObjectAncestorAnalyzer.analyze(Implement1.class);
 
-
     }
 
 
