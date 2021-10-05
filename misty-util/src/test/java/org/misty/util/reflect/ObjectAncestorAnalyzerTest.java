@@ -17,6 +17,12 @@ public class ObjectAncestorAnalyzerTest {
     public static abstract class AbstractB<G1, G2> extends AbstractA<String, G1> {
     }
 
+    public static abstract class AbstractC<G1, G2> implements InterfaceA<G1, G2> {
+    }
+
+    public static abstract class AbstractD extends AbstractC<Long, Integer> {
+    }
+
     public interface Interface {
 
     }
@@ -44,6 +50,11 @@ public class ObjectAncestorAnalyzerTest {
             extends AbstractB<G1, G4>
             implements Interface, InterfaceB<G2>, InterfaceC<G3> {
     }
+
+
+    public static class Implement3 extends AbstractD {
+    }
+
 
     @Test
     public void getAllSuperClass() {
@@ -131,6 +142,14 @@ public class ObjectAncestorAnalyzerTest {
                 new ObjectAncestorAnalyzer.GenericCertainType(InterfaceA.class, 0, String.class)
         );
         Assertions.assertThat(analyzer2.getGenericAtIndex(InterfaceA.class, 1).get().getUncertainName()).isEqualTo("G1");
+
+        ObjectAncestorAnalyzer analyzer3 = ObjectAncestorAnalyzer.analyze(Implement3.class);
+        Assertions.assertThat(analyzer3.getGenericAtIndex(InterfaceA.class, 0)).get().isEqualTo(
+                new ObjectAncestorAnalyzer.GenericCertainType(InterfaceA.class, 0, Long.class)
+        );
+        Assertions.assertThat(analyzer3.getGenericAtIndex(InterfaceA.class, 1)).get().isEqualTo(
+                new ObjectAncestorAnalyzer.GenericCertainType(InterfaceA.class, 1, Integer.class)
+        );
     }
 
 }

@@ -6,7 +6,6 @@ import sun.reflect.generics.repository.ClassRepository;
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BiFunction;
 
 public class ObjectAncestorAnalyzer {
 
@@ -153,10 +152,13 @@ public class ObjectAncestorAnalyzer {
     private static class Processor {
         private final Class<?> ownerClass;
 
+        private final boolean superClass;
+
         private final List<GenericType> genericTypes = new ArrayList<>();
 
         public Processor(Class<?> ownerClass) {
             this.ownerClass = ownerClass;
+            this.superClass = !ownerClass.isInterface();
         }
 
         public void add(Class<?> argument) {
@@ -212,6 +214,14 @@ public class ObjectAncestorAnalyzer {
         public List<GenericType> getGenericTypes() {
             return Collections.unmodifiableList(this.genericTypes);
         }
+
+        public Class<?> getOwnerClass() {
+            return ownerClass;
+        }
+
+        public boolean isSuperClass() {
+            return superClass;
+        }
     }
 
     private static class GenericLink {
@@ -255,26 +265,22 @@ public class ObjectAncestorAnalyzer {
     public ObjectAncestorAnalyzer(Class<?> target) {
         this.target = target;
 
-        Map<Class<?>, Processor> superClassesAnalyzeProcessor = new LinkedHashMap<>();
-        Map<Class<?>, Processor> interfacesAnalyzeProcessor = new HashMap<>();
-        analyze(target, superClassesAnalyzeProcessor, interfacesAnalyzeProcessor);
+        Map<Class<?>, Processor> analyzeProcessors = new LinkedHashMap<>();
+        analyze(target, analyzeProcessors);
 
-        BiFunction<Map<Class<?>, Processor>, Map<Class<?>, Info>, Map<Class<?>, Info>> toGenericInfo = (processorMap, identity) -> {
-            Map<GenericType, GenericLink> genericRelationship = buildGenericRelationship(processorMap);
-            return Collections.unmodifiableMap(
-                    processorMap.entrySet().stream()
-                            .reduce(identity, (result, entry) -> {
-                                Class<?> clazz = entry.getKey();
-                                Processor processor = entry.getValue();
-                                Info info = processor.analyze(genericRelationship);
-                                result.put(clazz, info);
-                                return result;
-                            }, (result1, result2) -> null)
-            );
-        };
+        Map<GenericType, GenericLink> genericRelationship = buildGenericRelationship(analyzeProcessors);
 
-        this.superClassesAnalyzeInfo = toGenericInfo.apply(superClassesAnalyzeProcessor, new LinkedHashMap<>());
-        this.interfacesAnalyzeInfo = toGenericInfo.apply(interfacesAnalyzeProcessor, new HashMap<>());
+        Map<Class<?>, Info> superClassesAnalyzeInfo = new LinkedHashMap<>();
+        Map<Class<?>, Info> interfacesAnalyzeInfo = new HashMap<>();
+
+        analyzeProcessors.forEach((type, processor) -> {
+            Map<Class<?>, Info> targetAnalyzeInfo = processor.isSuperClass() ? superClassesAnalyzeInfo : interfacesAnalyzeInfo;
+            Info info = processor.analyze(genericRelationship);
+            targetAnalyzeInfo.put(type, info);
+        });
+
+        this.superClassesAnalyzeInfo = Collections.unmodifiableMap(superClassesAnalyzeInfo);
+        this.interfacesAnalyzeInfo = Collections.unmodifiableMap(interfacesAnalyzeInfo);
     }
 
     public Class<?> getTarget() {
@@ -324,26 +330,24 @@ public class ObjectAncestorAnalyzer {
         return target == null ? Collections.unmodifiableList(new ArrayList<>(genericInfo.keySet())) : target;
     }
 
-    protected void analyze(Class<?> target,
-                           Map<Class<?>, Processor> superClassesAnalyzeProcessor,
-                           Map<Class<?>, Processor> interfacesAnalyzeProcessor) {
-        analyzeSuperClassGeneric(target, superClassesAnalyzeProcessor);
-        analyzeInterfaceGeneric(target, interfacesAnalyzeProcessor);
+    protected void analyze(Class<?> target, Map<Class<?>, Processor> analyzeProcessors) {
+        analyzeSuperClassGeneric(target, analyzeProcessors);
+        analyzeInterfaceGeneric(target, analyzeProcessors);
 
         Class<?> superClass = target.getSuperclass();
         if (!superClass.equals(Object.class)) {
-            analyze(superClass, superClassesAnalyzeProcessor, interfacesAnalyzeProcessor);
+            analyze(superClass, analyzeProcessors);
         }
     }
 
-    private void analyzeSuperClassGeneric(Class<?> target, Map<Class<?>, Processor> superClassesAnalyzeProcessor) {
+    private void analyzeSuperClassGeneric(Class<?> target, Map<Class<?>, Processor> analyzeProcessors) {
         Class<?> superClass = target.getSuperclass();
         if (superClass.equals(Object.class)) {
             return;
         }
 
         Processor processor = new Processor(superClass);
-        superClassesAnalyzeProcessor.put(superClass, processor);
+        analyzeProcessors.put(superClass, processor);
 
         Type genericSuperclass = target.getGenericSuperclass();
         if (!(genericSuperclass instanceof ParameterizedType)) {
@@ -353,7 +357,7 @@ public class ObjectAncestorAnalyzer {
         putIntoProcessor(processor, (ParameterizedType) genericSuperclass);
     }
 
-    private void analyzeInterfaceGeneric(Class<?> target, Map<Class<?>, Processor> interfacesAnalyzeProcessor) {
+    private void analyzeInterfaceGeneric(Class<?> target, Map<Class<?>, Processor> analyzeProcessors) {
         Type[] genericInterfaces = target.getGenericInterfaces();
 
         for (Type genericInterface : genericInterfaces) {
@@ -365,7 +369,7 @@ public class ObjectAncestorAnalyzer {
             }
 
             Processor processor = new Processor(type);
-            interfacesAnalyzeProcessor.put(type, processor);
+            analyzeProcessors.put(type, processor);
 
             if (!(genericInterface instanceof ParameterizedType)) {
                 continue;
@@ -373,7 +377,7 @@ public class ObjectAncestorAnalyzer {
 
             putIntoProcessor(processor, (ParameterizedType) genericInterface);
 
-            analyzeInterfaceGeneric(type, interfacesAnalyzeProcessor);
+            analyzeInterfaceGeneric(type, analyzeProcessors);
         }
     }
 
