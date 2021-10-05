@@ -104,10 +104,33 @@ public class ObjectAncestorAnalyzerTest {
         Assertions.assertThat(analyzer1.getGenericAtIndex(AbstractA.class, 1)).get().isEqualTo(
                 new ObjectAncestorAnalyzer.GenericCertainType(AbstractA.class, 1, Integer.class)
         );
-
+        Assertions.assertThat(analyzer1.getGenericAtIndex(InterfaceB.class, 0)).get().isEqualTo(
+                new ObjectAncestorAnalyzer.GenericCertainType(InterfaceB.class, 0, Void.class)
+        );
+        Assertions.assertThat(analyzer1.getGenericAtIndex(InterfaceC.class, 0)).get().isEqualTo(
+                new ObjectAncestorAnalyzer.GenericCertainType(InterfaceC.class, 0, Date.class)
+        );
+        Assertions.assertThat(analyzer1.getGenericAtIndex(InterfaceA.class, 0)).get().isEqualTo(
+                new ObjectAncestorAnalyzer.GenericCertainType(InterfaceA.class, 0, String.class)
+        );
+        Assertions.assertThat(analyzer1.getGenericAtIndex(InterfaceA.class, 1)).get().isEqualTo(
+                new ObjectAncestorAnalyzer.GenericCertainType(InterfaceA.class, 1, Void.class)
+        );
 
         ObjectAncestorAnalyzer analyzer2 = ObjectAncestorAnalyzer.analyze(Implement2.class);
-
+        Assertions.assertThat(analyzer2.getGenericAtIndex(AbstractB.class, 0).get().getUncertainName()).isEqualTo("G1");
+        Assertions.assertThat(analyzer2.getGenericAtIndex(AbstractB.class, 1).get().getUncertainName()).isEqualTo("G4");
+        Assertions.assertThat(analyzer2.getGenericAtIndex(AbstractA.class, 0)).get().isEqualTo(
+                new ObjectAncestorAnalyzer.GenericCertainType(AbstractA.class, 0, String.class)
+        );
+        Assertions.assertThat(analyzer2.getGenericAtIndex(AbstractA.class, 1).get().getUncertainName()).isEqualTo("G1");
+        Assertions.assertThat(analyzer2.getGenericAtIndex(InterfaceB.class, 0).get().getUncertainName()).isEqualTo("G2");
+        Assertions.assertThat(analyzer2.getGenericAtIndex(InterfaceC.class, 0).get().getUncertainName()).isEqualTo("G3");
+        Assertions.assertThat(analyzer2.getGenericAtIndex(InterfaceC.class, 0).get().getUncertainName()).isEqualTo("G3");
+        Assertions.assertThat(analyzer2.getGenericAtIndex(InterfaceA.class, 0)).get().isEqualTo(
+                new ObjectAncestorAnalyzer.GenericCertainType(InterfaceA.class, 0, String.class)
+        );
+        Assertions.assertThat(analyzer2.getGenericAtIndex(InterfaceA.class, 1).get().getUncertainName()).isEqualTo("G1");
     }
 
 }
