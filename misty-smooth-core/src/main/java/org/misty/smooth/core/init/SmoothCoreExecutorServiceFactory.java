@@ -82,7 +82,7 @@ public class SmoothCoreExecutorServiceFactory implements Function<SmoothEnvironm
         short rotation = smoothEnvironment.getValue(key, new EnvironmentShortValidator(key, preset, min, max));
 
         short first = 1;
-        AtomicInteger count = new AtomicInteger(first);
+        AtomicInteger count = new AtomicInteger(first); // FIXME 改用 CycleInt
         IntSupplier counter = () -> {
             int c = count.getAndIncrement();
             if (c <= rotation) {
